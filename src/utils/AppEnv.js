@@ -1,0 +1,17 @@
+export const AppEnv = {
+  staticURL: process.env.staticURL,
+  apiURL: process.env.apiURL,
+  title: process.env.title,
+  sysApp: process.env.sysApp,
+  sysName: process.env.sysName,
+  receiveAddress: process.env.receiveAddress,
+  receiveCurrency: process.env.receiveCurrency,
+  USDTContract: process.env.USDTContract,
+  TonRPCAddress: process.env.TonRPCAddress,
+  dist: process.env.dist,
+  webURL: process.env.webURL,
+  prod: process.env.dist,
+  appVersion: process.env.appVersion,
+  lanKeys: (process.env.lanKeys || 'en-us,zh-cn').split(','),
+  logo: process.env.staticURL+`static/images/logo/${process.env.sysName}.logo.png`,
+}

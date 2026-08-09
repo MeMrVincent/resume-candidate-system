@@ -1,0 +1,80 @@
+@charset "utf-8";
+/* CSS Document */
+@font-face{ font-family:'PlusJakartaSans'; src:url('font/PlusJakartaSans.eot');src:url('font/PlusJakartaSans.woff') format('woff'),url('font/PlusJakartaSans.ttf') format('truetype'),url('font/PlusJakartaSans.svg') format('svg'); }
+html,body,#app { height:100%; width:100%; position:relative; overflow:hidden; }
+html { background:#fafafa; }
+* { margin:0; padding:0; list-style:none; box-sizing: border-box; }
+body { font-size:14px; color:#222; font-family:'PlusJakartaSans'; }
+.fl , .left { float:left; }
+.fr , .right { float:right; }
+.none,.hide { display:none; }
+.block { display:block; }
+img { border:0; vertical-align:top; }
+.red { color:red; }
+.green { color:green; }
+.blue { color:#1a73e8; }
+.bold { font-weight:bold; }
+.white { color:#fff; }
+.purple { color:purple; }
+.clear { clear:both; }
+.highlight,.CF { color:#FFF; background:red; padding:1px; }
+.clear,.clearfix { clear:both; }
+.clearfix:after, .clearfix:before { display:table; content:''; clear:both; }
+html.Telegram-Platform .color { color:#1a73e8; }
+html.Line-Platform .color { color:#01953c; }
+.black,.C0 { color:#000; }
+.C1 { color:#111; }
+.C2 { color:#222; }
+.C3 { color:#333; }
+.C4 { color:#444; }
+.C5 { color:#555; }
+.C6 { color:#666; }
+.C8 { color:#888; }
+.gray,.C9 { color:#999; }
+.pointer { cursor: pointer; }
+/* a */
+a { color:#222; text-decoration:none; -o-transition:all .35s; -moz-transition:all .35s; -webkit-transition:all .35s; -ms-transition:all .35s; transition:all .35s; }
+a:visited { }
+a:active, a:hover { text-decoration:none; }
+html.Telegram-Platform a:active, html.Telegram-Platform a:hover { color:#1a73e8; }
+html.Line-Platform a:active, html.Line-Platform a:hover { color:#01953c; }
+a:focus { outline:none; }
+p { line-height:22px; }
+h1,h2,h3,h4,h5,h6 { font-weight:normal; }
+:focus { outline:0; text-decoration:none; }
+a:focus { outline:0; text-decoration:none; }
+html.Telegram-Platform a:focus { color:#1a73e8; }
+html.Line-Platform a:focus { color:#01953c; }
+span,i,em,big,small,b,strong { font-size:inherit; font-weight:normal; font-style:normal; }
+/** flex **/
+.flex { display: flex; justify-content: space-between; }
+/** single line, normal flex layout, top and bottom center, left and right center **/
+.Flex { display:flex; -webkit-box-pack:center; justify-content:center; align-items:center; }
+/** multi-row and multi-column flex **/
+.Flex[tag='MULTI'] { flex-wrap:wrap; justify-content: flex-start; align-items: flex-start; }
+/** single row, multiple columns, aligned to the top left **/
+.Flex[tag='LT'] { align-items:flex-start; justify-content: flex-start; }
+.Flex[tag='RT'] { align-items:flex-end; justify-content: flex-end; }
+/**单行，两端对齐，文字居中对齐**/
+.Flex[tag='SE'] { justify-content:space-between; -webkit-justify-content:space-between; }
+/**单行，靠左对齐，文字居中对齐**/
+.LFlex { display:flex; -webkit-box-pack:center; justify-content:flex-start; align-items:center; }
+/**单行，靠右对齐，文字居中对齐**/
+.RFlex { display:flex; -webkit-box-pack:center; justify-content:flex-end; align-items:center; }
+/**多行，上下居中，文字居中对齐**/
+.MFlex { display:flex; -webkit-box-pack:center; justify-content:center; align-items:center; flex-direction:column; -webkit-flex-direction:column; text-align:center; }
+/**多行，顶端对齐，文字居中对齐**/
+.MFlex[tag='TM']  { justify-content:flex-start; }
+/**多行，靠左对齐，文字居中对齐**/
+.MFlex[tag='LM']  { align-items:flex-start; }
+/**多行，靠右对齐，文字居中对齐**/
+.MFlex[tag='RM']  { align-items:flex-end; -webkit-align-items:flex-end; }
+.TMFlex { display:flex; -webkit-box-pack:center; justify-content:center; align-items:flex-start; }
+article,aside,figcaption,figure,footer,header,hgroup,main,nav,section{display:block}
+input,textarea,button { border-radius:0; -webkit-appearance:none; appearance:none; background:none; border:0; box-shadow:0 0 0; font-family:'PlusJakartaSans'; font-size:16px; color:#222; }
+input::placeholder { color:#b8b8b8; font-size:16px; font-family:'PlusJakartaSans'; }
+
+.wh100 { width:100%; height:100%; }
+.CRound { border-radius:10px; background:#fff; }
+html.Telegram-Platform .CRound { box-shadow: 0 0 5px rgba(26, 115, 232, 0.4); }
+html.Line-Platform .CRound { box-shadow: 0 0 5px rgba(0, 196, 74, 0.4); }

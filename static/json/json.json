@@ -1,0 +1,965 @@
+[
+  {
+    "tags": "h2",
+    "en": "Vue Demo Platform Service Agreement",
+    "cn": "Vue Demo 平台服务协议"
+  },
+  {
+    "tags": "h5",
+    "en": "This SERVICE AGREEMENT (hereinafter the \"Agreement\") is entered into by and between:",
+    "cn": "本服务协议（以下简称\"本协议\"）由以下各方签订："
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "<b>Vue Demo</b>, with its principal place at Sea Meadow House, P.O. Box 116, Road Town, Tortola, British Virgin Islands (hereinafter referred to as \"Vue Demo\");",
+    "cn": "<b>Vue Demo</b>，主要营业地点位于英属维尔京群岛托尔托拉罗德城邮政信箱 116 号 Sea Meadow House（以下简称\"Vue Demo\"）；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "<b>Advertiser: </b> Business entity placing ads via Vue Demo;",
+    "cn": "<b>广告商：</b> 通过 Vue Demo 投放广告的商业实体；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "<b>Publisher: </b> Business entity providing advertising spaces.",
+    "cn": "<b>发布商：</b> 提供广告位的商业实体。"
+  },
+  {
+    "tags": "h5",
+    "en": "(Advertiser and Publisher are collectively referred to as \"Platform Users\" or \"Users\")",
+    "cn": "（广告商和发布商统称为\"平台用户\"或\"用户\"）"
+  },
+  {
+    "tags": "h3",
+    "en": "Article 1: Definitions",
+    "cn": "第 1 条：定义"
+  },
+  {
+    "tags": "h5",
+    "en": "The terms used in this Agreement shall be defined as below:",
+    "cn": "本协议中使用的术语定义如下："
+  },
+  {
+    "tags": "p",
+    "class":"Num",
+    "en": "<i class='color'>1.</i> <b>Ad Network: </b> A platform that aggregates in-app advertising inventory from multiple app publishers and connects it with advertisers, facilitating targeted ad placement, campaign management, and performance reporting.",
+    "cn": "<i class='color'>1.</i> <b>广告网络：</b> 一个平台，汇集来自多个应用程序发布商的应用内广告库存，并将其与广告商连接，从而实现精准广告投放、广告系列管理和效果报告。"
+  },
+  {
+    "tags": "p",
+    "class":"Num",
+    "en": "<i class='color'>2.</i> <b>Affiliate: </b> Any person or entity that, at the time of determination, directly or indirectly through one or more intermediaries, Controls, is Controlled by, or is under common Control with such specified person or entity. \"Control\" means the power to direct or cause the direction of the management and policies of such person or entity, whether through the ownership of voting securities, by contract, or otherwise.",
+    "cn": "<i class='color'>2.</i> <b>关联方：</b> 任何个人或实体，在确定时，直接或间接通过一个或多个中介机构控制、受控制于或与该特定个人或实体共同控制。\"控制\"是指通过拥有投票证券、合同或其他方式，指导或促使指导该个人或实体的管理和政策的权力。"
+  },
+  {
+    "tags": "p",
+    "class":"Num",
+    "en": "<i class='color'>3.</i> <b>In-DApp Advertisement (IDA)</b> An advertisement displayed within Mini DApps delivered through Ad Networks in various forms, including banners, interstitials, and video ads.",
+    "cn": "<i class='color'>3.</i> <b>DApp 内广告 (IDA)：</b> 通过广告网络以横幅、插页和视频广告等各种形式在 Mini DApp 中展示的广告。"
+  },
+  {
+    "tags": "p",
+    "class":"Num",
+    "en": "<i class='color'>4.</i> <b>DApp Portal/DApp Portal Market: </b> The Kaia blockchain-based Mini DApp marketplace. For the avoidance of doubt, Finschia-based NFT marketplace is excluded.",
+    "cn": "<i class='color'>4.</i> <b>DApp 门户/DApp 门户市场：</b> 基于 Kaia 区块链的 Mini DApp 市场。为免生疑问，不包括基于 Finschia 的 NFT 市场。"
+  },
+  {
+    "tags": "p",
+    "class":"Num",
+    "en": "<i class='color'>5.</i> <b>Mini DApp: </b> A decentralized app service developed by BUILDER using the Mini DApp SDK and registered on DApp Portal.",
+    "cn": "<i class='color'>5.</i> <b>Mini DApp：</b> 由 BUILDER 使用 Mini DApp SDK 开发并在 DApp 门户注册的去中心化应用服务。"
+  },
+  {
+    "tags": "p",
+    "class":"Num",
+    "en": "<i class='color'>6.</i> <b>Mini DApp SDK: </b> The SDK that provides all necessary APIs and tools to launch Mini DApp.",
+    "cn": "<i class='color'>6.</i> <b>Mini DApp SDK：</b> 提供启动 Mini DApp 所需的所有 API 和工具的 SDK。"
+  },
+  {
+    "tags": "h3",
+    "en": "Article 2: Purpose of Agreement",
+    "cn": "第 2 条：协议目的"
+  },
+  {
+    "tags": "p",
+    "class":"FDot",
+    "en": "This Agreement governs the relationship between Vue Demo, Advertiser, and Publisher, defining their rights and obligations.",
+    "cn": "本协议旨在规范 Vue Demo、广告商和发布商之间的关系，明确其权利和义务。"
+  },
+  {
+    "tags": "p",
+    "class":"FDot",
+    "en": "This Agreement expressly clarifies that Vue Demo serves solely as a neutral technology service provider.",
+    "cn": "本协议明确指出 Vue Demo 仅作为中立的技术服务提供商。"
+  },
+  {
+    "tags": "h3",
+    "en": "Article 3: Rights and Obligations",
+    "cn": "第 3 条：权利和义务"
+  },
+  {
+    "tags": "h4",
+    "en": "3.1 Rights and Obligations of Vue Demo",
+    "cn": "3.1 Vue Demo 的权利和义务"
+  },
+  {
+    "tags": "h5",
+    "en": "(A) Vue Demo’s Rights:",
+    "cn": "(A) Vue Demo 的权利："
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>1.</i> Unilaterally modify, suspend, or terminate platform services with 10 days’ notice;",
+    "cn": "<i class='color'>1.</i> 单方面修改、暂停或终止平台服务，并提前 10 天通知；"
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>2.</i> Decide independently to formulate and enforce platform rules, and modify the rules as the actual situation requires;",
+    "cn": "<i class='color'>2.</i> 独立决定制定和执行平台规则，并根据实际情况修改规则；"
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>3.</i> Restrict or prohibit specific ad content without liability;",
+    "cn": "<i class='color'>3.</i> 限制或禁止特定广告内容，且不承担责任；"
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>4.</i> License behavioral data to third-party partners;",
+    "cn": "<i class='color'>4.</i> 将行为数据许可给第三方合作伙伴；"
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>5.</i> Retain exclusive ownership of all platform-generated insights.",
+    "cn": "<i class='color'>5.</i> 保留所有平台生成洞察的独家所有权。"
+  },
+  {
+    "tags": "h5",
+    "en": "(B) Vue Demo’s Obligations:",
+    "cn": "(B) Vue Demo 的义务："
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>1.</i> Provide basic technical support;",
+    "cn": "<i class='color'>1.</i> 提供基本技术支持；"
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>2.</i> Process lawful government requests per applicable regulations;",
+    "cn": "<i class='color'>2.</i> 根据适用法规处理合法的政府请求；"
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>3.</i> Vue Demo commits to protecting user privacy per applicable laws, but users agree that data may be shared with regulators, advertisers, or third parties to fulfill contractual or legal obligations.",
+    "cn": "<i class='color'>3.</i> Vue Demo 承诺根据适用法律保护用户隐私，但用户同意数据可能会与监管机构、广告商或第三方共享，以履行合同或法律义务。"
+  },
+  {
+    "tags": "h4",
+    "en": "3.2 Rights and Obligations of Users",
+    "cn": "3.2 用户的权利和义务"
+  },
+  {
+    "tags": "h5",
+    "en": "(A) Users’ Rights:",
+    "cn": "(A) 用户的权利："
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>1.</i> Users may terminate Vue Demo’s services, provided Vue Demo retains necessary historical data for compliance and dispute resolution purposes;",
+    "cn": "<i class='color'>1.</i> 用户可以终止 Vue Demo 的服务，但 Vue Demo 保留必要的历史数据以用于合规和争议解决；"
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>2.</i> Users have the right to access and download their own ad performance data, subject to platform security policies;",
+    "cn": "<i class='color'>2.</i> 用户有权访问和下载自己的广告表现数据，但须遵守平台安全政策；"
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>3.</i> Users may request the deletion of personal data in written form, except where retention is required by law or for legitimate business purposes.",
+    "cn": "<i class='color'>3.</i> 用户可以书面形式请求删除个人数据，但法律要求或出于合法商业目的需要保留的情况除外。"
+  },
+  {
+    "tags": "h5",
+    "en": "(B) Users’ Obligations:",
+    "cn": "(B) 用户的义务："
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>1.</i> Users must comply with all applicable laws, including but not limited to advertising standards, data protection regulations, and intellectual property laws;",
+    "cn": "<i class='color'>1.</i> 用户必须遵守所有适用法律，包括但不限于广告标准、数据保护法规和知识产权法；"
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>2.</i> Users shall not engage in fraudulent activities, including but not limited to click fraud, fake impressions, or unauthorized data scraping;",
+    "cn": "<i class='color'>2.</i> 用户不得从事欺诈活动，包括但不限于点击欺诈、虚假展示或未经授权的数据抓取；"
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>3.</i> Users must maintain the confidentiality of their account credentials and are liable for any unauthorized access resulting from negligence.",
+    "cn": "<i class='color'>3.</i> 用户必须对其账户凭证保密，并对因疏忽造成的任何未经授权的访问负责。"
+  },
+  {
+    "tags": "h3",
+    "en": "Article 4: Anti-Money Laundering (AML) Compliance",
+    "cn": "第 4 条：反洗钱 (AML) 合规"
+  },
+  {
+    "tags": "h4",
+    "en": "4.1 Diligence Duty",
+    "cn": "4.1 尽职调查义务"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(A) Users must complete the verification process of Vue Demo and authorize Vue Demo to continuously monitor account activities. For users who fail to complete genuine and valid verification, Vue Demo reserves the right to unilaterally suspend services for them without bearing any responsibility.",
+    "cn": "(A) 用户必须完成 Vue Demo 的验证过程，并授权 Vue Demo 持续监控账户活动。对于未能完成真实有效验证的用户，Vue Demo 保留单方面暂停其服务的权利，且不承担任何责任。"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(B) If requested by Vue Demo, Advertiser must additionally submit Ultimate Beneficial Owner disclosures, corporate bylaws, and controlling person affidavits. Vue Demo reserves the right to require re-verification every 12 months.",
+    "cn": "(B) 如 Vue Demo 要求，广告商必须额外提交最终受益人披露、公司章程和控制人宣誓书。Vue Demo 保留每 12 个月要求重新验证的权利。"
+  },
+  {
+    "tags": "h4",
+    "en": "4.2 Risk-Based Controls",
+    "cn": "4.2 基于风险的控制"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "Vue Demo will tagsify Advertisers into dynamic risk tiers based on jurisdiction (including registration location, IP geolocation, etc.), transaction patterns, and ad content categories. High-risk Advertisers will be subject to automated transaction throttling and enhanced due diligence.",
+    "cn": "Vue Demo 将根据司法管辖区（包括注册地点、IP 地理位置等）、交易模式和广告内容类别将广告商分为动态风险等级。高风险广告商将受到自动化交易限制和强化尽职调查。"
+  },
+  {
+    "tags": "h4",
+    "en": "4.3 Limitation of Liability",
+    "cn": "4.3 责任限制"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(A) Vue Demo shall not be liable for erroneous flags, delays, or compliance actions taken in good faith.",
+    "cn": "(A) Vue Demo 不对善意采取的错误标记、延迟或合规行动承担责任。"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(B) If a User violates AML laws or this Agreement, causing Vue Demo to incur fines, legal fees, or reputational harm, the User shall fully compensate Vue Demo for all direct and indirect costs within 10 days of notice, as well as cover Vue Demo’s all relevant costs.",
+    "cn": "(B) 如果用户违反反洗钱法律或本协议，导致 Vue Demo 产生罚款、律师费或声誉损害，用户应在收到通知后 10 天内全额赔偿 Vue Demo 的所有直接和间接费用，并承担 Vue Demo 的所有相关费用。"
+  },
+  {
+    "tags": "h4",
+    "en": "4.4 Data Sovereignty",
+    "cn": "4.4 数据主权"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "Users acknowledge Vue Demo’s right to transfer AML-related data to affiliated entities or regulators across jurisdictions, irrespective of data localization laws.",
+    "cn": "用户承认 Vue Demo 有权将反洗钱相关数据传输给关联实体或跨司法管辖区的监管机构，无论数据本地化法律如何。"
+  },
+  {
+    "tags": "h4",
+    "en": "4.5 Ongoing Monitoring and Reporting",
+    "cn": "4.5 持续监控和报告"
+  },
+  {
+    "tags": "h5",
+    "en": "Vue Demo reserves the right to:",
+    "cn": "Vue Demo 保留以下权利："
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(A) Continuously monitor Advertiser’s transactions and account activities for any unusual or suspicious behavior;",
+    "cn": "(A) 持续监控广告商的交易和账户活动，以发现任何异常或可疑行为；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(B) Request updated KYC documents at any time during the term of this Agreement;",
+    "cn": "(B) 在本协议有效期内随时要求提供更新的 KYC 文件；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(C) Report any suspicious activities, transactions, or information to the relevant regulatory authorities without prior notice to the Advertiser, as required by applicable law.",
+    "cn": "(C) 根据适用法律要求，向相关监管机构报告任何可疑活动、交易或信息，而无需事先通知广告商。"
+  },
+  {
+    "tags": "h4",
+    "en": "4.6 Fraudulent Activity and Enforcement",
+    "cn": "4.6 欺诈活动和执法"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "For Publishers, if any fraudulent activities such as traffic manipulation are detected, the Platform reserves the right to deduct abnormal traffic and impose liquidated damages.",
+    "cn": "对于发布商，如果检测到任何欺诈活动，例如流量操纵，平台保留扣除异常流量并处以违约金的权利。"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "The specific amounts of traffic deductions or liquidated damages shall be determined based on the actual severity and impact of the fraudulent activity.",
+    "cn": "流量扣除或违约金的具体金额应根据欺诈活动的实际严重程度和影响确定。"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "The Platform retains sole discretion and final authority in interpreting and enforcing these provisions.",
+    "cn": "平台对这些条款的解释和执行拥有最终决定权和最终权力。"
+  },
+  {
+    "tags": "h3",
+    "en": "Article 5: Limitation of Liability and Disclaimers",
+    "cn": "第 5 条：责任限制和免责声明"
+  },
+  {
+    "tags": "h4",
+    "en": "5.1 Service Nature Disclaimer",
+    "cn": "5.1 服务性质免责声明"
+  },
+  {
+    "tags": "h5",
+    "en": "Vue Demo expressly declares that it functions solely as an advertising technology platform providing:",
+    "cn": "Vue Demo 明确声明其仅作为广告技术平台提供以下服务："
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(A) Ad inventory aggregation services;",
+    "cn": "(A) 广告库存聚合服务；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(B) Programmatic transaction facilitation;",
+    "cn": "(B) 程序化交易促成；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(C) Basic compliance screening tools.",
+    "cn": "(C) 基本合规筛选工具。"
+  },
+  {
+    "tags": "h4",
+    "en": "5.2 No Liability for Third-Party Content and Redirected Links",
+    "cn": "5.2 第三方内容和重定向链接的免责声明"
+  },
+  {
+    "tags": "h5",
+    "en": "Vue Demo shall not be held responsible for:",
+    "cn": "Vue Demo 不对以下内容负责："
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(A) The accuracy, legality, or quality of advertisements provided by Advertiser;",
+    "cn": "(A) 广告商提供的广告的准确性、合法性或质量；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(B) Any advertisement’s substantial content provided by Advertiser;",
+    "cn": "(B) 广告商提供的任何广告的实质内容；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(C) Any web pages or online destinations, including second-level, third-level, or further redirected links, accessed through the advertisements;",
+    "cn": "(C) 通过广告访问的任何网页或在线目的地，包括二级、三级或更进一步的重定向链接；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(D) Acts or omissions of Advertiser, Publisher, or any third party related to the advertisements or linked content.",
+    "cn": "(D) 广告商、发布商或任何与广告或链接内容相关的第三方的行为或不作为。"
+  },
+  {
+    "tags": "h4",
+    "en": "5.3 Exclusion of Consequential Damages",
+    "cn": "5.3 排除间接损害赔偿"
+  },
+  {
+    "tags": "h5",
+    "en": "In no event shall Vue Demo be liable for:",
+    "cn": "在任何情况下，Vue Demo 均不对以下损失承担责任："
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(A) Lost profits or business opportunities;",
+    "cn": "(A) 利润损失或商业机会损失；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(B) Damage to reputation or goodwill;",
+    "cn": "(B) 声誉或商誉损害；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(C) Any indirect, special, or consequential damages arising from platform use.",
+    "cn": "(C) 因平台使用而产生的任何间接、特殊或后果性损害。"
+  },
+  {
+    "tags": "h4",
+    "en": "5.4 Compliance Disclaimer",
+    "cn": "5.4 合规免责声明"
+  },
+  {
+    "tags": "h5",
+    "en": "While Vue Demo implements AML procedures under Article 4:",
+    "cn": "尽管 Vue Demo 根据第 4 条实施反洗钱程序："
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(A) These constitute minimum standards only;",
+    "cn": "(A) 这些仅构成最低标准；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(B) Final compliance responsibility remains with Users;",
+    "cn": "(B) 最终合规责任仍由用户承担；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(C) No screening process can guarantee 100% detection accuracy.",
+    "cn": "(C) 任何筛选过程都不能保证 100% 的检测准确率。"
+  },
+  {
+    "tags": "h3",
+    "en": "Article 6: User Privacy",
+    "cn": "第 6 条：用户隐私"
+  },
+  {
+    "tags": "h4",
+    "en": "6.1 Consent to Data Collection",
+    "cn": "6.1 同意数据收集"
+  },
+  {
+    "tags": "h5",
+    "en": "By using Vue Demo’s services, Users automatically consent to:",
+    "cn": "通过使用 Vue Demo 的服务，用户自动同意："
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(A) Continuous collection of all account activity data;",
+    "cn": "(A) 持续收集所有账户活动数据；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(B) Monitoring of transactions and ad interactions;",
+    "cn": "(B) 监控交易和广告互动；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(C) Automated profiling for risk assessment purposes.",
+    "cn": "(C) 自动化风险评估档案。"
+  },
+  {
+    "tags": "h4",
+    "en": "6.2 Vue Demo’s Rights",
+    "cn": "6.2 Vue Demo 的权利"
+  },
+  {
+    "tags": "h5",
+    "en": "Vue Demo reserves the right to:",
+    "cn": "Vue Demo 保留以下权利："
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(A) Retain User data for compliance purposes;",
+    "cn": "(A) 为合规目的保留用户数据；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(B) Use collected data for platform optimization and commercial research;",
+    "cn": "(B) 将收集到的数据用于平台优化和商业研究；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(C) Share anonymized data with third parties without additional consent.",
+    "cn": "(C) 在未经额外同意的情况下与第三方共享匿名数据。"
+  },
+  {
+    "tags": "h3",
+    "en": "Article 7: Data Protection",
+    "cn": "第 7 条：数据保护"
+  },
+  {
+    "tags": "h4",
+    "en": "7.1 Data Collection and Usage",
+    "cn": "7.1 数据收集和使用"
+  },
+  {
+    "tags": "h5",
+    "en": "(A) Users consent to Vue Demo collecting and processing:",
+    "cn": "(A) 用户同意 Vue Demo 收集和处理："
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>1.</i> All account registration details including KYC documents;",
+    "cn": "<i class='color'>1.</i> 所有账户注册详情，包括 KYC 文件；"
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>2.</i> Complete transaction history and advertising interaction logs;",
+    "cn": "<i class='color'>2.</i> 完整的交易历史和广告互动日志；"
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>3.</i> Network information for fraud analysis.",
+    "cn": "<i class='color'>3.</i> 用于欺诈分析的网络信息。"
+  },
+  {
+    "tags": "h5",
+    "en": "(B) Vue Demo may use collected data for:",
+    "cn": "(B) Vue Demo 可以将收集到的数据用于："
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>1.</i> Compliance with AML and regulatory requirements;",
+    "cn": "<i class='color'>1.</i> 遵守反洗钱和监管要求；"
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>2.</i> Platform service improvement and ad targeting;",
+    "cn": "<i class='color'>2.</i> 平台服务改进和广告定位；"
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>3.</i> Sharing with law enforcement when legally compelled.",
+    "cn": "<i class='color'>3.</i> 在法律强制要求时与执法部门共享。"
+  },
+  {
+    "tags": "h4",
+    "en": "7.2 Data Retention",
+    "cn": "7.2 数据保留"
+  },
+  {
+    "tags": "h5",
+    "en": "User data will be retained:",
+    "cn": "用户数据将保留："
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(A) For a minimum of 5 years for regulatory compliance;",
+    "cn": "(A) 为符合监管要求，至少保留 5 年；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(B) Until account termination plus a 180-day grace period;",
+    "cn": "(B) 直到账户终止并加上 180 天的宽限期；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(C) Permanently for records of terminated accounts with compliance issues.",
+    "cn": "(C) 对于存在合规问题的已终止账户记录，永久保留。"
+  },
+  {
+    "tags": "h4",
+    "en": "7.3 Users’ Authorization",
+    "cn": "7.3 用户授权"
+  },
+  {
+    "tags": "h5",
+    "en": "Users expressly authorize:",
+    "cn": "用户明确授权："
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(A) Data transfers to any Vue Demo affiliate globally;",
+    "cn": "(A) 数据传输到 Vue Demo 的全球任何关联公司；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(B) Storage in jurisdictions with varying privacy standards.",
+    "cn": "(B) 在隐私标准不同的司法管辖区存储数据。"
+  },
+  {
+    "tags": "h4",
+    "en": "7.4 Cookies & Tracking",
+    "cn": "7.4 Cookies 和追踪"
+  },
+  {
+    "tags": "h5",
+    "en": "(A) Essential platform functions require:",
+    "cn": "(A) 基本平台功能需要："
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>1.</i> Mandatory authentication cookies;",
+    "cn": "<i class='color'>1.</i> 强制认证 cookies；"
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>2.</i> Basic security tracking mechanisms.",
+    "cn": "<i class='color'>2.</i> 基本安全追踪机制。"
+  },
+  {
+    "tags": "h5",
+    "en": "(B) Optional features include:",
+    "cn": "(B) 可选功能包括："
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>1.</i> Behavioral advertising cookies (opt-out available);",
+    "cn": "<i class='color'>1.</i> 行为广告 cookies（可选择退出）；"
+  },
+  {
+    "tags": "p",
+	"class":"Num",
+    "en": "<i class='color'>2.</i> Analytics tracking for service improvement.",
+    "cn": "<i class='color'>2.</i> 用于服务改进的分析追踪。"
+  },
+  {
+    "tags": "h3",
+    "en": "Article 8: User Risk Assumption",
+    "cn": "第 8 条：用户风险承担"
+  },
+  {
+    "tags": "h4",
+    "en": "8.1 Platform Role Disclaimer",
+    "cn": "8.1 平台角色免责声明"
+  },
+  {
+    "tags": "h5",
+    "en": "The User expressly acknowledges that Vue Demo platform serves solely as:",
+    "cn": "用户明确承认 Vue Demo 平台仅作为："
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(A) A neutral technology service provider;",
+    "cn": "(A) 中立的技术服务提供商；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(B) An advertising display channel. Vue Demo makes no representations or warranties regarding the authenticity, accuracy, or legality of any third-party advertisement contents displayed through the Services.",
+    "cn": "(B) 广告展示渠道。Vue Demo 不对通过服务展示的任何第三方广告内容的真实性、准确性或合法性作出任何陈述或保证。"
+  },
+  {
+    "tags": "h4",
+    "en": "8.2 User Responsibility & Risk Allocation",
+    "cn": "8.2 用户责任和风险分配"
+  },
+  {
+    "tags": "h5",
+    "en": "The User agrees to assume all risks associated with interacting with advertisements, including but not limited to:",
+    "cn": "用户同意承担与广告互动相关的所有风险，包括但不限于："
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(A) Accessing or clicking on any advertisement or its derivative links;",
+    "cn": "(A) 访问或点击任何广告或其衍生链接；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(B) Any resulting damages (including fraud, property losses, or other harm). The User expressly waives any claims against Vue Demo platform arising from such interactions and confirms that acceptance of this risk allocation constitutes an essential condition for using the Services.",
+    "cn": "(B) 任何由此产生的损害（包括欺诈、财产损失或其他损害）。用户明确放弃因此类互动而对 Vue Demo 平台提出的任何索赔，并确认接受此风险分配是使用服务的必要条件。"
+  },
+  {
+    "tags": "h4",
+    "en": "8.3 Indemnification",
+    "cn": "8.3 赔偿"
+  },
+  {
+    "tags": "h5",
+    "en": "The Advertiser shall indemnify, defend, and hold harmless Vue Demo, its affiliates, and its employees against any and all claims, losses, damages, liabilities, penalties, costs, and expenses (including reasonable attorneys’ fees) arising from or relating to:",
+    "cn": "广告商应赔偿、辩护并使 Vue Demo、其关联公司及其员工免受因以下原因引起或与之相关的任何及所有索赔、损失、损害、责任、罚款、成本和费用（包括合理的律师费）的损害："
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(A) The content of the advertisements;",
+    "cn": "(A) 广告内容；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(B) The content and compliance of any linked or redirected pages;",
+    "cn": "(B) 任何链接或重定向页面的内容和合规性；"
+  },
+  {
+    "tags": "p",
+    "class":"FDot",
+    "en": "(C) Any allegations, investigations, or actions by governmental or regulatory authorities related to the advertisements or redirection links.",
+    "cn": "(C) 政府或监管机构就广告或重定向链接提出的任何指控、调查或行动。"
+  },
+  {
+    "tags": "h4",
+    "en": "8.4 Right to Refuse, Suspend, or Terminate",
+    "cn": "8.4 拒绝、暂停或终止的权利"
+  },
+  {
+    "tags": "h5",
+    "en": "Vue Demo has the absolute right to:",
+    "cn": "Vue Demo 拥有绝对的权利："
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(A) Refuse any payment;",
+    "cn": "(A) 拒绝任何付款；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(B) Freeze any funds received;",
+    "cn": "(B) 冻结任何收到的资金；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(C) Suspend the provision of Services;",
+    "cn": "(C) 暂停提供服务；"
+  },
+  {
+    "tags": "h5",
+    "en": "if, at any time, Vue Demo has reasonable grounds to believe that:",
+    "cn": "如果 Vue Demo 在任何时候有合理理由相信："
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(A) The Advertiser has provided false, misleading, or incomplete information;",
+    "cn": "(A) 广告商提供了虚假、误导性或不完整的信息；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(B) The funds are suspicious in origin;",
+    "cn": "(B) 资金来源可疑；"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "(C) The Advertiser fails to provide requested KYC information or fails to pass any compliance checks.",
+    "cn": "(C) 广告商未能提供所要求的 KYC 信息或未能通过任何合规检查。"
+  },
+  {
+    "tags": "h3",
+    "en": "Article 9: Governing Law and Arbitration",
+    "cn": "第 9 条：管辖法律和仲裁"
+  },
+  {
+    "tags": "h4",
+    "en": "9.1 Governing Law",
+    "cn": "9.1 管辖法律"
+  },
+  {
+    "tags": "p",
+    "en": "This Agreement and any non-contractual obligations arising out of or in connection with it shall be governed by and construed in accordance with the laws of the Hong Kong Special Administrative Region.",
+    "cn": "本协议以及由此产生或与之相关的任何非合同义务应受香港特别行政区法律管辖并按其解释。"
+  },
+  {
+    "tags": "h4",
+    "en": "9.2 Arbitration",
+    "cn": "9.2 仲裁"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "Any dispute, controversy, or claim arising out of or relating to this Agreement (including contractual, tortious, or validity questions) shall be finally resolved by arbitration administered by the Hong Kong International Arbitration Centre (HKIAC) under its rules in force at the time of arbitration.",
+    "cn": "因本协议引起或与之相关的任何争议、纠纷或索赔（包括合同、侵权或有效性问题）应最终由香港国际仲裁中心（HKIAC）根据其在仲裁时生效的规则进行仲裁解决。"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "The seat of arbitration shall be Hong Kong. The proceedings shall be confidential.",
+    "cn": "仲裁地应为香港。仲裁程序应保密。"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "The arbitral award shall be final and binding on all parties.",
+    "cn": "仲裁裁决对所有方均具有终局性和约束力。"
+  },
+  {
+    "tags": "h3",
+    "en": "Article 10: General Provisions",
+    "cn": "第 10 条：一般规定"
+  },
+  {
+    "tags": "h4",
+    "en": "10.1 Severability",
+    "cn": "10.1 可分割性"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "If any one or more of the provisions of this Agreement (including sentences, paragraphs, or any parts thereof) are for any reason held to be invalid or unenforceable, they shall not affect the validity or enforceability of the remaining provisions.",
+    "cn": "如果本协议的任何一项或多项条款（包括句子、段落或任何部分）因任何原因被认定为无效或不可执行，它们不应影响其余条款的有效性或可执行性。"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "The invalid, illegal, or unenforceable provision(s) shall be replaced by a valid, legal, and enforceable provision or provisions that come closest to the intent of the parties underlying the invalid, illegal, or unenforceable provision(s), even if the parties do not take any other separate measures.",
+    "cn": "无效、非法或不可执行的条款应由最接近各方在无效、非法或不可执行条款下的意图的有效、合法和可执行的条款替代，即使各方未采取任何其他单独措施。"
+  },
+  {
+    "tags": "h4",
+    "en": "10.2 Amendment",
+    "cn": "10.2 修订"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "Any amendment or modification to this Agreement shall become effective immediately upon their publication on the Vue Demo platform.",
+    "cn": "本协议的任何修订或修改应在 Vue Demo 平台发布后立即生效。"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "The User’s continued use of the Services after such publication shall constitute acceptance of the modified terms.",
+    "cn": "用户在此类发布后继续使用服务应构成对修改条款的接受。"
+  },
+  {
+    "tags": "h4",
+    "en": "10.3 Entire Agreement",
+    "cn": "10.3 完整协议"
+  },
+  {
+    "tags": "p",
+    "en": "Unless agreed or specified otherwise, this Agreement contains and constitutes the entire agreement between the Parties with regard to the contents of this Agreement and supersedes any and all previous agreements, understandings, and negotiations.",
+    "cn": "除非另有约定或规定，本协议包含并构成双方之间就本协议内容达成的完整协议，并取代任何及所有先前的协议、谅解和谈判。"
+  },
+  {
+    "tags": "h4",
+    "en": "10.4 Independent Contractor",
+    "cn": "10.4 独立承包商"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "The relationship of the Parties is that of independent contractors. Neither Party is an agent of the other.",
+    "cn": "各方的关系是独立承包商关系。任何一方都不是另一方的代理人。"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "Neither Party has or shall represent to a third party that the Party has the power or authority to represent, act for, bind, or otherwise create or assume any obligation on behalf of the other Party for any purpose whatsoever.",
+    "cn": "任何一方均无权或不应向第三方声称其拥有代表、代理、约束或以其他方式为任何目的为另一方创建或承担任何义务的权力或授权。"
+  },
+  {
+    "tags": "h4",
+    "en": "10.5 Force Majeure",
+    "cn": "10.5 不可抗力"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "Notwithstanding any other provision of this Agreement, any default, delay, or failure to perform on the part of either Party shall not be considered a breach of this Agreement if such default, delay, or failure to perform is shown to be due entirely to causes beyond the reasonable control of the Party charged with such default, delay, or failure, including general strikes, lockouts or other labor disputes, riots, civil disturbances, actions or inactions of governmental authorities, hackings, epidemics, war, embargoes, severe weather, fire, earthquake, and acts of God.",
+    "cn": "尽管本协议有任何其他规定，任何一方的任何违约、延迟或未能履行不应被视为违反本协议，如果此类违约、延迟或未能履行被证明完全是由于超出该方合理控制范围的原因造成的，包括总罢工、停工或其他劳资纠纷、骚乱、内乱、政府当局的作为或不作为、黑客攻击、流行病、战争、禁运、恶劣天气、火灾、地震和天灾。"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "The affected Party shall use reasonable efforts, under the circumstances, to notify the other Party of the circumstances causing the delay and to resume performance as soon as practicable.",
+    "cn": "受影响方应在情势允许的情况下尽合理努力通知另一方导致延迟的情况，并尽快恢复履行。"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "If such default, delay, or failure continues for more than thirty (30) consecutive days, the other Party shall have the right to terminate this Agreement.",
+    "cn": "如果此类违约、延迟或未能履行持续超过连续三十 (30) 天，另一方有权终止本协议。"
+  },
+  {
+    "tags": "h4",
+    "en": "10.6 Notice",
+    "cn": "10.6 通知"
+  },
+  {
+    "tags": "p",
+    "en": "Any notice or communication required or permitted under this Agreement shall be sufficiently given if delivered in person or by certified mail, return receipt requested, to the address set forth in the opening paragraph or to the business email addresses used by either party, or to such other address as one party may have furnished to the other in writing.",
+    "cn": "本协议要求或允许的任何通知或通信，如果亲手递交或通过挂号信（要求回执）发送至开篇段落中列出的地址或双方使用的业务电子邮件地址，或一方书面通知另一方的其他地址，则应视为已充分送达。"
+  },
+  {
+    "tags": "h4",
+    "en": "10.7 Waiver of Contractual Right",
+    "cn": "10.7 合同权利的放弃"
+  },
+  {
+    "tags": "p",
+    "en": "The failure of either party to enforce any provision of this Agreement shall not be construed as a waiver or limitation of that party's right to subsequently enforce and compel strict compliance with every provision of this Agreement.",
+    "cn": "任何一方未能执行本协议的任何条款，不应被解释为放弃或限制该方随后执行并强制严格遵守本协议所有条款的权利。"
+  },
+  {
+    "tags": "h3",
+    "en": "Article 11: Payment Terms",
+    "cn": "第 11 条：付款条款"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "The specific payment methods, schedules, and related financial arrangements shall be agreed upon by Vue Demo, Advertiser, and Publisher.",
+    "cn": "具体的付款方式、时间表和相关财务安排应由 Vue Demo、广告商和发布商商定。"
+  },
+  {
+    "tags": "p",
+	"class":"FDot",
+    "en": "Vue Demo shall have no obligation to commence any Service until the Advertiser has made the required payment(s).",
+    "cn": "在广告商支付所需款项之前，Vue Demo 没有义务开始任何服务。"
+  },
+  {
+    "tags": "h3",
+    "en": "Article 12: Effectiveness and Acceptance",
+    "cn": "第 12 条：生效和接受"
+  },
+  {
+    "tags": "p",
+    "en": "By accessing or using the Vue Demo Platform, the User is deemed to have read, understood, and agreed to be bound by all terms and conditions set forth herein.",
+    "cn": "通过访问或使用 Vue Demo 平台，用户被视为已阅读、理解并同意受此处规定的所有条款和条件的约束。"
+  },
+  {
+    "tags": "h5",
+    "en": "Date: Aug 9, 2025",
+    "cn": "日期：2025 年 08 月 09 日"
+  }
+]

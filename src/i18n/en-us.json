@@ -1,0 +1,45 @@
+{
+  "lan": {
+    "change": "点击切换为中文",
+    "colon": ": ",
+    "point": "!",
+    "comma": ", ",
+    "language": "Language"
+  },
+  "checkStatus": {
+    "400": "Request failed, Please try again later!",
+    "401": "Login invalid, Please log in again!",
+    "403": "No Permissions!",
+    "404": "Resources does not exist!",
+    "405": "Wrong request method, Please try again later!",
+    "408": "Request timed out, Please try again later",
+    "500": "Exceptional service!",
+    "502": "Gateway error!",
+    "503": "Service is not available!",
+    "504": "Gateway timeout!",
+    "errorCode": "Error Code",
+    "default": "The system network is busy, please try again later!"
+  },
+  "info": {
+    "ok": "Success",
+    "err": "Error",
+    "info": "Info",
+    "fail": "Fail",
+    "warning": "Warning",
+    "statusValidEdit": "Not Editable In Current State"
+  },
+  "btn": {
+    "add": "Add ",
+    "confirm": "Confirm",
+    "cancel": "Cancel ",
+    "edit": "Edit",
+    "delete": "Delete",
+    "reset": "Reset",
+    "copy": "Copy",
+    "download": "Download"
+  },
+  "inject": {
+    "404": "Oops, the page is lost ~",
+    "backHome": "Go Home"
+  }
+}
