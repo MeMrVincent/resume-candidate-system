@@ -233,6 +233,45 @@ class CandidateRepository {
     return candidateId;
   }
 
+  getById(id) {
+    const db = this.dbManager.getDb();
+    const profileRes = db.exec('SELECT * FROM candidate_profiles WHERE id = ?;', [id]);
+    if (profileRes.length === 0 || !profileRes[0].values || profileRes[0].values.length === 0) {
+      return null;
+    }
+    const columns = profileRes[0].columns;
+    const values = profileRes[0].values[0];
+    const profile = {};
+    columns.forEach((col, idx) => {
+      profile[col] = values[idx];
+    });
+
+    const getSubTable = (tableName) => {
+      const res = db.exec(`SELECT * FROM ${tableName} WHERE candidate_id = ?;`, [id]);
+      if (res.length === 0 || !res[0].values) return [];
+      const cols = res[0].columns;
+      return res[0].values.map(row => {
+        const item = {};
+        cols.forEach((c, i) => item[c] = row[i]);
+        return item;
+      });
+    };
+
+    return {
+      profile,
+      contacts: getSubTable('candidate_contacts'),
+      expectations: getSubTable('candidate_expectations'),
+      workExperiences: getSubTable('candidate_work_experiences'),
+      educations: getSubTable('candidate_educations'),
+      projects: getSubTable('candidate_projects'),
+      trainings: getSubTable('candidate_trainings'),
+      languages: getSubTable('candidate_languages'),
+      certificates: getSubTable('candidate_certificates'),
+      skills: getSubTable('candidate_skills'),
+      communications: getSubTable('candidate_communications'),
+    };
+  }
+
   count() {
     const db = this.dbManager.getDb();
     const res = db.exec('SELECT COUNT(*) as count FROM candidate_profiles;');

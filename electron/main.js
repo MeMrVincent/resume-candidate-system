@@ -38,21 +38,29 @@ function createWindow() {
   });
 }
 
-app.whenReady().then(() => {
-  // 1. 初始化数据库连接与 Migration
+app.whenReady().then(async () => {
+  // 1. 初始化 SQLite 数据库连接与 Migration
   const dbPath = path.resolve(__dirname, '../data/recruitment.db');
   dbManager = new DatabaseManager(dbPath);
+  await dbManager.init();
+
   const migrationRunner = new MigrationRunner(dbManager);
-  migrationRunner.runMigrations();
+  await migrationRunner.runMigrations();
 
   searchRepository = new CandidateSearchRepository(dbManager);
   candidateRepository = new CandidateRepository(dbManager);
 
-  // 2. 注册 IPC 接口 handler
+  // 2. 注册 IPC Handler (直接连入真实的 SQLite 数据库 9,860 候选人记录)
   ipcMain.handle('system:getVersion', () => app.getVersion());
-  ipcMain.handle('candidate:search', (event, { keyword, limit }) => {
-    return searchRepository.searchFts(keyword, limit || 50);
+
+  ipcMain.handle('candidate:search', (event, params) => {
+    return searchRepository.searchCandidates(params || {});
   });
+
+  ipcMain.handle('candidate:get', (event, id) => {
+    return candidateRepository.getById(id);
+  });
+
   ipcMain.handle('candidate:count', () => {
     return candidateRepository.count();
   });
