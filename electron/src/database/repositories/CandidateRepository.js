@@ -225,6 +225,17 @@ class CandidateRepository {
       });
     }
 
+    if (Array.isArray(snapshot.resumeVariants)) {
+      snapshot.resumeVariants.forEach((rv) => {
+        db.run(
+          `INSERT INTO candidate_resume_variants (
+            candidate_id, resume_language, content_json, created_at, updated_at
+          ) VALUES (?, ?, ?, ?, ?);`,
+          [candidateId, rv.resume_language || 'zh', rv.content_json || '{}', now, now]
+        );
+      });
+    }
+
     db.run(
       `INSERT OR REPLACE INTO candidate_search_documents (candidate_id, raw_text, updated_at) VALUES (?, ?, ?);`,
       [candidateId, rawText || '', now]

@@ -76,10 +76,16 @@ class CandidateImportService {
     const skills = [];
     const trainings = [];
     const projects = [];
+    const resumeVariants = [];
 
     const resumes = Array.isArray(sData.resumes) ? sData.resumes : [];
     resumes.forEach((r) => {
       const lang = r.resume_language || 'zh';
+
+      resumeVariants.push({
+        resume_language: lang,
+        content_json: JSON.stringify(r),
+      });
 
       if (Array.isArray(r.work_experiences)) {
         r.work_experiences.forEach((w) => {
@@ -152,6 +158,21 @@ class CandidateImportService {
           });
         });
       }
+
+      if (Array.isArray(r.expected_list)) {
+        r.expected_list.forEach((ex) => {
+          expectations.push({
+            expected_city: ex.expected_city || '',
+            expected_position: ex.expected_position || '',
+            expected_industry: ex.expected_industry || '',
+            expected_salary_text: ex.expected_salary || '',
+            expected_annual_salary_min: ex.expected_annual_salary_min || null,
+            expected_annual_salary_max: ex.expected_annual_salary_max || null,
+            expected_employment_type: ex.expected_employment_type || '',
+            expected_start_date: ex.expected_start_date || '',
+          });
+        });
+      }
     });
 
     const snapshot = {
@@ -165,6 +186,7 @@ class CandidateImportService {
       languages,
       certificates,
       skills,
+      resumeVariants,
     };
 
     let rawText = jsonObj.raw_text;
