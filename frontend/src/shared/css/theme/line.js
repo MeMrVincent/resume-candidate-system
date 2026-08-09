@@ -1,0 +1,28 @@
+// export type AsideThemeType = "light" | "inverted" | "dark";
+export const Theme = {
+  light: {
+    '--el-color-primary': '#00c44a',
+    '--el-color-primary-light-3': '#4dd680',
+    '--el-color-primary-light-5': '#80e2a5',
+    '--el-color-primary-light-7': '#b3edc9',
+    '--el-color-primary-light-8': '#ccf3db',
+    '--el-color-primary-light-9': '#e6f9ed',
+    '--el-color-primary-dark-2': '#009d3b',
+    '--el-color-light': '#d3f8e2',
+    '--el-color-danger': '#fe3b3b',
+    '--el-color-gray': '#bfbfbf',
+    '--el-color-white': '#fff',
+    '--el-color-black': '#000',
+    '--el-input-text-color': '#333',
+    '--el-color-success': '#1a73e8',
+    '--el-color-success-light-3': '#5f9def',
+    '--el-color-success-light-5': '#8db9f4',
+    '--el-color-success-light-7': '#bad5f8',
+    '--el-color-success-light-8': '#d1e3fa',
+    '--el-color-success-light-9': '#e8f1fd',
+    '--el-color-success-dark-2': '#155cba',
+    '--el-color-warning': '#f38f00',
+    '--el-border-radius-base': '8px',
+    '--el-border-color': '#aeaeae',
+  },
+};

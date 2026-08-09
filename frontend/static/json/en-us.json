@@ -1,0 +1,15 @@
+{
+  "wallet": {
+    "connected": "Connected: ",
+    "disconnected": "Disconnected: ",
+    "connect": "Connect Wallet",
+    "disconnect": "Disconnect",
+    "reCharge": "Recharge",
+    "amount": " Amount",
+    "NotEnoughWalletMoney": "Your currently connected wallet has insufficient available balance!",
+    "NotEnoughETH": "Not Enough ETH !",
+    "userCanceled": "You have rejected the transaction !",
+    "rechargeOk": "Recharge Successfully!",
+    "rechargeFail": "Recharge Failed!"
+  }
+}

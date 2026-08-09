@@ -1,0 +1,15 @@
+{
+  "wallet": {
+    "connected": "已连接：",
+    "disconnected": "未连接：",
+    "connect": "连接钱包",
+    "disconnect": "断开连接",
+    "reCharge": "充值",
+    "amount": "金额",
+    "NotEnoughWalletMoney": "您当前已连接的钱包可用余额不足！",
+    "NotEnoughETH": "GAS费不足！",
+    "userRejected": "您已取消充值！",
+    "rechargeOk": "充值成功！",
+    "rechargeFail": "充值失败！"
+  }
+}
