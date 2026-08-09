@@ -1,12 +1,12 @@
 # 猎头招聘管理系统 (Recruitment System)
 
-基于 Electron + Vue 3 + TypeScript + SQLite 的本地桌面端猎头 CRM / ATS 招聘管理系统。
+基于 Electron + Vue 3 + JavaScript + SQLite 的本地桌面端猎头 CRM / ATS 招聘管理系统。
 
 ## 🛠️ 技术栈
 
 - **Desktop Framework**: Electron, Node.js
 - **Frontend Framework**: Vue 3 (Composition API), Vite, Vue Router, Pinia
-- **Language**: TypeScript
+- **Language**: JavaScript (ES6+)
 - **Database**: SQLite (via `better-sqlite3`), FTS5 全文搜索
 
 ## 📋 架构规划

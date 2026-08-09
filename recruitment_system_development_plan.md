@@ -29,7 +29,7 @@
 - `raw_text` 已包含该候选人现有简历中的可搜索文本，用于全文搜索。
 - 第一阶段不再重新解析 Word / PDF / Excel / HTML。
 - 正式应用使用 **Electron + SQLite**。
-- 前端使用 **Vue 3 + TypeScript**。
+- 前端使用 **Vue 3 + JavaScript**。
 - 表名前缀按业务域统一：
   - `candidate_`：候选人域
   - `position_`：职位域
@@ -102,7 +102,7 @@ Offer
 ```text
 Desktop
 ├── Electron
-├── TypeScript
+├── JavaScript (ES6+)
 ├── Vue 3
 ├── Vue Router
 ├── Pinia
@@ -394,11 +394,15 @@ FULL REBUILD
 CandidateRawTextBuilder
 ```
 
-建议接口：
+建议接口与规范：
 
-```ts
-export interface CandidateRawTextBuilder {
-  build(snapshot: CandidateFullSnapshot): string;
+```js
+class CandidateRawTextBuilder {
+  /**
+   * @param {Object} snapshot - CandidateFullSnapshot 对象
+   * @returns {string} rawText 文档
+   */
+  build(snapshot) {}
 }
 ```
 
@@ -406,8 +410,8 @@ export interface CandidateRawTextBuilder {
 
 完整数据由：
 
-```ts
-CandidateRepository.getFullSnapshot(candidateId)
+```js
+candidateRepository.getFullSnapshot(candidateId)
 ```
 
 提供。
@@ -416,22 +420,23 @@ CandidateRepository.getFullSnapshot(candidateId)
 
 ## 5.5 CandidateFullSnapshot
 
-建议：
+建议快照结构：
 
-```ts
-interface CandidateFullSnapshot {
-  profile: CandidateProfile;
-  contacts: CandidateContact[];
-  expectations: CandidateExpectation[];
-  workExperiences: CandidateWorkExperience[];
-  educations: CandidateEducation[];
-  projects: CandidateProject[];
-  trainings: CandidateTraining[];
-  languages: CandidateLanguage[];
-  certificates: CandidateCertificate[];
-  skills: CandidateSkill[];
-  resumeVariants: CandidateResumeVariant[];
-  communications: CandidateCommunication[];
+```js
+// CandidateFullSnapshot 数据结构
+{
+  profile: {},           // CandidateProfile 候选人基础信息
+  contacts: [],          // CandidateContact[] 联系方式列表
+  expectations: [],      // CandidateExpectation[] 求职意向
+  workExperiences: [],  // CandidateWorkExperience[] 工作经历
+  educations: [],        // CandidateEducation[] 教育经历
+  projects: [],          // CandidateProject[] 项目经历
+  trainings: [],         // CandidateTraining[] 培训经历
+  languages: [],         // CandidateLanguage[] 语言能力
+  certificates: [],      // CandidateCertificate[] 证书
+  skills: [],            // CandidateSkill[] 技能
+  resumeVariants: [],    // CandidateResumeVariant[] 其他多语言简历快照
+  communications: []     // CandidateCommunication[] 沟通记录
 }
 ```
 
@@ -2297,20 +2302,14 @@ CandidateService
 
 建议统一：
 
-```ts
-private mutateCandidate<T>(
-  candidateId: number,
-  mutation: () => T
-): T
+```js
+mutateCandidate(candidateId, mutation)
 ```
 
 伪代码：
 
-```ts
-private mutateCandidate<T>(
-  candidateId: number,
-  mutation: () => T
-): T {
+```js
+mutateCandidate(candidateId, mutation) {
   const result = this.db.transaction(() => {
     const value = mutation();
 
@@ -2510,21 +2509,22 @@ status = open
 
 ## 25.1 MatchEngine 输出
 
-```ts
-interface MatchResult {
-  score: number;
+```js
+// MatchResult 数据结构
+{
+  score: 85.5,             // 综合匹配得分
 
-  keywordScore: number;
-  skillScore: number;
-  experienceScore: number;
-  educationScore: number;
-  languageScore: number;
-  industryScore: number;
-  locationScore: number;
+  keywordScore: 90,        // 关键词得分
+  skillScore: 80,          // 技能得分
+  experienceScore: 85,     // 经验得分
+  educationScore: 90,      // 学历得分
+  languageScore: 80,       // 语言得分
+  industryScore: 85,       // 行业得分
+  locationScore: 100,      // 工作地点得分
 
-  reasons: MatchReason[];
+  reasons: [],             // MatchReason[] 匹配原因明细
 
-  algorithmVersion: string;
+  algorithmVersion: '1.0'  // 算法版本号
 }
 ```
 
@@ -2957,79 +2957,79 @@ Offer
 src/
 │
 ├── main/
-│   ├── index.ts
+│   ├── index.js
 │   │
 │   ├── database/
-│   │   ├── Database.ts
-│   │   ├── MigrationRunner.ts
+│   │   ├── Database.js
+│   │   ├── MigrationRunner.js
 │   │   ├── migrations/
 │   │   │   ├── 001_initial.sql
 │   │   │   ├── 002_candidate_search_fts.sql
 │   │   │   └── ...
 │   │   │
 │   │   └── repositories/
-│   │       ├── CandidateRepository.ts
-│   │       ├── CandidateSearchRepository.ts
-│   │       ├── CandidateCommunicationRepository.ts
-│   │       ├── PositionRepository.ts
-│   │       ├── PositionCandidateRepository.ts
-│   │       ├── CustomerRepository.ts
-│   │       ├── JobRepository.ts
-│   │       └── SettingsRepository.ts
+│   │       ├── CandidateRepository.js
+│   │       ├── CandidateSearchRepository.js
+│   │       ├── CandidateCommunicationRepository.js
+│   │       ├── PositionRepository.js
+│   │       ├── PositionCandidateRepository.js
+│   │       ├── CustomerRepository.js
+│   │       ├── JobRepository.js
+│   │       └── SettingsRepository.js
 │   │
 │   ├── services/
-│   │   ├── CandidateService.ts
-│   │   ├── CandidateImportService.ts
-│   │   ├── CandidateSearchService.ts
-│   │   ├── CandidateCommunicationService.ts
-│   │   ├── PositionService.ts
-│   │   ├── PositionCandidateService.ts
-│   │   ├── CustomerService.ts
-│   │   ├── MatchService.ts
-│   │   ├── JobService.ts
-│   │   └── BackupService.ts
+│   │   ├── CandidateService.js
+│   │   ├── CandidateImportService.js
+│   │   ├── CandidateSearchService.js
+│   │   ├── CandidateCommunicationService.js
+│   │   ├── PositionService.js
+│   │   ├── PositionCandidateService.js
+│   │   ├── CustomerService.js
+│   │   ├── MatchService.js
+│   │   ├── JobService.js
+│   │   └── BackupService.js
 │   │
 │   ├── candidate/
 │   │   └── search/
-│   │       ├── CandidateRawTextBuilder.ts
-│   │       └── CandidateRawTextNormalizer.ts
+│   │       ├── CandidateRawTextBuilder.js
+│   │       └── CandidateRawTextNormalizer.js
 │   │
 │   ├── matching/
-│   │   ├── MatchEngine.ts
-│   │   ├── MatchContext.ts
-│   │   ├── CandidateRecallService.ts
+│   │   ├── MatchEngine.js
+│   │   ├── MatchContext.js
+│   │   ├── CandidateRecallService.js
 │   │   ├── scorers/
-│   │   │   ├── KeywordScorer.ts
-│   │   │   ├── SkillScorer.ts
-│   │   │   ├── ExperienceScorer.ts
-│   │   │   ├── EducationScorer.ts
-│   │   │   ├── LanguageScorer.ts
-│   │   │   ├── IndustryScorer.ts
-│   │   │   └── LocationScorer.ts
+│   │   │   ├── KeywordScorer.js
+│   │   │   ├── SkillScorer.js
+│   │   │   ├── ExperienceScorer.js
+│   │   │   ├── EducationScorer.js
+│   │   │   ├── LanguageScorer.js
+│   │   │   ├── IndustryScorer.js
+│   │   │   └── LocationScorer.js
 │   │   └── rules/
 │   │
 │   ├── workers/
-│   │   ├── worker.ts
-│   │   ├── MatchCandidateWorker.ts
-│   │   └── MatchPositionWorker.ts
+│   │   ├── worker.js
+│   │   ├── MatchCandidateWorker.js
+│   │   └── MatchPositionWorker.js
 │   │
 │   └── ipc/
-│       ├── candidate.ipc.ts
-│       ├── candidateSearch.ipc.ts
-│       ├── communication.ipc.ts
-│       ├── position.ipc.ts
-│       ├── match.ipc.ts
-│       ├── customer.ipc.ts
-│       ├── job.ipc.ts
-│       └── system.ipc.ts
+│       ├── candidate.ipc.js
+│       ├── candidateSearch.ipc.js
+│       ├── communication.ipc.js
+│       ├── position.ipc.js
+│       ├── match.ipc.js
+│       ├── customer.ipc.js
+│       ├── job.ipc.js
+│       └── system.ipc.js
 │
 ├── preload/
-│   ├── index.ts
+│   ├── index.js
 │   └── api/
-│       ├── candidate.ts
-│       ├── position.ts
-│       ├── customer.ts
-│       └── system.ts
+│       ├── candidate.js
+│       ├── position.js
+│       ├── customer.js
+│       └── system.js
 │
 ├── renderer/
 │   └── src/
@@ -3073,12 +3073,12 @@ Repository 只负责数据库读写。
 
 示例：
 
-```ts
+```js
 class CandidateRepository {
-  getById(id: number): CandidateProfile | null;
-  getFullSnapshot(id: number): CandidateFullSnapshot;
-  insertProfile(input: InsertCandidateProfile): number;
-  updateProfile(id: number, input: UpdateCandidateProfile): void;
+  getById(id) {}
+  getFullSnapshot(id) {}
+  insertProfile(input) {}
+  updateProfile(id, input) {}
 }
 ```
 
@@ -3160,7 +3160,7 @@ IPC Handler 不直接写 SQL。
 
 Renderer 使用：
 
-```ts
+```js
 window.recruitment.candidate.search(...)
 window.recruitment.candidate.get(...)
 window.recruitment.candidate.update(...)
@@ -3173,7 +3173,7 @@ window.recruitment.customer.create(...)
 
 不要暴露：
 
-```ts
+```js
 ipcRenderer
 fs
 path
@@ -3282,40 +3282,34 @@ MatchEngine 不能参与 Candidate 编辑事务。
 
 建议 DTO：
 
-```ts
-interface CandidateSearchInput {
-  keyword?: string;
-
-  city?: string[];
-
-  minDegreeRank?: number;
-
-  minWorkYears?: number;
-  maxWorkYears?: number;
-
-  currentCompany?: string;
-  currentPosition?: string;
-
-  languages?: string[];
-
-  candidateStatus?: string[];
-
-  page: number;
-  pageSize: number;
-
-  sortBy?: 'relevance' | 'updatedAt' | 'name';
-  sortDirection?: 'asc' | 'desc';
+```js
+// CandidateSearchInput
+{
+  keyword: '',
+  city: [],
+  minDegreeRank: 0,
+  minWorkYears: 0,
+  maxWorkYears: 0,
+  currentCompany: '',
+  currentPosition: '',
+  languages: [],
+  candidateStatus: [],
+  page: 1,
+  pageSize: 20,
+  sortBy: 'relevance', // 'relevance' | 'updatedAt' | 'name'
+  sortDirection: 'desc'
 }
 ```
 
 结果：
 
-```ts
-interface CandidateSearchResult {
-  total: number;
-  page: number;
-  pageSize: number;
-  items: CandidateListItem[];
+```js
+// CandidateSearchResult
+{
+  total: 0,
+  page: 1,
+  pageSize: 20,
+  items: []
 }
 ```
 
@@ -3357,21 +3351,22 @@ pagination
 
 一次返回：
 
-```ts
-interface CandidateDetail {
-  profile: CandidateProfile;
-  contacts: CandidateContact[];
-  expectations: CandidateExpectation[];
-  workExperiences: CandidateWorkExperience[];
-  educations: CandidateEducation[];
-  projects: CandidateProject[];
-  trainings: CandidateTraining[];
-  languages: CandidateLanguage[];
-  certificates: CandidateCertificate[];
-  skills: CandidateSkill[];
-  resumeVariants: CandidateResumeVariantSummary[];
-  communications: CandidateCommunication[];
-  positionRelations: CandidatePositionRelation[];
+```js
+// CandidateDetail 数据结构
+{
+  profile: {},
+  contacts: [],
+  expectations: [],
+  workExperiences: [],
+  educations: [],
+  projects: [],
+  trainings: [],
+  languages: [],
+  certificates: [],
+  skills: [],
+  resumeVariants: [],
+  communications: [],
+  positionRelations: []
 }
 ```
 
@@ -3381,13 +3376,15 @@ interface CandidateDetail {
 
 # 45. Position Detail API
 
-```ts
-interface PositionDetail {
-  position: PositionOpening;
-  requirements: PositionRequirement;
-  skills: PositionSkillRequirement[];
-  languages: PositionLanguageRequirement[];
-  keywords: PositionKeyword[];
+```js
+// PositionDetail 数据结构
+{
+  position: {},
+  requirements: {},
+  skills: [],
+  languages: [],
+  keywords: []
+}
 
   stageCounts: Record<PipelineStage, number>;
 }
@@ -3521,7 +3518,7 @@ IPC 能工作
 
 任务：
 
-- 初始化 Electron + Vue + TypeScript；
+- 初始化 Electron + Vue + JavaScript；
 - 建立 Main / Preload / Renderer；
 - 接入 better-sqlite3；
 - 建立 MigrationRunner；
@@ -3891,28 +3888,28 @@ Codex 开发时必须遵守：
 Codex 第一轮先创建：
 
 ```text
-src/main/database/Database.ts
-src/main/database/MigrationRunner.ts
+src/main/database/Database.js
+src/main/database/MigrationRunner.js
 
 src/main/database/migrations/001_initial.sql
 src/main/database/migrations/002_candidate_fts.sql
 
-src/main/database/repositories/CandidateRepository.ts
-src/main/database/repositories/CandidateSearchRepository.ts
+src/main/database/repositories/CandidateRepository.js
+src/main/database/repositories/CandidateSearchRepository.js
 
-src/main/services/CandidateImportService.ts
-src/main/services/CandidateService.ts
-src/main/services/CandidateSearchService.ts
+src/main/services/CandidateImportService.js
+src/main/services/CandidateService.js
+src/main/services/CandidateSearchService.js
 
-src/main/candidate/search/CandidateRawTextBuilder.ts
+src/main/candidate/search/CandidateRawTextBuilder.js
 
-src/main/ipc/candidate.ipc.ts
-src/main/ipc/candidateSearch.ipc.ts
+src/main/ipc/candidate.ipc.js
+src/main/ipc/candidateSearch.ipc.js
 
-src/preload/index.ts
+src/preload/index.js
 
-src/shared/types/candidate.ts
-src/shared/dto/candidate.ts
+src/shared/types/candidate.js
+src/shared/dto/candidate.js
 ```
 
 第一轮不要直接写 Position UI。
@@ -3923,7 +3920,7 @@ src/shared/dto/candidate.ts
 
 ```text
 Step 1
-Electron / Vue / TS 项目骨架
+Electron / Vue / JS 项目骨架
 
 Step 2
 Database + Migration
@@ -4167,7 +4164,7 @@ Customer：
 Codex 接到本文件后，第一项实际开发任务是：
 
 ```text
-建立 Electron + Vue + TypeScript 项目骨架
+建立 Electron + Vue + JavaScript 项目骨架
         ↓
 实现 SQLite Database / MigrationRunner
         ↓
