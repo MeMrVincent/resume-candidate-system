@@ -10,10 +10,11 @@ release/
 build/
 
 # Databases & local data
-*.db
+data/*.db
+!data/recruitment.db.example
+!data/.gitkeep
 *.sqlite
 *.sqlite3
-data/
 *.log
 
 # Logs & temp
