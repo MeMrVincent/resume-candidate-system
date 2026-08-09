@@ -43,8 +43,8 @@ class CandidateImportService {
       highest_degree_type: eduInfo.school_degree_type || '',
       highest_degree_rank: eduInfo.school_degree_rank || null,
       personal_summary: baseInfo.pr || '',
-      resume_updated_date: jsonObj.dates ? jsonObj.dates.resume_updated_date || '' : '',
-      resume_download_date: jsonObj.dates ? jsonObj.download_date || '' : '',
+      resume_updated_date: jsonObj.dates ? (jsonObj.dates.resume_updated_date || '') : '',
+      resume_download_date: jsonObj.dates ? (jsonObj.dates.resume_download_date || '') : '',
     };
 
     const contacts = [];
