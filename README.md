@@ -1,30 +1,42 @@
-# 猎头招聘管理系统 (Recruitment System)
+# Headhunting & Recruitment Candidate Management System
 
-基于 **Electron + Vue 3 + Webpack 5 + JavaScript + SQLite** 的本地桌面端猎头 CRM / ATS 招聘管理系统。
+> **Branch Notice / 分支说明 / ブランチのご案内**  
+> 
+> The codebase and releases for Version 1 are maintained on the [**V1 Branch**](https://github.com/MeMrVincent/resume-candidate-system/tree/V1).  
+> 本项目 V1 版本的完整业务代码、三语技术文档与发布版本均维护在 [**V1 分支**](https://github.com/MeMrVincent/resume-candidate-system/tree/V1)。  
+> 本プロジェクトの V1 バージョンの完全なソースコード、3言語技術仕様書、およびリリースは [**V1 ブランチ**](https://github.com/MeMrVincent/resume-candidate-system/tree/V1) にて管理されています。
 
-## 📁 目录架构说明
+---
 
-```text
-code/
-├── electron/                                # Electron 桌面端主进程项目
-│   ├── main.js                              # Electron 主进程入口 (SQLite / Window / IPC)
-│   ├── preload.js                           # Preload 受控 API 桥接层
-│   └── package.json                         # Electron 主进程依赖配置
-│
-├── frontend/                                # Vue 3 + Webpack 5 前端渲染层项目
-│   ├── build/                               # Webpack 5 构建配置 (dev, prod, common, builder)
-│   ├── config/                              # 环境与服务配置文件
-│   ├── src/                                 # 前端应用源码 (Vue 3, Router, Pinia, Element Plus, i18n, Stores, Utils)
-│   ├── static/                              # 静态资源
-│   └── package.json                         # 前端项目依赖配置 (已升级至最新，无 Web3 包)
-│
-├── recruitment_system_development_plan.md   # 系统详细开发规划与数据库设计权威说明
-├── .gitignore                               # Git 忽略规则
-└── README.md                                # 项目说明文档
+## Direct Links / 快速跳转 / クイックリンク
+
+- **V1 Branch / V1 分支 / V1 ブランチ**:  
+  [https://github.com/MeMrVincent/resume-candidate-system/tree/V1](https://github.com/MeMrVincent/resume-candidate-system/tree/V1)
+
+- **V1 Documentation / V1 架构规划与说明文档**:
+  - [English Specification](https://github.com/MeMrVincent/resume-candidate-system/blob/V1/recruitment_system_development_plan.md)
+  - [简体中文设计规划](https://github.com/MeMrVincent/resume-candidate-system/blob/V1/recruitment_system_development_plan.cn.md)
+  - [日本語設計仕様書](https://github.com/MeMrVincent/resume-candidate-system/blob/V1/recruitment_system_development_plan.ja.md)
+
+---
+
+## Clone and Switch to V1 / 克隆与切换至 V1 分支
+
+```bash
+# Clone repository
+git clone https://github.com/MeMrVincent/resume-candidate-system.git
+
+# Navigate to project directory
+cd resume-candidate-system
+
+# Switch to V1 branch
+git checkout V1
 ```
 
-## 🛠️ 技术栈
+---
 
-- **Desktop Host**: Electron, Node.js, SQLite (`better-sqlite3`)
-- **Frontend Stack**: Vue 3 (Composition API), Webpack 5, Vue Router, Pinia, Element Plus, Axios, i18n
-- **Language**: JavaScript (ES6+)
+## AI Engineering Credits / AI 研发贡献致谢
+
+- **Google DeepMind Antigravity**: Architecture design, full i18n implementation, trilingual documentation, and Git release operations.
+- **OpenAI Codex**: Foundation data transformation, cross-language resume merging, and schema scaffolding.
+- **Anthropic Claude**: System testing and verification.

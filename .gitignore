@@ -8,11 +8,12 @@ dist-electron/
 out/
 release/
 build/
+*.d.ts
 
 # Databases & local data
-data/*.db
-!data/recruitment.db.example
-!data/.gitkeep
+data/
+backups/
+*.db
 *.sqlite
 *.sqlite3
 *.log
@@ -29,9 +30,7 @@ pnpm-debug.log*
 .env
 .env.local
 .env.*.local
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
+.vscode/
 .idea/
 *.suo
 *.ntvs*
