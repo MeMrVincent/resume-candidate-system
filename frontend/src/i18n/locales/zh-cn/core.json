@@ -1,0 +1,51 @@
+{
+  "lan": {
+    "input": "请输入",
+    "select": "请选择",
+    "all": "全部",
+    "operate": "操作",
+    "colon": "：",
+    "createdTime": "创建时间",
+    "updatedTime": "更新时间",
+    "status": "状态",
+    "language": "语言",
+    "empty": "暂无数据",
+    "none": "--"
+  },
+  "btn": {
+    "search": "查询",
+    "reset": "重置",
+    "create": "新建",
+    "edit": "编辑",
+    "delete": "删除",
+    "detail": "详情",
+    "confirm": "确定",
+    "cancel": "取消",
+    "save": "保存",
+    "back": "返回",
+    "add": "添加"
+  },
+  "menu": {
+    "company": "公司管理",
+    "position": "职位管理",
+    "candidate": "候选人管理",
+    "home": "首页",
+    "systemName": "猎头招聘管理系统",
+    "candidateImport": "候选人导入"
+  },
+  "message": {
+    "saveSuccess": "保存成功",
+    "deleteSuccess": "删除成功",
+    "confirmTitle": "提示",
+    "deleteConfirm": "确定要删除吗？"
+  },
+  "errorCode": {
+    "VALIDATION": "参数不合法",
+    "NOT_FOUND": "数据不存在",
+    "DUPLICATE": "数据重复",
+    "IN_USE": "数据正在被使用，无法删除",
+    "INVALID_TRANSITION": "当前状态不允许此操作",
+    "INTERNAL_ERROR": "系统内部错误",
+    "PRELOAD_UNAVAILABLE": "无法连接主进程，请在桌面程序中打开"
+  }
+}

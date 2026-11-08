@@ -1,2952 +1,1033 @@
-# Headhunting & Recruitment Management System - Development Plan & Database Design
+# Headhunting & Recruitment Management System V2 - Development Plan & Complete Functional Specifications
 
 > **Language Navigation / 语言导航 / 言語ナビゲーション**  
 > **English** | [简体中文](recruitment_system_development_plan.cn.md) | [日本語](recruitment_system_development_plan.ja.md)
 
 ---
 
-**Document Version**: 1.1  
-**Date**: 2026-08-10  
-**Target Audience**: Codex / Antigravity / Developers  
-**System Form Factor**: Local Electron Desktop Application  
-**Current Phase**: Candidate data parsing, cleaning, cross-language merging, and `raw_text` construction are completed; officially transitioning to the Electron + Frontend + SQLite development phase.
+**Document Version**: 2.0.0  
+**Updated Date**: 2026-11-08  
+**Target Audience**: Codex / Antigravity / Full-Stack Engineering Team  
+**System Form Factor**: Enterprise-Grade Local Offline Electron Desktop Application  
+**Core Technology Baseline**: Electron 45.2.3 + better-sqlite3 13.0.3 + SQLite 3.53.4 (WAL mode) + Vue 3.5.45 + Element Plus 2.14.8 + vue-i18n 11.4.18  
+**Current Milestone Status**:
+- **Phase 1 (Candidate Core Talent Pool)**: 9,860 cleaned JSON profiles, cross-language resume merging, and SQLite FTS5 trigram search fully operational.
+- **Phase 2 (Position Openings & ATS Pipeline Match Flow)**: Job openings, decision vs stage decoupling, multi-round interview logs, offer & guarantee period placements, and 3 real-time SQL analytical views fully implemented.
+- **Phase 3 (Client Company CRM)**: Full-stack implementation of client company profiles, multi-contact directory, cascading soft-delete protection, and dedicated Vue 3 views.
+- **Engineering & Quality Assurance**: All 24/24 backend automated unit/integration tests passing; native Electron Builder packaging pipeline (NSIS / Portable / Unpacked) fully operational.
 
 ---
 
-## 0. Document Purpose and Priority
+## 0. Version Evolution: Key Differences (V1 vs V2)
 
-This document serves as the authoritative specification after transitioning from the "Data Conversion Phase" to the "Business System Development Phase".
+Compared to Version 1.0, Version 2.0 represents a major architectural and business evolution:
 
-Follow the following priorities during development:
+### 0.1 Comprehensive Evolution Matrix
 
-1. Conventions marked as **MUST / MANDATORY / FORBIDDEN** in this document.
-2. The finalized candidate JSON data structure.
-3. Rules from the original project `CONTEXT.md` dated 2026-08-02 onwards that are not overridden by this document.
-4. Legacy parsing scripts, legacy MySQL / PHP / Alibaba Cloud plans are purely historical references and shall not serve as architectural baselines.
-
-### 0.1 Confirmed Facts
-
-- All historical resume files have been parsed and converted.
-- Multi-source data for the same candidate has been consolidated and merged.
-- Multilingual resumes have been processed according to finalized business rules.
-- Candidate final JSONs already contain structured data.
-- Each candidate has pre-generated candidate-level `raw_text`.
-- `raw_text` includes all searchable text across all existing resume variants for full-text search.
-- Word / PDF / Excel / HTML parsing will not be re-executed in Phase 1.
-- Production application runs on **Electron + SQLite**.
-- Frontend stack uses **Vue 3 + JavaScript**.
-- Table prefixes are standardized by business domain:
-  - `candidate_`: Candidate Domain
-  - `position_`: Position Domain
-  - `company_`: Company Domain
-  - `system_`: System Infrastructure Domain
-
-> Note: Strictly use standard English spelling `position_`, never `postion_`.
-
-### 0.2 Implementation Decisions (as of 2026-08-10)
-
-- Production Runtime: Electron 43.3.0; Database Driver: `better-sqlite3` 13.0.3; in-memory `sql.js` is deprecated.
-- Database File Location: Development path is `code/data/recruitment.db`; packaged production path is `data/recruitment.db` located in the same directory as the executable.
-- Packaged installer includes a read-only template seed at `resources/seed/recruitment.db`. On first launch, it copies to the production location; an existing database is never overwritten.
-- Installer allows custom target drive selection; target directory must grant write permissions to the current Windows user to avoid read-only database locks.
-- The entire application directory is portable across disks; application updates must never overwrite `data/` or `backups/`.
-- Final JSON data source directory is injected via the `--source` CLI flag (currently `E:\resume-system\codex-complete-jsons\complete`) and must never be hardcoded into business services.
-- Successfully seeded 9,860 final candidate JSON records into the database: `candidate_profiles`, `candidate_import_records`, `candidate_search_documents`, and `candidate_search_fts` all contain exactly 9,860 rows.
-- Importer idempotency verified: secondary full scan resulted in 0 created, 9,860 skipped, and 0 failed.
-- Domain naming standardized to `candidate / position / company`; the term `customer` is deprecated.
-- Renderer does not use a monolithic global store for caching query results; pages invoke Electron services via modular domain APIs.
-- Mock fallback is strictly forbidden when Electron services fail; errors must be directly reported with full diagnostic telemetry.
-- Candidate list defaults to descending sort by `dates.sys_updated_date`; candidate age is dynamically computed from birth date and current date, never using static resume age.
-- Candidate detail drawer orchestrates component lifecycle; Profile, Work, Education, Skills, Languages, and Communications are isolated Vue components with independent update APIs.
-- Multilingual candidates default to Chinese master view; language toggle buttons are rendered only for versions that actually exist. Non-primary variants are loaded and updated independently via `candidate_resume_variants.content_json` without overwriting other language versions.
-- Communication logs represent candidate-level CRM events and are shared across all resume variants; all variants contribute collectively to the candidate's full-text search document.
-
-### 0.3 API and Service Naming Conventions
-
-All methods follow the `[BusinessEntity][Action]` pattern:
-
-```text
-candidatesSearch
-candidatesCount
-candidateGet
-candidateResumeGet
-candidateUpdate
-candidateCommunicationAdd
-candidateCommunicationUpdate
-candidateCommunicationDelete
-candidateWorkExperiencesUpdate
-candidateEducationsUpdate
-candidateSkillsUpdate
-candidateLanguagesUpdate
-candidateExpectationsUpdate
-```
-
-Architecture Layer Mapping:
-
-```text
-Vue Page
-  → candidateApi.candidatesSearch()
-  → window.electronApi.candidate.candidatesSearch()
-  → IPC candidate:candidatesSearch
-  → CandidateSearchService.candidatesSearch()
-  → CandidateSearchRepository
-  → candidate_* tables
-```
+| Dimension | Version 1.0 Implementation | Version 2.0 Major Evolution |
+| :--- | :--- | :--- |
+| **Database Migrations** | 7 cumulative incremental patches (`001_initial` to `007_communication_list_fields`) | Refactored into **5 Domain-Driven Design (DDD) migration modules** (`001_system` to `005_search_views`) |
+| **System Infrastructure** | Settings & basic audit log only | Added **`system_users` operator table** for consultant ownership attribution and audit tracking across companies, positions, and communication logs |
+| **Client Company CRM (Phase 3)** | Draft architecture specification without working code | **Full-stack closed-loop delivery**: `company_profiles`, `company_contacts`, `company_notes`, primary contact auto-promotion/demotion, cascading soft-delete protection, and full Vue 3 CRM views |
+| **Positions & ATS Pipeline** | Basic match table only | **Granular domain modeling**: Added `position_candidate_interviews` (multi-round interviews and feedback), `position_candidate_placements` (onboarding, offer salary, guarantee period days, fee settlement), and `position_candidate_history` (lifecycle audit trail) |
+| **Decision vs Stage Decoupling**| Application-level convention | **Strict database-level CHECK constraint**: `CHECK (stage IS NULL OR decision = 'accepted')`, physically enforcing that only accepted candidates can advance in the recruitment funnel |
+| **Analytics & Reporting** | On-the-fly SQL concatenation in views | **3 Built-in high-performance analytical views**: `v_candidate_stats`, `v_position_pipeline_counts`, `v_company_position_counts` |
+| **Candidate Ingestion Engine** | Single-shot CLI import script | **Interactive Import Engine (Import V3)**: Desktop folder/file picker, `candidate_import_batches` telemetry, `candidate_import_errors` audit table, **strict mode conflict prevention**, and multilingual alignment diagnostics |
+| **Frontend Internationalization**| Monolithic dictionary bundled at startup | **Route-based dynamic chunk loading** (`meta.i18nPacks` router guard): Only `core.json` is loaded at startup; module packs are fetched asynchronously upon route navigation; English default (`en-us`), 100% key-aligned with CN/JA |
+| **Packaging & Distribution** | Incomplete build configuration | **Fully verified `electron-builder` pipeline**: Supports unpacked directory (`dist:dir`), portable executable, and NSIS installer with bundled read-only seed database mount and native smoke testing |
+| **Automated Test Coverage** | 10 baseline unit tests | **Expanded to 24 comprehensive automated tests** (covering company CRM, import strict mode, conflict prevention, multilingual tolerance, etc.), maintaining 100% pass rate |
 
 ---
 
-# 1. System Goals
+## 1. System Objectives & Business Closed-Loop Workflows
 
-The system is ultimately a locally operated Headhunting CRM + ATS + Automated Talent Matching platform.
+The system operates as an enterprise-grade, high-performance local offline desktop application combining Headhunting CRM, ATS, and Intelligent Talent Retrieval & Matching.
 
-Core Business Forward Closed-Loop:
-
-```text
-Company
-   ↓
-Create Position Opening
-   ↓
-Position Automatically Recalls & Scores Candidates from Talent Pool
-   ↓
-System Recommends Ranked Candidates
-   ↓
-Manual Confirmation / Mark as Mismatch
-   ↓
-Communication & Outreach
-   ↓
-Present Candidate to Company
-   ↓
-Client Interview
-   ↓
-Offer
-   ↓
-Onboarding
-```
-
-Reverse Closed-Loop:
+### 1.1 Forward Recruitment Closed-Loop Workflow
 
 ```text
-Create / Update Candidate Profile
-   ↓
-Rebuild Candidate raw_text Document
-   ↓
-Re-evaluate Matching across all Active Positions
-   ↓
-Generate / Update Position-Candidate Match Records
+Client Company (Company)
+      ↓
+Create Job Opening (Position Openings)
+      ↓
+FTS5 Full-Text Recall + Structured Filtering (Recall)
+      ↓
+Intelligent Matching & Scoring (MatchEngine Scoring)
+      ↓
+Consultant Evaluation (decision: accepted / dismissed)
+      ↓
+Candidate Communication & Follow-up (candidate_communications)
+      ↓
+Submit Candidate to Client (stage: submitted)
+      ↓
+Multi-Round Client Interview Management (position_candidate_interviews)
+      ↓
+Offer Acceptance & Placement Settlement (position_candidate_placements)
+      ↓
+Onboarding & Guarantee Verification (guarantee_passed)
 ```
 
-The Candidate Detail View must reversely expose:
+### 1.2 Reverse Lifecycle Tracking & Data Penetration
 
-- Which positions this candidate has been associated with;
-- The current stage progression for each associated position;
-- Historical timestamp when matched;
-- Whether ever manually rejected/marked mismatch;
-- Whether actively engaged in communication;
-- Whether presented to the client company;
-- Whether interview scheduled/completed;
-- Whether offer extended;
-- Whether onboarded;
-- All historical communication records.
+From the Candidate Profile view, a recruiter can track:
+- Historical recommendations: all companies and job openings linked to the candidate;
+- Current funnel stage for each position (communicating, submitted, interview round, offer, hired);
+- Feedback notes and ratings from every interview round;
+- Guarantee period status and communication timeline.
 
 ---
 
-# 2. Overall Technical Architecture
+## 2. Complete Functional Capabilities Matrix (V2 Full Feature Panorama)
 
-## 2.1 Recommended Technology Stack
+Version 2.0 provides **10 functional modules** covering client management, job openings, talent pool governance, intelligent search, ATS pipeline, interactive ingestion, analytics, system governance, i18n, and offline delivery:
 
-```text
-Desktop
-├── Electron
-├── JavaScript (ES6+)
-├── Vue 3
-├── Vue Router
-├── Webpack 5
-│
-Database
-├── SQLite
-├── FTS5
-└── better-sqlite3
-│
-Background
-└── Node Worker Threads
-```
-
-Technologies explicitly discouraged for Version 1:
-
-- MySQL
-- PostgreSQL
-- Redis
-- Elasticsearch
-- Standalone backend server processes
-- Docker
-- Microservices
-- Cloud databases
-
-As a local single-user desktop application, prioritization order:
-
-- Simplicity;
-- High performance;
-- Backup readiness;
-- Rapid recovery;
-- Strict data consistency;
-- Ease of debugging;
-- Frictionless portability.
+### Module 1: Client Company CRM (Phase 3 Full Stack)
+1. **Company Profile Lifecycle Management**:
+   - Create, edit, inspect, search, and manage statuses of client companies;
+   - Core fields: Full company name (globally unique index), short name, industry sector, company size, country/province/city, physical address, official website, company description;
+   - Company state machine: `active` (active partner), `inactive` (suspended partner), `blacklisted`;
+   - Consultant attribution: Linked to consultant (`owner_user_id`), with creator and updater audit metadata.
+2. **Multi-Contact Directory (`company_contacts`)**:
+   - Multiple contacts per company (HR, department heads, hiring managers);
+   - Attributes: Full name, title, department, mobile phone, email, WeChat, contact status (`active` / `left`), notes;
+   - **Primary Contact Mechanism**: The first contact added is automatically set as the primary contact (`is_primary=1`); adding or updating another contact as primary automatically demotes the existing primary contact, ensuring exactly one primary contact per company;
+   - Foreign-key protection: Contacts currently assigned to active job openings **cannot be deleted** (throws `IN_USE` business error), requiring reassignment or marking as left.
+3. **Cascading Integrity & Intelligent Soft-Delete**:
+   - If a company has **no associated job openings**, physical deletion is executed (`deleted`), cascading to its contacts and notes;
+   - If a company has **existing job openings**, physical deletion is intercepted and automatically converted into **soft deletion** (`deactivated`), setting the status to `inactive` to preserve historical integrity.
+4. **Company Follow-up Notes (`company_notes`)**:
+   - Recruiter interaction notes, meeting minutes, and negotiation logs;
+   - Fields: Timestamp (`noted_at`), note category (`note_type`), content body, recorded user, presented in reverse chronological order.
+5. **Frontend CRM Workspace**:
+   - Company List View (keyword search, status filter, pagination);
+   - Company Detail Card View (company info, opening count statistics, contact table, follow-up stream);
+   - Contact Management Dialog (`contact.popup.vue`) and Company Edit Dialog (`edit.popup.vue`).
 
 ---
 
-## 2.2 Electron Layering Rules
-
-Mandatory invocation chain:
-
-```text
-Vue Renderer
-    ↓
-Preload API
-    ↓
-Electron IPC
-    ↓
-Service
-    ↓
-Repository
-    ↓
-SQLite
-```
-
-**FORBIDDEN:**
-
-```text
-Vue Renderer → Direct SQLite access
-```
-
-**FORBIDDEN:**
-
-```text
-Scattering raw SQL statements inside IPC handlers
-```
-
-**FORBIDDEN:**
-
-```text
-Enabling nodeIntegration in Renderer to directly invoke Node APIs
-```
-
-The Electron Main Process maintains sole ownership of SQLite database connections.
-
-The Renderer process interacts with business data strictly through controlled, typed IPC APIs.
+### Module 2: Job Openings & Requirements Management (Position Management)
+1. **Job Opening Modeling**:
+   - Foreign keys to client company (`company_id`) and designated contact (`contact_id`);
+   - Core parameters: Position title, department, headcount quota (`headcount >= 1`), job location, work site address, employment type (full-time, part-time, contractor);
+   - Compensation: Salary range (`salary_min` to `salary_max`), currency (CNY/USD/JPY), salary month multiplier (e.g., 12, 14, 16 months);
+   - Job requirements: Experience years range (`experience_min` to `experience_max`), minimum degree rank (1 to 7 integer scale), job description (JD), qualification text;
+   - Recruitment settings: Guarantee period days (`guarantee_days`), priority level (`low`, `normal`, `high`, `urgent`);
+   - Position state machine: `draft` -> `open` -> `paused` -> `filled` -> `closed` / `cancelled`.
+2. **Contact-Company Belonging Triggers**:
+   - SQLite triggers `trg_position_contact_belongs_ins` and `trg_position_contact_belongs_upd`;
+   - Database-level constraint strictly enforcing that a position's contact strictly belongs to the position's company.
+3. **Position Keywords & Skill Portrait (`position_keywords`)**:
+   - Weighted keywords across skills, languages, industries, cities, job titles, and degrees;
+   - Weight assignments and categorization (must-have vs nice-to-have).
+4. **Position Pipeline Funnel Dashboard**:
+   - Integrates with `v_position_pipeline_counts` view, surfacing real-time counts for suggested, accepted, dismissed, submitted, interviewing, offer, and hired candidates.
 
 ---
 
-## 2.3 Database Configuration
+### Module 3: Candidate Talent Pool & Multilingual Governance
+1. **Candidate Profile (`candidate_profiles`)**:
+   - Unique identifier (`candidate_uuid`), ingestion group identifier (`record_id`);
+   - Core demographic and career fields: Full name, English name, gender, birth date, city, current employer, current title, highest degree, total years of experience;
+   - Contact shortcuts with unique indices: `primary_phone` and `primary_email`;
+   - Candidate status: `active` (actively tracked) or `archived`.
+2. **Multi-Channel Contact Governance (`candidate_contacts`)**:
+   - Supports mobile phones, landlines, and email addresses;
+   - Normalization: Mobile numbers strip country code `+86`, emails normalized to lowercase;
+   - **Uniqueness & Shared Contact Handling**:
+     - Primary mobile phone and primary email are globally unique across non-shared records;
+     - Landline numbers are exempted from uniqueness constraints, allowing shared enterprise switchboard numbers without false collision warnings;
+     - Non-primary contacts can be marked as shared (`is_shared=1`).
+3. **8-Dimensional Structured Sub-Entities**:
+   - `candidate_resumes`: Multilingual resume storage (`zh` is always index 0 primary; supports `en` and `ja` versions; stores height, weight, marital/child status, household registration, and PR statement);
+   - `candidate_expectations`: Career expectations (desired title, industry, city, employment type, salary range min/max, available start date);
+   - `candidate_work_experiences`: Work history (company name, industry, size, date ranges, department, reporting line, subordinates, responsibilities, achievements, resignation reason);
+   - `candidate_educations`: Education history (school name, major, degree type and rank 1-7, full-time/part-time, date ranges);
+   - `candidate_projects`: Project experience (project title, client/company, role, date ranges, responsibilities, achievements, keywords, fingerprint);
+   - `candidate_trainings`: Professional training records (training institute, course title, dates, content);
+   - `candidate_languages`: Language proficiencies (language name, proficiency level, certification, issue date);
+   - `candidate_certificates`: Professional certifications (certificate name, authority, issue date);
+   - `candidate_skills`: Technical skills (skill name, proficiency level).
+4. **Multilingual Resume Harmonization & V3 Merge Engine**:
+   - Merges Chinese, English, and Japanese resume versions into unified profile;
+   - **Alignment & Tolerance Diagnostics**: Compares experience and education record counts between languages; tolerates small date deviations; flags large date drifts or missing sections in `import_warnings_report.txt`.
+5. **Candidate Communications (`candidate_communications`)**:
+   - Recruiter follow-ups, calls, interviews, notes;
+   - Categorized by source type: `manual` (recruiter notes), `system` (automated logs), and `imported_resume` (historical imported records).
 
-Executed immediately upon SQLite initialization at startup:
+---
+
+### Module 4: Intelligent Search & Recall Engine
+1. **SQLite FTS5 Trigram Full-Text Search**:
+   - FTS5 virtual table indexing using the `trigram` tokenizer;
+   - High-performance fuzzy matching on arbitrary substrings (3+ characters) across Chinese, Japanese, and English.
+2. **Dynamic Unstructured Document Synthesis (`CandidateRawTextBuilder`)**:
+   - Aggregates unstructured text across candidate profile, experiences, projects, educations, skills, and PR statements;
+   - Synchronized via database triggers (`trg_search_doc_ai`, `trg_search_doc_ad`, `trg_search_doc_au`) on insert, update, and delete, guaranteeing zero stale search data.
+3. **Multi-Criteria Structured Filtering**:
+   - Combined querying on experience years, degree ranks, salary bounds, locations, and language levels.
+4. **Consultant Evaluation & Match Scoring**:
+   - Algorithmic scoring and keyword overlap (`match_score`, `matched_keywords`);
+   - Consultant decision: `suggested` -> `accepted` (advance) or `dismissed` (with documented reason).
+
+---
+
+### Module 5: ATS Recruitment Pipeline & Placement Lifecycle
+1. **Decision vs Stage Strict Decoupling**:
+   - Enforced by database-level constraints:
+     - `CHECK (stage IS NULL OR decision = 'accepted')`: Only accepted candidates can have an active stage;
+     - `CHECK (decision <> 'accepted' OR stage IS NOT NULL)`: Accepted candidates must have an assigned stage.
+2. **Recruitment Pipeline Stages**:
+   - Forward stages: `pending_contact` -> `contacting` -> `interested` -> `submitted` -> `interviewing` -> `interview_passed` -> `background_check` -> `offer` -> `hired` -> `guarantee_passed`;
+   - Terminal stages: `candidate_declined`, `client_rejected`, `background_check_failed`, `offer_declined`, `left_during_guarantee`.
+3. **Multi-Round Interview Tracking (`position_candidate_interviews`)**:
+   - Interview round (`round_no`), type (HR screen, technical interview, director interview, on-site);
+   - Schedule (`scheduled_at`), interviewer, result (`pending`, `passed`, `failed`, `cancelled`), detailed feedback notes.
+4. **Offer Placement & Guarantee Settlement (`position_candidate_placements`)**:
+   - Offer date (`offer_date`), offered salary (`offer_salary`), onboarding date (`onboard_date`);
+   - Inherits guarantee period days (`guarantee_days`) snapshot from position;
+   - Computes guarantee end date (`guarantee_end_date`);
+   - Tracks guarantee fulfillment, refunds, or replacement status.
+5. **Full Lifecycle Audit Trail (`position_candidate_history`)**:
+   - Captures every transition of decision and stage;
+   - Logs `from_value`, `to_value`, `reason`, operator user ID, and timestamp.
+
+---
+
+### Module 6: Interactive Batch Ingestion Workbench & Conflict Audit
+1. **Native Desktop File / Folder Picker**:
+   - Injected Electron dialog supports picking single/multiple JSON files or entire directories recursively.
+2. **Import Batch Telemetry (`candidate_import_batches`)**:
+   - Logs batch UUID, source directory, total file count, created count, updated count, skipped count, failed count, rejected count, warning count, start and finish times.
+3. **Content Hash Deduplication & Idempotent Re-runs**:
+   - SHA-256 content hashing (`content_hash`) skips identical files instantly; updates modified files in place without duplication.
+4. **Strict Mode Conflict Prevention**:
+   - When enabled, any primary phone or email collision with an existing candidate immediately halts write operations for that file, rolling back the transaction;
+   - Prevents candidate database pollution, logging conflicts into error table for review.
+5. **Categorized Error & Conflict Audit (`candidate_import_errors`)**:
+   - Captures severity (`warning` / `error`), error code (`contact_conflict`, `list_misaligned`, `bad_date`, `parse_error`), file path, and diagnostic JSON details.
+6. **Frontend Ingestion UI (`candidate/import.vue`)**:
+   - Interactive selection list, reset controls, live progress tracking;
+   - Batch summary cards and historical batches table;
+   - Issues inspection modal (`issueDialog`) with error codes and remediation details.
+
+---
+
+### Module 7: Real-Time Analytics & Aggregation Views
+1. **Candidate Productivity & Placement View (`v_candidate_stats`)**:
+   - `recommend_count`: Reached `submitted` stage;
+   - `success_count`: Reached `hired` stage;
+   - `communication_count`: Valid recruiter communications (excluding automatic `imported_resume` entries).
+2. **Position Pipeline Funnel View (`v_position_pipeline_counts`)**:
+   - Real-time pipeline funnel per opening: `suggested_count`, `accepted_count`, `dismissed_count`, `submitted_now`, `interviewing_now`, `offer_now`, `hired_count`.
+3. **Company Hiring Activity View (`v_company_position_counts`)**:
+   - Company totals: `position_total` and currently active `position_open`.
+
+---
+
+### Module 8: System Administration & Governance
+1. **System User Accounts (`system_users`)**:
+   - Roles: `admin` and `consultant`, with active/disabled statuses;
+   - Standalone edition includes static system user (`id=1, username='system'`).
+2. **Operational Audit Trail (`system_audit_logs`)**:
+   - Tracks create, update, delete actions on business entities with JSON diffs (`before_json`, `after_json`).
+3. **Dynamic Configuration (`system_settings`)**:
+   - Key-value runtime settings.
+4. **Background Async Job Queue (`system_jobs`)**:
+   - Orchestrates long-running batch operations, deduplication keys, and retry lifecycles.
+
+---
+
+### Module 9: Trilingual Internationalization (i18n)
+1. **Trilingual Coverage**:
+   - Default English (`en-us`), with full Simplified Chinese (`zh-cn`) and Japanese (`ja-jp`);
+   - Instant language switching without application restart.
+2. **Route-Based On-Demand Chunk Loading (`meta.i18nPacks`)**:
+   - Startup loads minimal `core.json`;
+   - Navigation guards asynchronously load `company.json` and `candidateImport.json` on demand.
+3. **Element Plus Locale Synchronization**:
+   - Element Plus framework UI components synchronize with system language selection.
+
+---
+
+### Module 10: Local Desktop Offline Distribution & Packaging
+1. **100% Offline Execution**:
+   - Fully independent of external network connectivity; local SQLite database guarantees privacy.
+2. **Modern Runtime Baseline**:
+   - Electron 45.2.3, Node 20+, and better-sqlite3 13.0.3 native C++ bindings.
+3. **Native Packaging Pipeline (`electron-builder`)**:
+   - Unpacked directory (`npm run dist:dir` -> `release/win-unpacked`);
+   - Portable standalone binary;
+   - Windows installer (NSIS).
+4. **Seed Database Mounting & Auto-Migration**:
+   - Clones read-only seed database into user data directory on fresh run and executes missing migrations.
+
+---
+
+## 3. Technical Stack & Layered Architecture
+
+```text
+Desktop Runtime: Electron 45.2.3 (Node 20+ runtime environment)
+Database Engine: SQLite 3.53.4 (WAL mode, foreign keys enabled, busy_timeout=5000)
+Database Driver: better-sqlite3 13.0.3 (Native C++ prebuilt bindings)
+Frontend Framework: Vue 3 (Composition API) + Vue Router + Element Plus 2.14.8
+Internationalization: vue-i18n 11.4.18 (On-demand route-based chunk loading, EN/ZH/JA)
+Build Toolchain: Webpack 5.112.2 + Babel 8.1.0 + electron-builder 26.18.0
+```
+
+### 3.1 Layered Invocation Chain & Security Boundary
+
+```text
+Vue 3 Renderer Process
+    ↓
+Preload API (contextBridge.exposeInMainWorld)
+    ↓
+Typed Electron IPC (ipcMain.handle via registerServiceMethods)
+    ↓
+Domain Services (CompanyService, CandidateImportService, SystemService)
+    ↓
+Repositories (CompanyRepository, CandidateRepository)
+    ↓
+SQLite Database (SqliteDatabase.js / better-sqlite3)
+```
+
+**Security Rules:**
+- The Vue renderer process must never import `better-sqlite3` directly;
+- IPC router files must never write raw SQL statements;
+- `nodeIntegration` must remain strictly disabled.
+
+---
+
+## 4. Full Database Architecture & DDL (5 Migration Modules)
+
+V2 database comprises 5 domain-driven migration files, consisting of 29 tables and 3 analytical views:
+
+### 4.1 Migration 001: System Infrastructure (`001_system.sql`)
 
 ```sql
-PRAGMA foreign_keys = ON;
-PRAGMA journal_mode = WAL;
-PRAGMA busy_timeout = 5000;
-PRAGMA synchronous = NORMAL;
-```
+-- 001_system.sql  系统基础表 | System base tables | システム基本テーブル
 
-Database File Hierarchy (Confirmed):
+CREATE TABLE system_users (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_uuid     TEXT NOT NULL UNIQUE,
+    username      TEXT NOT NULL UNIQUE,
+    display_name  TEXT NOT NULL DEFAULT '',
+    role          TEXT NOT NULL DEFAULT 'consultant' CHECK (role IN ('admin','consultant')),
+    status        TEXT NOT NULL DEFAULT 'active'     CHECK (status IN ('active','disabled')),
+    created_at    TEXT NOT NULL,
+    updated_at    TEXT NOT NULL
+);
 
-```text
-<Application Root>/
-├── <Application Executables & Resources>
-├── data/
-│   └── recruitment.db
-└── backups/
-```
+CREATE TABLE system_settings (
+    setting_key   TEXT PRIMARY KEY,
+    setting_value TEXT NOT NULL DEFAULT '',
+    updated_at    TEXT NOT NULL
+);
 
-Development environment root is `code/`; packaged application root is the directory containing the executable binary. Production installation directory must be writable, with user-selectable storage drives recommended. The database must never be placed inside `app.asar` or inside resource folders susceptible to application update overwrites.
+CREATE TABLE system_jobs (
+    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    job_type          TEXT NOT NULL CHECK (job_type IN (
+        'import_candidates','rebuild_raw_text','match_position','match_candidate',
+        'guarantee_check','database_backup')),
+    entity_type       TEXT NOT NULL DEFAULT '',
+    entity_id         INTEGER,
+    dedupe_key        TEXT NOT NULL DEFAULT '',
+    payload_json      TEXT NOT NULL DEFAULT '{}',
+    status            TEXT NOT NULL DEFAULT 'queued' CHECK (status IN (
+        'queued','running','completed','failed','cancelled')),
+    progress_current  INTEGER NOT NULL DEFAULT 0,
+    progress_total    INTEGER NOT NULL DEFAULT 0,
+    error_message     TEXT NOT NULL DEFAULT '',
+    created_by        INTEGER REFERENCES system_users(id),
+    created_at        TEXT NOT NULL,
+    started_at        TEXT,
+    finished_at       TEXT
+);
+CREATE INDEX idx_system_jobs_status ON system_jobs(status);
+CREATE INDEX idx_system_jobs_dedupe ON system_jobs(job_type, dedupe_key, status);
 
----
+CREATE TABLE system_audit_logs (
+    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    entity_type       TEXT NOT NULL,
+    entity_id         INTEGER,
+    action            TEXT NOT NULL,
+    before_json       TEXT,
+    after_json        TEXT,
+    operator_user_id  INTEGER REFERENCES system_users(id),
+    created_at        TEXT NOT NULL
+);
+CREATE INDEX idx_system_audit_entity ON system_audit_logs(entity_type, entity_id);
 
-# 3. Core Domain Models
-
-The core architecture consists not of three isolated silos, but an interconnected domain model:
-
-```text
-Company
-   │
-   │ 1:N
-   ▼
-Position
-   │
-   │ N:N
-   ▼
-PositionCandidateMatch
-   │
-   ▼
-Candidate
-```
-
-The pivotal domain entity is:
-
-```text
-PositionCandidateMatch
-```
-
-It is not merely a relational join table, but a rich, first-class business aggregate.
-
-It records:
-
-- Match rationale and criteria breakdown;
-- Computed match score;
-- Whether recommended by system;
-- Whether manually accepted;
-- Whether manually dismissed as "mismatched";
-- Current recruitment pipeline stage;
-- Historical stage transitions;
-- Recalculated scores across revisions;
-- Audit trail for human decisions.
-
----
-
-# 4. Data Truth Principles
-
-## 4.1 Structured Database as Single Source of Truth
-
-Once a candidate is ingested into the system:
-
-```text
-candidate_* structured tables
-```
-
-represent the single source of truth for ongoing business operations.
-
-`raw_text` is a derived, indexed full-text document generated on-demand from the structured data.
-
----
-
-## 4.2 Raw Import JSON as Immutable Audit Evidence
-
-The original JSON must be permanently archived upon initial import:
-
-```text
-candidate_import_records.original_json
-```
-
-This field is dedicated to:
-
-- Data audits;
-- Disaster recovery;
-- Troubleshooting import anomalies;
-- Future schema migrations;
-- Benchmarking against legacy parser outputs.
-
-**The raw JSON is never directly used as the business truth following subsequent user edits.**
-
----
-
-# 5. Core Rules for raw_text
-
-This represents one of the most critical foundational principles of the Candidate Search Subsystem.
-
-## 5.1 Definition of raw_text
-
-`raw_text` is formally defined as:
-
-> **Candidate Full-text Search Document**
-
-It is not an unorganized dump of raw source text.
-
-It is a curated, structured synthesis:
-
-```text
-Candidate-Level Comprehensive Full-Text Search Document
-```
-
-Designed specifically for:
-
-- Talent pool keyword search;
-- Automated candidate recall for job openings;
-- Deep full-text query matching across candidate history.
-
----
-
-## 5.2 Initial Historical Data Ingestion
-
-Pre-existing candidate JSON records already contain validated high-quality `raw_text`.
-
-Therefore, during initial ingestion:
-
-```text
-JSON.raw_text
-    ↓
-candidate_search_documents.raw_text
-```
-
-**Use directly as-is.**
-
-Do not re-generate, re-parse, or re-concatenate during the initial data seeding phase.
-
----
-
-## 5.3 Candidate Modifications and Mutations
-
-Whenever candidate details are edited inside Electron:
-
-- Modifying personal details;
-- Adding phone numbers;
-- Removing phone numbers;
-- Updating job search expectations;
-- Appending work experience;
-- Modifying work experience;
-- Deleting work experience;
-- Modifying education;
-- Appending project experience;
-- Deleting project experience;
-- Adding language skills;
-- Adding professional skills;
-- Adding certifications;
-- Adding training history;
-- Appending communication logs;
-- Modifying communication logs;
-- Deleting communication logs;
-
-The mutation pipeline MUST execute:
-
-```text
-Persist Structured Modifications
-    ↓
-Re-fetch the complete candidate snapshot
-    ↓
-Rebuild raw_text completely from scratch (from 0)
-    ↓
-Overwrite the previous raw_text
-    ↓
-Synchronize FTS5 search index
-```
-
-### Mandatory Constraints
-
-**STRICTLY FORBIDDEN:**
-
-```text
-raw_text += newContent
-```
-
-**STRICTLY FORBIDDEN:**
-
-```text
-raw_text.replace(...)
-```
-
-**Incremental or partial updates to raw_text are prohibited.**
-
-Must execute:
-
-```text
-FULL REBUILD
+-- 单机版固定的本地系统用户（所有 owner / created_by / updated_by 默认指向它）
+-- Fixed local system user of the standalone edition (every owner / created_by / updated_by points to it by default)
+-- スタンドアロン版の固定ローカルシステムユーザー（owner / created_by / updated_by は既定でこのユーザーを指す）
+INSERT INTO system_users (id, user_uuid, username, display_name, role, status, created_at, updated_at)
+VALUES (1, 'system-local-user', 'system', '系统', 'admin', 'active',
+        strftime('%Y-%m-%dT%H:%M:%fZ','now'), strftime('%Y-%m-%dT%H:%M:%fZ','now'));
 ```
 
 ---
 
-## 5.4 CandidateRawTextBuilder
-
-Isolated architectural module:
-
-```text
-CandidateRawTextBuilder
-```
-
-Recommended interface specification:
-
-```js
-class CandidateRawTextBuilder {
-  /**
-   * @param {Object} snapshot - CandidateFullSnapshot object
-   * @returns {string} Fully compiled rawText document
-   */
-  build(snapshot) {}
-}
-```
-
-`CandidateRawTextBuilder` is a pure transformation module with zero database dependencies.
-
-The underlying complete snapshot is provided exclusively by:
-
-```js
-candidateRepository.getFullSnapshot(candidateId)
-```
-
----
-
-## 5.5 CandidateFullSnapshot Specification
-
-Snapshot data structure:
-
-```js
-// CandidateFullSnapshot Data Structure
-{
-  profile: {},           // CandidateProfile - Basic candidate profile
-  contacts: [],          // CandidateContact[] - Contact details list
-  expectations: [],      // CandidateExpectation[] - Job preferences / expectations
-  workExperiences: [],  // CandidateWorkExperience[] - Work history records
-  educations: [],        // CandidateEducation[] - Educational background
-  projects: [],          // CandidateProject[] - Project milestones
-  trainings: [],         // CandidateTraining[] - Professional training records
-  languages: [],         // CandidateLanguage[] - Language proficiencies
-  certificates: [],      // CandidateCertificate[] - Certificates & credentials
-  skills: [],            // CandidateSkill[] - Technical and professional skills
-  resumeVariants: [],    // CandidateResumeVariant[] - Multilingual resume snapshots
-  communications: []     // CandidateCommunication[] - Communication & follow-up logs
-}
-```
-
----
-
-## 5.6 raw_text Assembly Sequence
-
-Enforce the following deterministic ordering:
-
-```text
-1. Candidate Basic Profile
-2. Contact Information
-3. Career Expectations
-4. Current Employment Snapshot
-5. Work Experience History
-6. Education History
-7. Project Experience
-8. Professional Training
-9. Language Capabilities
-10. Certifications
-11. Technical Skills
-12. Multilingual / Alternate Resume Variant Content
-13. Communication & Follow-up History
-```
-
-Include only fields containing valid values.
-
-Filter out:
-
-- `null`
-- `undefined`
-- Empty strings
-- Empty arrays
-- Pure placeholder objects
-
-Delimiter standard:
-
-```text
-" | "
-```
-
-Deterministic deduplication on identical string fragments is permitted, provided it does not prune distinct multilingual or contextual entities.
-
----
-
-## 5.7 raw_text and FTS5 Synchronization
-
-```text
-candidate_search_documents
-        │
-        └── raw_text
-                │
-                ▼
-candidate_search_fts
-```
-
-`candidate_search_documents` retains the raw searchable text document.
-
-`candidate_search_fts` functions purely as the SQLite FTS5 index table.
-
----
-
-# 6. Full-Text Search Principles
-
-## 6.1 Prohibition of Full-Database Multi-Table JOINs
-
-For query terms such as:
-
-```text
-Automotive Japanese SupplyChain
-```
-
-It is strictly prohibited to execute:
-
-```text
-JOIN candidate_work_experiences
-JOIN candidate_educations
-JOIN candidate_projects
-JOIN candidate_languages
-JOIN candidate_certificates
-...
-```
-
-for full-text keyword querying.
-
-The sole entry point for keyword queries:
-
-```text
-candidate_search_documents.raw_text
-```
-
----
-
-## 6.2 Structured Filters Rely on Structured Tables
-
-Example:
-
-```text
-Keywords: Automotive Japanese
-Education: Bachelor's or higher
-Experience: 8+ years
-City: Shanghai
-```
-
-Execution pipeline:
-
-```text
-FTS raw_text
-     ↓
-Matched candidate_id list
-     ↓
-Structured criteria filtration
-     ↓
-candidate_profiles / candidate_* tables
-```
-
----
-
-## 6.3 FTS5 Indexing Strategy
-
-Phase 1 baseline:
-
-```text
-3+ Unicode characters:
-    → FTS5 trigram tokenizer
-
-1-2 Chinese characters:
-    → raw_text LIKE / instr fallback query
-```
-
-Do not introduce Elasticsearch prematurely for short CJK queries.
-
-Benchmark against authentic candidate workloads first.
-
----
-
-# 7. Database Architecture Overview
-
-```text
-system_schema_migrations
-system_settings
-system_jobs
-system_audit_logs
-
-company_profiles
-company_contacts
-company_notes
-
-candidate_profiles
-candidate_contacts
-candidate_import_records
-candidate_resume_variants
-candidate_expectations
-candidate_work_experiences
-candidate_educations
-candidate_projects
-candidate_trainings
-candidate_languages
-candidate_certificates
-candidate_skills
-candidate_search_documents
-candidate_search_fts
-
-position_openings
-position_requirements
-position_skill_requirements
-position_language_requirements
-position_keywords
-position_candidate_matches
-position_candidate_stage_history
-position_candidate_events
-
-candidate_communications
-```
-
----
-
-# 8. Candidate Table Schema Specifications
-
-## 8.1 candidate_profiles
-
-Candidate Master Profile Table.
-
-Contains only:
-
-- Current snapshot;
-- High-frequency list view columns;
-- High-frequency filter attributes.
-
-Do not dump entire unparsed JSON payloads here.
+### 4.2 Migration 002: Client Companies & Job Openings (`002_company_position.sql`)
 
 ```sql
+-- 002_company_position.sql  公司、对接人、职位、职位关键词 | Companies, contacts, positions, position keywords | 企業、担当者、求人、求人キーワード
+
+CREATE TABLE company_profiles (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    company_uuid  TEXT NOT NULL UNIQUE,
+    company_name  TEXT NOT NULL UNIQUE,
+    short_name    TEXT NOT NULL DEFAULT '',
+    industry      TEXT NOT NULL DEFAULT '',
+    company_size  TEXT NOT NULL DEFAULT '',
+    country       TEXT NOT NULL DEFAULT '',
+    province      TEXT NOT NULL DEFAULT '',
+    city          TEXT NOT NULL DEFAULT '',
+    address       TEXT NOT NULL DEFAULT '',
+    website       TEXT NOT NULL DEFAULT '',
+    description   TEXT NOT NULL DEFAULT '',
+    status        TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active','inactive','blacklisted')),
+    owner_user_id INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    created_by    INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    updated_by    INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    created_at    TEXT NOT NULL,
+    updated_at    TEXT NOT NULL
+);
+CREATE INDEX idx_company_profiles_status ON company_profiles(status);
+
+CREATE TABLE company_contacts (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    company_id    INTEGER NOT NULL REFERENCES company_profiles(id) ON DELETE CASCADE,
+    contact_name  TEXT NOT NULL,
+    title         TEXT NOT NULL DEFAULT '',
+    department    TEXT NOT NULL DEFAULT '',
+    phone         TEXT NOT NULL DEFAULT '',
+    email         TEXT NOT NULL DEFAULT '',
+    wechat        TEXT NOT NULL DEFAULT '',
+    is_primary    INTEGER NOT NULL DEFAULT 0 CHECK (is_primary IN (0,1)),
+    status        TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active','left')),
+    note          TEXT NOT NULL DEFAULT '',
+    created_at    TEXT NOT NULL,
+    updated_at    TEXT NOT NULL
+);
+CREATE INDEX idx_company_contacts_company ON company_contacts(company_id);
+CREATE UNIQUE INDEX uq_company_contacts_one_primary
+    ON company_contacts(company_id) WHERE is_primary = 1;
+
+CREATE TABLE company_notes (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    company_id    INTEGER NOT NULL REFERENCES company_profiles(id) ON DELETE CASCADE,
+    noted_at      TEXT NOT NULL,
+    note_type     TEXT NOT NULL DEFAULT 'note',
+    content       TEXT NOT NULL,
+    created_by    INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    created_at    TEXT NOT NULL,
+    updated_at    TEXT NOT NULL
+);
+CREATE INDEX idx_company_notes_company ON company_notes(company_id);
+
+CREATE TABLE position_openings (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    position_uuid    TEXT NOT NULL UNIQUE,
+    company_id       INTEGER NOT NULL REFERENCES company_profiles(id) ON DELETE RESTRICT,
+    contact_id       INTEGER NOT NULL REFERENCES company_contacts(id) ON DELETE RESTRICT,
+    owner_user_id    INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    title            TEXT NOT NULL,
+    department       TEXT NOT NULL DEFAULT '',
+    city             TEXT NOT NULL DEFAULT '',
+    work_location    TEXT NOT NULL DEFAULT '',
+    employment_type  TEXT NOT NULL DEFAULT '全职',
+    headcount        INTEGER NOT NULL DEFAULT 1 CHECK (headcount >= 1),
+    salary_min       REAL,
+    salary_max       REAL,
+    salary_currency  TEXT NOT NULL DEFAULT 'CNY',
+    salary_months    REAL,
+    experience_min   REAL,
+    experience_max   REAL,
+    degree_min_rank  INTEGER CHECK (degree_min_rank IS NULL OR degree_min_rank BETWEEN 1 AND 7),
+    jd_text          TEXT NOT NULL DEFAULT '',
+    responsibilities TEXT NOT NULL DEFAULT '',
+    requirements_text TEXT NOT NULL DEFAULT '',
+    guarantee_days   INTEGER NOT NULL DEFAULT 0 CHECK (guarantee_days >= 0),
+    priority         TEXT NOT NULL DEFAULT 'normal' CHECK (priority IN ('low','normal','high','urgent')),
+    status           TEXT NOT NULL DEFAULT 'draft'  CHECK (status IN (
+        'draft','open','paused','filled','closed','cancelled')),
+    opened_at        TEXT,
+    closed_at        TEXT,
+    last_matched_at  TEXT,
+    created_by       INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    updated_by       INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    created_at       TEXT NOT NULL,
+    updated_at       TEXT NOT NULL
+);
+CREATE INDEX idx_position_openings_company ON position_openings(company_id);
+CREATE INDEX idx_position_openings_contact ON position_openings(contact_id);
+CREATE INDEX idx_position_openings_status  ON position_openings(status);
+CREATE INDEX idx_position_openings_title   ON position_openings(title);
+
+-- 职位负责人（对接人）必须属于该职位所在的公司
+-- The person in charge of a position (a company contact) must belong to the company of that position
+-- 求人の担当者（先方窓口）は、その求人が属する企業の窓口でなければならない
+CREATE TRIGGER trg_position_contact_belongs_ins
+BEFORE INSERT ON position_openings
+BEGIN
+    SELECT RAISE(ABORT, 'position contact must belong to the position company')
+    WHERE NOT EXISTS (
+        SELECT 1 FROM company_contacts WHERE id = NEW.contact_id AND company_id = NEW.company_id);
+END;
+
+CREATE TRIGGER trg_position_contact_belongs_upd
+BEFORE UPDATE OF company_id, contact_id ON position_openings
+BEGIN
+    SELECT RAISE(ABORT, 'position contact must belong to the position company')
+    WHERE NOT EXISTS (
+        SELECT 1 FROM company_contacts WHERE id = NEW.contact_id AND company_id = NEW.company_id);
+END;
+
+CREATE TABLE position_keywords (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    position_id   INTEGER NOT NULL REFERENCES position_openings(id) ON DELETE CASCADE,
+    keyword       TEXT NOT NULL,
+    keyword_type  TEXT NOT NULL DEFAULT 'other' CHECK (keyword_type IN (
+        'skill','language','industry','city','title','degree','other')),
+    weight        REAL NOT NULL DEFAULT 1,
+    is_required   INTEGER NOT NULL DEFAULT 0 CHECK (is_required IN (0,1)),
+    source        TEXT NOT NULL DEFAULT 'rule' CHECK (source IN ('rule','manual')),
+    created_at    TEXT NOT NULL,
+    updated_at    TEXT NOT NULL,
+    UNIQUE (position_id, keyword)
+);
+```
+
+---
+
+### 4.3 Migration 003: Candidate Profile & Ingestion Audit (`003_candidate.sql`)
+
+```sql
+-- 003_candidate.sql  候选人主档、联系方式、导入批次、简历及其列表子表 | Candidate profile, contacts, import batches, resumes and their list tables | 候補者マスタ、連絡先、インポートバッチ、履歴書とそのリストテーブル
+-- 列表子表沿用 v3 JSON 字段名；日期统一 ISO（YYYY-MM-DD / YYYY-MM）；薪资 REAL。 | List tables reuse the v3 JSON field names; dates are ISO (YYYY-MM-DD / YYYY-MM); salaries are REAL. | リストテーブルは v3 JSON のフィールド名を踏襲し、日付は ISO（YYYY-MM-DD / YYYY-MM）、給与は REAL とする。
+
 CREATE TABLE candidate_profiles (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_uuid TEXT NOT NULL UNIQUE,
-
-    full_name TEXT NOT NULL DEFAULT '',
-    gender TEXT NOT NULL DEFAULT '',
-    age INTEGER,
-    birth_date TEXT NOT NULL DEFAULT '',
-    birth_year INTEGER,
-
-    marital_status TEXT NOT NULL DEFAULT '',
-    children_status TEXT NOT NULL DEFAULT '',
-    political_status TEXT NOT NULL DEFAULT '',
-
-    height_cm REAL,
-    weight_kg REAL,
-
-    household_registration TEXT NOT NULL DEFAULT '',
-    address TEXT NOT NULL DEFAULT '',
-    postal_code TEXT NOT NULL DEFAULT '',
-    platform_from TEXT NOT NULL DEFAULT '',
-    platform_resume_id TEXT NOT NULL DEFAULT '',
-    city TEXT NOT NULL DEFAULT '',
-    nationality TEXT NOT NULL DEFAULT '',
-
-    primary_phone TEXT NOT NULL DEFAULT '',
-    primary_email TEXT NOT NULL DEFAULT '',
-
-    current_company TEXT NOT NULL DEFAULT '',
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    candidate_uuid   TEXT NOT NULL UNIQUE,
+    record_id        TEXT NOT NULL DEFAULT '',          -- merge-v3-<group_id>
+    full_name        TEXT NOT NULL DEFAULT '',
+    english_name     TEXT NOT NULL DEFAULT '',
+    gender           TEXT NOT NULL DEFAULT '',
+    birth_date       TEXT NOT NULL DEFAULT '',
+    city             TEXT NOT NULL DEFAULT '',
+    primary_phone    TEXT NOT NULL DEFAULT '',          -- 冗余自 candidate_contacts（主号）
+    primary_email    TEXT NOT NULL DEFAULT '',
+    current_company  TEXT NOT NULL DEFAULT '',
     current_position TEXT NOT NULL DEFAULT '',
-    current_industry TEXT NOT NULL DEFAULT '',
-    current_employment_status TEXT NOT NULL DEFAULT '',
-
-    highest_school TEXT NOT NULL DEFAULT '',
-    highest_major TEXT NOT NULL DEFAULT '',
-    highest_degree_type TEXT NOT NULL DEFAULT '',
-    highest_degree_rank INTEGER,
-
-    work_years REAL,
-
-    personal_summary TEXT NOT NULL DEFAULT '',
-
-    candidate_status TEXT NOT NULL DEFAULT 'active'
-        CHECK (candidate_status IN (
-            'active',
-            'archived',
-            'do_not_contact'
-        )),
-
-    resume_updated_date TEXT NOT NULL DEFAULT '',
-    resume_download_date TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL
+    highest_degree   TEXT NOT NULL DEFAULT '',
+    work_years       REAL,
+    status           TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active','archived')),
+    source_type      TEXT NOT NULL DEFAULT 'import' CHECK (source_type IN ('import','manual','position')),
+    source_position_id INTEGER REFERENCES position_openings(id) ON DELETE SET NULL,
+    owner_user_id    INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    created_by       INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    updated_by       INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    created_at       TEXT NOT NULL,
+    updated_at       TEXT NOT NULL
 );
+CREATE UNIQUE INDEX uq_candidate_primary_phone ON candidate_profiles(primary_phone) WHERE primary_phone <> '';
+CREATE UNIQUE INDEX uq_candidate_primary_email ON candidate_profiles(primary_email) WHERE primary_email <> '';
+CREATE INDEX idx_candidate_profiles_name   ON candidate_profiles(full_name);
+CREATE INDEX idx_candidate_profiles_status ON candidate_profiles(status);
+CREATE INDEX idx_candidate_profiles_source_position ON candidate_profiles(source_position_id);
+CREATE INDEX idx_candidate_profiles_record ON candidate_profiles(record_id);
 
-CREATE INDEX idx_candidate_profiles_name
-ON candidate_profiles(full_name);
-
-CREATE INDEX idx_candidate_profiles_city
-ON candidate_profiles(city);
-
-CREATE INDEX idx_candidate_profiles_current_company
-ON candidate_profiles(current_company);
-
-CREATE INDEX idx_candidate_profiles_current_position
-ON candidate_profiles(current_position);
-
-CREATE INDEX idx_candidate_profiles_degree
-ON candidate_profiles(highest_degree_rank);
-
-CREATE INDEX idx_candidate_profiles_work_years
-ON candidate_profiles(work_years);
-
-CREATE INDEX idx_candidate_profiles_status
-ON candidate_profiles(candidate_status);
-```
-
----
-
-## 8.2 candidate_contacts
-
-Supports multiple phone numbers, email addresses, WeChat handles, etc., per candidate.
-
-```sql
 CREATE TABLE candidate_contacts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    candidate_id     INTEGER NOT NULL REFERENCES candidate_profiles(id) ON DELETE CASCADE,
+    contact_type     TEXT NOT NULL CHECK (contact_type IN ('mobile','landline','email')),
+    contact_value    TEXT NOT NULL,                      -- 原值
+    normalized_value TEXT NOT NULL,                      -- 手机/座机仅数字(去86)；邮箱小写
+    is_primary       INTEGER NOT NULL DEFAULT 0 CHECK (is_primary IN (0,1)),
+    is_shared        INTEGER NOT NULL DEFAULT 0 CHECK (is_shared IN (0,1)),
+    source           TEXT NOT NULL DEFAULT 'import' CHECK (source IN ('import','manual')),
+    created_at       TEXT NOT NULL,
+    updated_at       TEXT NOT NULL,
+    CHECK (NOT (is_primary = 1 AND is_shared = 1)),
+    UNIQUE (candidate_id, contact_type, normalized_value)
+);
+-- 手机/邮箱全局唯一（共用的允许多人重复出现；座机不限，常为公司总机）
+-- Mobile numbers / emails are globally unique (shared ones may appear for several people; landlines are not restricted since they are often a company switchboard)
+-- 携帯番号・メールは全体で一意（共用は複数人に重複可。固定電話は会社の代表番号が多いため制限しない）
+CREATE UNIQUE INDEX uq_candidate_contacts_value
+    ON candidate_contacts(contact_type, normalized_value) WHERE is_shared = 0 AND contact_type <> 'landline';
+CREATE UNIQUE INDEX uq_candidate_contacts_primary
+    ON candidate_contacts(candidate_id, contact_type) WHERE is_primary = 1;
+CREATE INDEX idx_candidate_contacts_lookup ON candidate_contacts(contact_type, normalized_value);
 
-    candidate_id INTEGER NOT NULL,
-
-    contact_type TEXT NOT NULL
-        CHECK (contact_type IN (
-            'phone',
-            'email',
-            'wechat',
-            'other'
-        )),
-
-    contact_value TEXT NOT NULL,
-    normalized_value TEXT NOT NULL DEFAULT '',
-
-    is_primary INTEGER NOT NULL DEFAULT 0,
-
-    source_resume_id INTEGER,
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+CREATE TABLE candidate_import_batches (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    batch_uuid       TEXT NOT NULL UNIQUE,
+    source_dir       TEXT NOT NULL DEFAULT '',
+    status           TEXT NOT NULL DEFAULT 'running' CHECK (status IN ('running','completed','failed')),
+    total_files      INTEGER NOT NULL DEFAULT 0,
+    created_count    INTEGER NOT NULL DEFAULT 0,
+    updated_count    INTEGER NOT NULL DEFAULT 0,
+    skipped_count    INTEGER NOT NULL DEFAULT 0,
+    failed_count     INTEGER NOT NULL DEFAULT 0,
+    rejected_count   INTEGER NOT NULL DEFAULT 0,   -- 严格模式下因警告被拒绝写库的文件数 | Files rejected in strict mode because of warnings | 厳格モードで警告のため書き込みを拒否したファイル数
+    warning_count    INTEGER NOT NULL DEFAULT 0,
+    created_by       INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    started_at       TEXT NOT NULL,
+    finished_at      TEXT
 );
 
-CREATE INDEX idx_candidate_contacts_candidate
-ON candidate_contacts(candidate_id);
-
-CREATE INDEX idx_candidate_contacts_type_value
-ON candidate_contacts(contact_type, normalized_value);
-```
-
----
-
-## 8.3 candidate_import_records
-
-Retains the raw JSON file for each imported resume.
-
-Serves as immutable audit evidence.
-
-```sql
 CREATE TABLE candidate_import_records (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-
-    source_file_path TEXT NOT NULL DEFAULT '',
-    source_file_name TEXT NOT NULL DEFAULT '',
-    source_file_hash TEXT NOT NULL DEFAULT '',
-
-    source_system TEXT NOT NULL DEFAULT '',
-    source_resume_id TEXT NOT NULL DEFAULT '',
-
-    original_json TEXT NOT NULL,
-
-    imported_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    batch_id         INTEGER NOT NULL REFERENCES candidate_import_batches(id) ON DELETE CASCADE,
+    candidate_id     INTEGER REFERENCES candidate_profiles(id) ON DELETE SET NULL,
+    file_name        TEXT NOT NULL,
+    record_id        TEXT NOT NULL DEFAULT '',
+    content_hash     TEXT NOT NULL DEFAULT '',
+    result           TEXT NOT NULL CHECK (result IN ('created','updated','skipped','failed','rejected')),
+    created_at       TEXT NOT NULL
 );
+CREATE INDEX idx_import_records_batch ON candidate_import_records(batch_id);
+CREATE INDEX idx_import_records_hash  ON candidate_import_records(content_hash);
+CREATE INDEX idx_import_records_candidate ON candidate_import_records(candidate_id);
 
-CREATE INDEX idx_candidate_import_records_candidate
-ON candidate_import_records(candidate_id);
-
-CREATE INDEX idx_candidate_import_records_hash
-ON candidate_import_records(source_file_hash);
-```
-
-### Mandatory Constraint
-
-`original_json` stores the raw payload. It is never directly mutated as active business data.
-
----
-
-## 8.4 candidate_resume_variants
-
-When a candidate possesses multilingual resume versions:
-
-```text
-resumes[0] = zh (Chinese Master)
-resumes[1...] = en / ja / de / ... (Language Variants)
-```
-
-Secondary language variants are stored in this table.
-
-```sql
-CREATE TABLE candidate_resume_variants (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    import_record_id INTEGER,
-
-    language_code TEXT NOT NULL,
-    sequence_no INTEGER NOT NULL DEFAULT 0,
-
-    is_primary_language INTEGER NOT NULL DEFAULT 0,
-    is_active INTEGER NOT NULL DEFAULT 1,
-
-    variant_json TEXT NOT NULL DEFAULT '{}',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (import_record_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+CREATE TABLE candidate_import_errors (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    batch_id         INTEGER NOT NULL REFERENCES candidate_import_batches(id) ON DELETE CASCADE,
+    candidate_id     INTEGER REFERENCES candidate_profiles(id) ON DELETE SET NULL,
+    file_name        TEXT NOT NULL DEFAULT '',
+    severity         TEXT NOT NULL DEFAULT 'error' CHECK (severity IN ('warning','error')),
+    error_code       TEXT NOT NULL DEFAULT '',          -- contact_conflict / list_misaligned / bad_date / parse_error ...
+    message          TEXT NOT NULL DEFAULT '',
+    detail_json      TEXT NOT NULL DEFAULT '{}',
+    resolved         INTEGER NOT NULL DEFAULT 0 CHECK (resolved IN (0,1)),
+    created_at       TEXT NOT NULL
 );
+CREATE INDEX idx_import_errors_batch ON candidate_import_errors(batch_id);
+CREATE INDEX idx_import_errors_code  ON candidate_import_errors(error_code, resolved);
 
-CREATE INDEX idx_candidate_resume_variants_candidate
-ON candidate_resume_variants(candidate_id);
+-- 简历版本（resumes[]）；第 0 份恒为 zh 主简历
+-- Resume versions (resumes[]); the 0th one is always the main zh resume
+-- 履歴書バージョン（resumes[]）。0 番目は常に zh のメイン履歴書
+CREATE TABLE candidate_resumes (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    candidate_id     INTEGER NOT NULL REFERENCES candidate_profiles(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
+    language_code    TEXT NOT NULL DEFAULT 'zh',        -- JSON: resume_languge
+    is_primary       INTEGER NOT NULL DEFAULT 0 CHECK (is_primary IN (0,1)),
+    full_name        TEXT NOT NULL DEFAULT '',
+    gender           TEXT NOT NULL DEFAULT '',
+    age              INTEGER,
+    birth_date       TEXT NOT NULL DEFAULT '',
+    birth_year       INTEGER,
+    city             TEXT NOT NULL DEFAULT '',
+    address          TEXT NOT NULL DEFAULT '',
+    nationality      TEXT NOT NULL DEFAULT '',
+    marital_status   TEXT NOT NULL DEFAULT '',
+    children_status  TEXT NOT NULL DEFAULT '',
+    political_status TEXT NOT NULL DEFAULT '',
+    household_registration TEXT NOT NULL DEFAULT '',
+    postal_code      TEXT NOT NULL DEFAULT '',
+    height_cm        REAL,
+    weight_kg        REAL,
+    pr               TEXT NOT NULL DEFAULT '',
+    phone            TEXT NOT NULL DEFAULT '',
+    email            TEXT NOT NULL DEFAULT '',
+    platform_from    TEXT NOT NULL DEFAULT '',
+    platform_resume_id TEXT NOT NULL DEFAULT '',
+    created_at       TEXT NOT NULL,
+    updated_at       TEXT NOT NULL,
+    UNIQUE (candidate_id, sequence_no),
+    CHECK (is_primary = 0 OR language_code = 'zh')
+);
+CREATE UNIQUE INDEX uq_candidate_resumes_primary ON candidate_resumes(candidate_id) WHERE is_primary = 1;
 
-CREATE INDEX idx_candidate_resume_variants_language
-ON candidate_resume_variants(language_code);
-```
-
----
-
-## 8.5 candidate_expectations
-
-Career preferences and target positions.
-
-```sql
 CREATE TABLE candidate_expectations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    source_resume_id INTEGER,
-
-    sequence_no INTEGER NOT NULL DEFAULT 1,
-
-    expected_city TEXT NOT NULL DEFAULT '',
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    resume_id        INTEGER NOT NULL REFERENCES candidate_resumes(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
     expected_position TEXT NOT NULL DEFAULT '',
-    expected_salary TEXT NOT NULL DEFAULT '',
-
+    expected_industry TEXT NOT NULL DEFAULT '',
+    expected_city    TEXT NOT NULL DEFAULT '',
+    expected_employment_type TEXT NOT NULL DEFAULT '',
+    expected_salary  TEXT NOT NULL DEFAULT '',
     expected_annual_salary_min REAL,
     expected_annual_salary_max REAL,
-
-    expected_industry TEXT NOT NULL DEFAULT '',
-    expected_employment_type TEXT NOT NULL DEFAULT '',
     expected_start_date TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+    UNIQUE (resume_id, sequence_no)
 );
 
-CREATE INDEX idx_candidate_expectations_candidate
-ON candidate_expectations(candidate_id);
-
-CREATE INDEX idx_candidate_expectations_city
-ON candidate_expectations(expected_city);
-
-CREATE INDEX idx_candidate_expectations_position
-ON candidate_expectations(expected_position);
-```
-
-> Rule: When target expectations are completely empty in the source resume, no record is created.
-
----
-
-## 8.6 candidate_work_experiences
-
-```sql
 CREATE TABLE candidate_work_experiences (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    source_resume_id INTEGER,
-
-    sequence_no INTEGER NOT NULL DEFAULT 1,
-
-    company_name TEXT NOT NULL DEFAULT '',
-    company_employees TEXT NOT NULL DEFAULT '',
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    resume_id        INTEGER NOT NULL REFERENCES candidate_resumes(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
+    company_name     TEXT NOT NULL DEFAULT '',
     company_industry TEXT NOT NULL DEFAULT '',
-
-    position TEXT NOT NULL DEFAULT '',
-    position_type TEXT NOT NULL DEFAULT '',
-    position_salary TEXT NOT NULL DEFAULT '',
-    position_dept TEXT NOT NULL DEFAULT '',
+    company_employees TEXT NOT NULL DEFAULT '',
+    position         TEXT NOT NULL DEFAULT '',
+    position_dept    TEXT NOT NULL DEFAULT '',
+    position_type    TEXT NOT NULL DEFAULT '',
+    position_start   TEXT NOT NULL DEFAULT '',          -- ISO YYYY-MM[-DD]
+    position_resigned TEXT NOT NULL DEFAULT '',         -- '' 表示至今
     position_report_to TEXT NOT NULL DEFAULT '',
     position_subordinate TEXT NOT NULL DEFAULT '',
-
-    employment_type TEXT NOT NULL DEFAULT '',
-
+    position_salary  TEXT NOT NULL DEFAULT '',
     annual_salary_min REAL,
     annual_salary_max REAL,
-
-    status TEXT NOT NULL DEFAULT '',
-    position_start TEXT NOT NULL DEFAULT '',
-    position_resigned TEXT NOT NULL DEFAULT '',
-
-    resigned_reason TEXT NOT NULL DEFAULT '',
+    employment_type  TEXT NOT NULL DEFAULT '',
+    status           TEXT NOT NULL DEFAULT '',
+    resigned_reason  TEXT NOT NULL DEFAULT '',
     position_responsibilities TEXT NOT NULL DEFAULT '',
     position_achievements TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+    UNIQUE (resume_id, sequence_no)
 );
 
-CREATE INDEX idx_candidate_work_candidate
-ON candidate_work_experiences(candidate_id);
-
-CREATE INDEX idx_candidate_work_company
-ON candidate_work_experiences(company_name);
-
-CREATE INDEX idx_candidate_work_position
-ON candidate_work_experiences(position);
-
-CREATE INDEX idx_candidate_work_industry
-ON candidate_work_experiences(company_industry);
-
-CREATE INDEX idx_candidate_work_start
-ON candidate_work_experiences(position_start);
-```
-
----
-
-## 8.7 candidate_educations
-
-```sql
 CREATE TABLE candidate_educations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    source_resume_id INTEGER,
-
-    sequence_no INTEGER NOT NULL DEFAULT 1,
-
-    school_name TEXT NOT NULL DEFAULT '',
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    resume_id        INTEGER NOT NULL REFERENCES candidate_resumes(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
+    school_name      TEXT NOT NULL DEFAULT '',
     school_major_name TEXT NOT NULL DEFAULT '',
     school_degree_type TEXT NOT NULL DEFAULT '',
     school_degree_rank INTEGER,
     school_education_type TEXT NOT NULL DEFAULT '',
-
-    start_ym TEXT NOT NULL DEFAULT '',
-    end_ym TEXT NOT NULL DEFAULT '',
-
-    description TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+    school_start_ym  TEXT NOT NULL DEFAULT '',
+    school_end_ym    TEXT NOT NULL DEFAULT '',
+    UNIQUE (resume_id, sequence_no)
 );
 
-CREATE INDEX idx_candidate_educations_candidate
-ON candidate_educations(candidate_id);
-
-CREATE INDEX idx_candidate_educations_school
-ON candidate_educations(school_name);
-
-CREATE INDEX idx_candidate_educations_major
-ON candidate_educations(school_major_name);
-
-CREATE INDEX idx_candidate_educations_degree
-ON candidate_educations(school_degree_rank);
-```
-
-Degree Ranking Mapping:
-
-```text
-7 = Postdoctoral
-6 = Doctoral (Ph.D.)
-5 = Master's Degree
-4 = Bachelor's Degree
-3 = Associate Degree / Junior College
-2 = High School / Technical Secondary School
-1 = Middle School and Below
-```
-
----
-
-## 8.8 candidate_projects
-
-```sql
 CREATE TABLE candidate_projects (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    source_resume_id INTEGER,
-
-    sequence_no INTEGER NOT NULL DEFAULT 1,
-
-    project_name TEXT NOT NULL DEFAULT '',
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    resume_id        INTEGER NOT NULL REFERENCES candidate_resumes(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
+    project_name     TEXT NOT NULL DEFAULT '',
     company_or_client TEXT NOT NULL DEFAULT '',
-    role_name TEXT NOT NULL DEFAULT '',
-
-    start_ym TEXT NOT NULL DEFAULT '',
-    end_ym TEXT NOT NULL DEFAULT '',
-
-    description TEXT NOT NULL DEFAULT '',
+    role_name        TEXT NOT NULL DEFAULT '',
+    start_ym         TEXT NOT NULL DEFAULT '',
+    end_ym           TEXT NOT NULL DEFAULT '',
+    description      TEXT NOT NULL DEFAULT '',
     responsibilities TEXT NOT NULL DEFAULT '',
-    achievements TEXT NOT NULL DEFAULT '',
-    keywords TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+    achievements     TEXT NOT NULL DEFAULT '',
+    keywords         TEXT NOT NULL DEFAULT '',
+    fingerprint      TEXT NOT NULL DEFAULT '',
+    UNIQUE (resume_id, sequence_no)
 );
 
-CREATE INDEX idx_candidate_projects_candidate
-ON candidate_projects(candidate_id);
-
-CREATE INDEX idx_candidate_projects_name
-ON candidate_projects(project_name);
-```
-
----
-
-## 8.9 candidate_trainings
-
-```sql
 CREATE TABLE candidate_trainings (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    source_resume_id INTEGER,
-
-    sequence_no INTEGER NOT NULL DEFAULT 1,
-
-    organization_name TEXT NOT NULL DEFAULT '',
-    training_name TEXT NOT NULL DEFAULT '',
-
-    start_ym TEXT NOT NULL DEFAULT '',
-    end_ym TEXT NOT NULL DEFAULT '',
-
-    certificate_name TEXT NOT NULL DEFAULT '',
-    description TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    resume_id        INTEGER NOT NULL REFERENCES candidate_resumes(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
+    training_name    TEXT NOT NULL DEFAULT '',
+    training_org     TEXT NOT NULL DEFAULT '',
+    training_start   TEXT NOT NULL DEFAULT '',
+    training_end     TEXT NOT NULL DEFAULT '',
+    training_content TEXT NOT NULL DEFAULT '',
+    raw_json         TEXT NOT NULL DEFAULT '{}',        -- 样本中尚无训练字段，原样保留
+    UNIQUE (resume_id, sequence_no)
 );
 
-CREATE INDEX idx_candidate_trainings_candidate
-ON candidate_trainings(candidate_id);
-```
-
----
-
-## 8.10 candidate_languages
-
-```sql
 CREATE TABLE candidate_languages (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    source_resume_id INTEGER,
-
-    sequence_no INTEGER NOT NULL DEFAULT 1,
-
-    language_name TEXT NOT NULL DEFAULT '',
-    language_level TEXT NOT NULL DEFAULT '',
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    resume_id        INTEGER NOT NULL REFERENCES candidate_resumes(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
+    language_name    TEXT NOT NULL DEFAULT '',
+    language_level   TEXT NOT NULL DEFAULT '',
     language_certificate TEXT NOT NULL DEFAULT '',
     language_certificate_time TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+    UNIQUE (resume_id, sequence_no)
 );
 
-CREATE INDEX idx_candidate_languages_candidate
-ON candidate_languages(candidate_id);
-
-CREATE INDEX idx_candidate_languages_name
-ON candidate_languages(language_name);
-
-CREATE INDEX idx_candidate_languages_level
-ON candidate_languages(language_level);
-```
-
----
-
-## 8.11 candidate_certificates
-
-```sql
 CREATE TABLE candidate_certificates (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    source_resume_id INTEGER,
-
-    sequence_no INTEGER NOT NULL DEFAULT 1,
-
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    resume_id        INTEGER NOT NULL REFERENCES candidate_resumes(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
     certificate_name TEXT NOT NULL DEFAULT '',
     certificate_type TEXT NOT NULL DEFAULT '',
     certificate_time TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+    UNIQUE (resume_id, sequence_no)
 );
 
-CREATE INDEX idx_candidate_certificates_candidate
-ON candidate_certificates(candidate_id);
-
-CREATE INDEX idx_candidate_certificates_name
-ON candidate_certificates(certificate_name);
-```
-
-Recognized standard certifications: CET, JLPT, TOEIC, TOEFL, BEC, etc.
-
----
-
-## 8.12 candidate_skills
-
-```sql
 CREATE TABLE candidate_skills (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    source_resume_id INTEGER,
-
-    sequence_no INTEGER NOT NULL DEFAULT 1,
-
-    skill_name TEXT NOT NULL DEFAULT '',
-    skill_level TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    resume_id        INTEGER NOT NULL REFERENCES candidate_resumes(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
+    skill_name       TEXT NOT NULL DEFAULT '',
+    skill_level      TEXT NOT NULL DEFAULT '',
+    UNIQUE (resume_id, sequence_no)
 );
 
-CREATE INDEX idx_candidate_skills_candidate
-ON candidate_skills(candidate_id);
-
-CREATE INDEX idx_candidate_skills_name
-ON candidate_skills(skill_name);
+CREATE INDEX idx_work_company ON candidate_work_experiences(company_name);
+CREATE INDEX idx_edu_school   ON candidate_educations(school_name);
+CREATE INDEX idx_skill_name   ON candidate_skills(skill_name);
 ```
 
 ---
 
-# 9. Candidate Full-Text Search Tables
-
-## 9.1 candidate_search_documents
-
-Stores the full searchable text document compiled for each candidate.
+### 4.4 Migration 004: Candidate-Job Matching, Interviews & Placements (`004_match_flow.sql`)
 
 ```sql
+-- 004_match_flow.sql  职位-候选人匹配、流转阶段、面试、入职、历史、沟通记录 | Position-candidate matches, pipeline stages, interviews, placements, history, communications | 求人と候補者のマッチング、選考ステージ、面接、入社、履歴、コミュニケーション記録
+
+CREATE TABLE position_candidate_matches (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    position_id      INTEGER NOT NULL REFERENCES position_openings(id) ON DELETE CASCADE,
+    candidate_id     INTEGER NOT NULL REFERENCES candidate_profiles(id) ON DELETE CASCADE,
+    decision         TEXT NOT NULL DEFAULT 'suggested' CHECK (decision IN ('suggested','accepted','dismissed')),
+    stage            TEXT CHECK (stage IS NULL OR stage IN (
+        'pending_contact','contacting','interested','submitted','interviewing',
+        'interview_passed','background_check','offer','hired','guarantee_passed',
+        'candidate_declined','client_rejected','background_check_failed',
+        'offer_declined','left_during_guarantee')),
+    origin           TEXT NOT NULL DEFAULT 'auto' CHECK (origin IN ('auto','import','manual')),
+    match_score      REAL NOT NULL DEFAULT 0,
+    matched_keywords TEXT NOT NULL DEFAULT '[]',        -- JSON 数组
+    dismissed_reason TEXT NOT NULL DEFAULT '',
+    manual_note      TEXT NOT NULL DEFAULT '',
+    decided_at       TEXT,
+    stage_changed_at TEXT,
+    created_by       INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    updated_by       INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    created_at       TEXT NOT NULL,
+    updated_at       TEXT NOT NULL,
+    UNIQUE (position_id, candidate_id),
+    CHECK (stage IS NULL OR decision = 'accepted'),
+    CHECK (decision <> 'accepted' OR stage IS NOT NULL)
+);
+CREATE INDEX idx_match_position  ON position_candidate_matches(position_id, decision);
+CREATE INDEX idx_match_candidate ON position_candidate_matches(candidate_id);
+CREATE INDEX idx_match_stage     ON position_candidate_matches(stage);
+
+CREATE TABLE position_candidate_interviews (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    match_id         INTEGER NOT NULL REFERENCES position_candidate_matches(id) ON DELETE CASCADE,
+    round_no         INTEGER NOT NULL DEFAULT 1,
+    interview_type   TEXT NOT NULL DEFAULT '',
+    scheduled_at     TEXT,
+    interviewer      TEXT NOT NULL DEFAULT '',
+    result           TEXT NOT NULL DEFAULT 'pending' CHECK (result IN ('pending','passed','failed','cancelled')),
+    feedback         TEXT NOT NULL DEFAULT '',
+    created_at       TEXT NOT NULL,
+    updated_at       TEXT NOT NULL,
+    UNIQUE (match_id, round_no)
+);
+
+CREATE TABLE position_candidate_placements (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    match_id         INTEGER NOT NULL UNIQUE REFERENCES position_candidate_matches(id) ON DELETE CASCADE,
+    offer_date       TEXT,
+    offer_salary     REAL,
+    onboard_date     TEXT,
+    guarantee_days   INTEGER NOT NULL DEFAULT 0 CHECK (guarantee_days >= 0),   -- 入职时从职位拷贝快照
+    guarantee_end_date TEXT,
+    note             TEXT NOT NULL DEFAULT '',
+    created_at       TEXT NOT NULL,
+    updated_at       TEXT NOT NULL
+);
+CREATE INDEX idx_placement_guarantee_end ON position_candidate_placements(guarantee_end_date);
+
+-- 决策与阶段变更历史（统计视图的基础）
+-- History of decisions and stage changes (the basis of the statistics views)
+-- 判定とステージ変更の履歴（統計ビューの基礎）
+CREATE TABLE position_candidate_history (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    match_id         INTEGER NOT NULL REFERENCES position_candidate_matches(id) ON DELETE CASCADE,
+    change_type      TEXT NOT NULL CHECK (change_type IN ('decision','stage')),
+    from_value       TEXT,
+    to_value         TEXT NOT NULL,
+    reason           TEXT NOT NULL DEFAULT '',
+    is_system        INTEGER NOT NULL DEFAULT 0 CHECK (is_system IN (0,1)),
+    operator_user_id INTEGER REFERENCES system_users(id),
+    created_at       TEXT NOT NULL
+);
+CREATE INDEX idx_history_match ON position_candidate_history(match_id, change_type);
+CREATE INDEX idx_history_to    ON position_candidate_history(change_type, to_value);
+
+CREATE TABLE candidate_communications (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    candidate_id     INTEGER NOT NULL REFERENCES candidate_profiles(id) ON DELETE CASCADE,
+    match_id         INTEGER REFERENCES position_candidate_matches(id) ON DELETE SET NULL,
+    resume_id        INTEGER REFERENCES candidate_resumes(id) ON DELETE SET NULL,
+    source_type      TEXT NOT NULL DEFAULT 'manual' CHECK (source_type IN ('manual','system','imported_resume')),
+    channel          TEXT NOT NULL DEFAULT '',
+    communicate_time TEXT NOT NULL DEFAULT '',
+    communicate_content TEXT NOT NULL DEFAULT '',
+    created_by       INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    created_at       TEXT NOT NULL,
+    updated_at       TEXT NOT NULL
+);
+CREATE INDEX idx_comm_candidate ON candidate_communications(candidate_id, source_type);
+CREATE INDEX idx_comm_match ON candidate_communications(match_id);
+```
+
+---
+
+### 4.5 Migration 005: Full-Text Search & Analytical Views (`005_search_views.sql`)
+
+```sql
+-- 005_search_views.sql  检索文档、FTS5 trigram、统计视图 | Search documents, FTS5 trigram, statistics views | 検索ドキュメント、FTS5 trigram、統計ビュー
+
 CREATE TABLE candidate_search_documents (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL UNIQUE,
-
-    raw_text TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE
+    candidate_id INTEGER PRIMARY KEY REFERENCES candidate_profiles(id) ON DELETE CASCADE,
+    raw_text     TEXT NOT NULL DEFAULT '',
+    text_hash    TEXT NOT NULL DEFAULT '',
+    updated_at   TEXT NOT NULL
 );
 
-CREATE INDEX idx_candidate_search_documents_candidate
-ON candidate_search_documents(candidate_id);
-```
-
----
-
-## 9.2 candidate_search_fts
-
-SQLite FTS5 virtual table for high-performance text indexing.
-
-```sql
-CREATE VIRTUAL TABLE candidate_search_fts USING fts5 (
+CREATE VIRTUAL TABLE candidate_search_fts USING fts5(
     raw_text,
     content='candidate_search_documents',
-    content_rowid='id',
+    content_rowid='candidate_id',
     tokenize='trigram'
 );
-```
 
-Synchronization Triggers (maintained automatically):
-
-```sql
-CREATE TRIGGER candidate_search_documents_ai
-AFTER INSERT ON candidate_search_documents
-BEGIN
-    INSERT INTO candidate_search_fts(rowid, raw_text)
-    VALUES (new.id, new.raw_text);
+CREATE TRIGGER trg_search_doc_ai AFTER INSERT ON candidate_search_documents BEGIN
+    INSERT INTO candidate_search_fts(rowid, raw_text) VALUES (new.candidate_id, new.raw_text);
+END;
+CREATE TRIGGER trg_search_doc_ad AFTER DELETE ON candidate_search_documents BEGIN
+    INSERT INTO candidate_search_fts(candidate_search_fts, rowid, raw_text) VALUES ('delete', old.candidate_id, old.raw_text);
+END;
+CREATE TRIGGER trg_search_doc_au AFTER UPDATE ON candidate_search_documents BEGIN
+    INSERT INTO candidate_search_fts(candidate_search_fts, rowid, raw_text) VALUES ('delete', old.candidate_id, old.raw_text);
+    INSERT INTO candidate_search_fts(rowid, raw_text) VALUES (new.candidate_id, new.raw_text);
 END;
 
-CREATE TRIGGER candidate_search_documents_ad
-AFTER DELETE ON candidate_search_documents
-BEGIN
-    INSERT INTO candidate_search_fts(candidate_search_fts, rowid, raw_text)
-    VALUES('delete', old.id, old.raw_text);
-END;
+-- 候选人统计：推荐=到达 submitted；成功=到达 hired；沟通=非 imported_resume 的沟通条数
+-- Candidate statistics: recommended = reached submitted; successful = reached hired; communications = count of communications that are not imported_resume
+-- 候補者の統計：推薦＝submitted に到達、成功＝hired に到達、コミュニケーション＝imported_resume 以外の件数
+CREATE VIEW v_candidate_stats AS
+SELECT
+    c.id AS candidate_id,
+    (SELECT COUNT(DISTINCT h.match_id) FROM position_candidate_history h
+        JOIN position_candidate_matches m ON m.id = h.match_id
+        WHERE m.candidate_id = c.id AND h.change_type = 'stage' AND h.to_value = 'submitted') AS recommend_count,
+    (SELECT COUNT(DISTINCT h.match_id) FROM position_candidate_history h
+        JOIN position_candidate_matches m ON m.id = h.match_id
+        WHERE m.candidate_id = c.id AND h.change_type = 'stage' AND h.to_value = 'hired') AS success_count,
+    (SELECT COUNT(*) FROM candidate_communications cc
+        WHERE cc.candidate_id = c.id AND cc.source_type <> 'imported_resume') AS communication_count
+FROM candidate_profiles c;
 
-CREATE TRIGGER candidate_search_documents_au
-AFTER UPDATE ON candidate_search_documents
-BEGIN
-    INSERT INTO candidate_search_fts(candidate_search_fts, rowid, raw_text)
-    VALUES('delete', old.id, old.raw_text);
-    INSERT INTO candidate_search_fts(rowid, raw_text)
-    VALUES (new.id, new.raw_text);
-END;
+CREATE VIEW v_position_pipeline_counts AS
+SELECT
+    p.id AS position_id,
+    COUNT(CASE WHEN m.decision = 'suggested' THEN 1 END) AS suggested_count,
+    COUNT(CASE WHEN m.decision = 'accepted'  THEN 1 END) AS accepted_count,
+    COUNT(CASE WHEN m.decision = 'dismissed' THEN 1 END) AS dismissed_count,
+    COUNT(CASE WHEN m.stage = 'submitted' THEN 1 END) AS submitted_now,
+    COUNT(CASE WHEN m.stage = 'interviewing' THEN 1 END) AS interviewing_now,
+    COUNT(CASE WHEN m.stage = 'offer' THEN 1 END) AS offer_now,
+    COUNT(CASE WHEN m.stage IN ('hired','guarantee_passed') THEN 1 END) AS hired_count
+FROM position_openings p
+LEFT JOIN position_candidate_matches m ON m.position_id = p.id
+GROUP BY p.id;
+
+CREATE VIEW v_company_position_counts AS
+SELECT
+    co.id AS company_id,
+    COUNT(p.id) AS position_total,
+    COUNT(CASE WHEN p.status = 'open' THEN 1 END) AS position_open
+FROM company_profiles co
+LEFT JOIN position_openings p ON p.company_id = co.id
+GROUP BY co.id;
 ```
 
 ---
 
-# 10. Candidate Communication Records
+## 5. Backend Services & IPC Interface Specification
 
-## 10.1 candidate_communications
+Structured error codes via `AppError`:
+- `VALIDATION` (400): Parameter validation failures (empty company name, missing contact name);
+- `NOT_FOUND` (404): Resource not found;
+- `DUPLICATE` (409): Unique constraint collisions;
+- `IN_USE` (422): Entity currently referenced and cannot be deleted (e.g. contact in use by active opening);
+- `INTERNAL_ERROR` (500): Internal server or environment errors.
 
-Stores headhunter interactions, outreach, follow-ups, and notes for candidates.
-
-```sql
-CREATE TABLE candidate_communications (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    position_id INTEGER,
-
-    communication_type TEXT NOT NULL
-        CHECK (communication_type IN (
-            'phone',
-            'wechat',
-            'interview',
-            'email',
-            'offline',
-            'other'
-        )),
-
-    direction TEXT NOT NULL DEFAULT 'outbound'
-        CHECK (direction IN ('inbound', 'outbound')),
-
-    communicate_time TEXT NOT NULL,
-    communicate_content TEXT NOT NULL,
-
-    next_followup_time TEXT,
-
-    creator_name TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (position_id)
-        REFERENCES position_openings(id)
-        ON DELETE SET NULL
-);
-
-CREATE INDEX idx_candidate_communications_candidate
-ON candidate_communications(candidate_id);
-
-CREATE INDEX idx_candidate_communications_position
-ON candidate_communications(position_id);
-
-CREATE INDEX idx_candidate_communications_time
-ON candidate_communications(communicate_time);
-```
-
-### communication_type Standard Values
-
-- `phone`: Phone call
-- `wechat`: WeChat message / voice call
-- `interview`: Face-to-face or video interview
-- `email`: Email correspondence
-- `offline`: On-site visit / coffee meeting
-- `other`: Other channels
-
-### direction Standard Values
-
-- `outbound`: Headhunter contacted candidate
-- `inbound`: Candidate proactively contacted headhunter
+### 5.1 Service & API Method Registry
+1. **`CompanyService`**:
+   - `companiesSearch(params)`: Multi-criteria filtering and pagination;
+   - `companyGet(companyId)`: Details, contacts list, and notes;
+   - `companyCreate(fields)` / `companyUpdate(companyId, fields)`;
+   - `companyDelete(companyId)`: Automatically downgrades to soft-delete if positions exist;
+   - `companyContactsList(companyId)` / `companyContactAdd(companyId, fields)` / `companyContactUpdate(contactId, fields)` / `companyContactDelete(contactId)`;
+   - `companyNoteAdd(companyId, fields)` / `companyNoteDelete(noteId)`.
+2. **`CandidateImportService`**:
+   - `candidateImportPickFiles()` / `candidateImportPickDirectory()`: System picker;
+   - `candidateImportRun(selectedPaths, options)`: Run bulk ingestion with strictMode support;
+   - `candidateImportBatchesList()`: History of import batches;
+   - `candidateImportIssuesList(importBatchId)`: Detailed warnings/errors.
+3. **`SystemService`**:
+   - `getVersion()`: Desktop application runtime version;
+   - `getDatabasePath()`: Physical SQLite file path in use.
 
 ---
 
-# 11. Position Opening Module
+## 6. Frontend Dynamic Internationalization Architecture
 
-## 11.1 position_openings
+1. **Navigation Guard Loading**:
+   ```javascript
+   router.beforeEach(async to => {
+     await ensureModulePacksLoaded(to.meta.i18nPacks || []);
+   });
+   ```
+2. **Language Pack Partitioning**:
+   - `core.json`: Common menu, buttons, status badges (loaded on boot);
+   - `company.json`: CRM and contacts dictionaries (loaded on `/company`);
+   - `candidateImport.json`: Ingestion workspace dictionary (loaded on `/candidate/import`).
+3. **Element Plus Synchronization**:
+   - Dynamic locale binding updates Element Plus UI components in sync with system language.
 
-Position / Job Opening master table.
+---
 
-```sql
-CREATE TABLE position_openings (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+## 7. Automated Test Suite Specification (24/24 Pass)
 
-    company_id INTEGER NOT NULL,
+All 24 automated unit and integration tests passing:
+1. `candidateImportBatchesList returns batches ordered by id desc`
+2. `candidateImportIssuesList returns warnings of a batch`
+3. `candidateImportRun rejects empty selection`
+4. `candidateImportRun: a single file, then re-import is skipped by content hash`
+5. `candidateImportRun: a folder imports all json files; invalid input is rejected`
+6. `candidateImportPickFiles / PickDirectory use the injected dialog`
+7. `strict mode: a file with a contact conflict is rejected and not written; a clean file is imported`
+8. `companyCreate / companyGet / companiesSearch / companyUpdate`
+9. `companyCreate rejects empty and duplicate names with business error codes`
+10. `first contact becomes primary; a new primary replaces the old one`
+11. `companyDelete: physical delete without positions, soft delete with positions; contact in use cannot be deleted`
+12. `migrations create schema + system user`
+13. `normalize`
+14. `import samples, idempotent re-run`
+15. `primary phone/email unique constraints`
+16. `multilingual: zh primary + jp, lists aligned`
+17. `misaligned multilingual lists produce a warning`
+18. `FTS: >=3 chars via trigram, raw_text built from fields`
+19. `shared/conflicting contact: first come wins, second becomes shared + warning`
+20. `re-import changed content updates in place, no duplicates`
+21. `imported_resume communications excluded from communication_count`
+22. `company/position/match flow constraints + stats views`
+23. `landline shared by many candidates: no conflict; one-sided empty date is not misaligned`
+24. `small date drift between language versions is tolerated, large drift warns`
 
-    position_name TEXT NOT NULL,
-    job_code TEXT NOT NULL DEFAULT '',
+---
 
-    department TEXT NOT NULL DEFAULT '',
-    city TEXT NOT NULL DEFAULT '',
-    work_location TEXT NOT NULL DEFAULT '',
+## 8. Packaging & Delivery Guide
 
-    employment_type TEXT NOT NULL DEFAULT 'full_time',
+```bash
+# Frontend build
+cd frontend && npm run build
 
-    headcount INTEGER NOT NULL DEFAULT 1,
+# Unpacked directory packaging
+cd electron && npm run dist:dir
 
-    annual_salary_min REAL,
-    annual_salary_max REAL,
-    salary_months INTEGER DEFAULT 12,
+# Standalone smoke test
+.\release\win-unpacked\RecruitmentSystemV2.exe --smoke-test
 
-    status TEXT NOT NULL DEFAULT 'draft'
-        CHECK (status IN (
-            'draft',
-            'open',
-            'paused',
-            'filled',
-            'cancelled'
-        )),
-
-    priority TEXT NOT NULL DEFAULT 'medium'
-        CHECK (priority IN ('low', 'medium', 'high', 'urgent')),
-
-    recruiter_name TEXT NOT NULL DEFAULT '',
-
-    opened_at TEXT,
-    closed_at TEXT,
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (company_id)
-        REFERENCES company_profiles(id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX idx_position_openings_company
-ON position_openings(company_id);
-
-CREATE INDEX idx_position_openings_status
-ON position_openings(status);
-
-CREATE INDEX idx_position_openings_city
-ON position_openings(city);
+# Installer & Portable generation
+cd electron && npm run dist
 ```
 
 ---
 
-## 11.2 position_requirements
+> **Project Credits & Acknowledgements**  
+> System architecture, refactoring, and implementations co-developed with **Google DeepMind Antigravity**, **OpenAI Codex**, and **Anthropic Claude**.
 
-Hard requirements and criteria for candidate screening.
-
-```sql
-CREATE TABLE position_requirements (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    position_id INTEGER NOT NULL UNIQUE,
-
-    min_degree_rank INTEGER DEFAULT 0,
-    min_work_years REAL DEFAULT 0,
-    max_work_years REAL,
-
-    target_cities TEXT NOT NULL DEFAULT '[]',
-    target_industries TEXT NOT NULL DEFAULT '[]',
-
-    job_description TEXT NOT NULL DEFAULT '',
-    job_requirements TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (position_id)
-        REFERENCES position_openings(id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX idx_position_requirements_position
-ON position_requirements(position_id);
-```
-
----
-
-## 11.3 position_skill_requirements
-
-Skill criteria and weights for automated matching.
-
-```sql
-CREATE TABLE position_skill_requirements (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    position_id INTEGER NOT NULL,
-
-    skill_name TEXT NOT NULL,
-    is_required INTEGER NOT NULL DEFAULT 1,
-    weight REAL NOT NULL DEFAULT 1.0,
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (position_id)
-        REFERENCES position_openings(id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX idx_position_skills_position
-ON position_skill_requirements(position_id);
-
-CREATE INDEX idx_position_skills_name
-ON position_skill_requirements(skill_name);
-```
-
----
-
-## 11.4 position_language_requirements
-
-Language proficiency requirements for the opening.
-
-```sql
-CREATE TABLE position_language_requirements (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    position_id INTEGER NOT NULL,
-
-    language_name TEXT NOT NULL,
-    min_level TEXT NOT NULL DEFAULT '',
-    is_required INTEGER NOT NULL DEFAULT 1,
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (position_id)
-        REFERENCES position_openings(id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX idx_position_languages_position
-ON position_language_requirements(position_id);
-```
-
----
-
-## 11.5 position_keywords
-
-Keywords utilized by FTS recall for talent retrieval.
-
-```sql
-CREATE TABLE position_keywords (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    position_id INTEGER NOT NULL,
-
-    keyword TEXT NOT NULL,
-    category TEXT NOT NULL DEFAULT 'general'
-        CHECK (category IN (
-            'general',
-            'skill',
-            'title',
-            'industry',
-            'cert'
-        )),
-    weight REAL NOT NULL DEFAULT 1.0,
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (position_id)
-        REFERENCES position_openings(id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX idx_position_keywords_position
-ON position_keywords(position_id);
-
-CREATE INDEX idx_position_keywords_word
-ON position_keywords(keyword);
-```
-
----
-
-# 12. PositionCandidate Core Match Relationship
-
-## 12.1 position_candidate_matches
-
-Core relationship entity recording matches between candidates and positions.
-
-```sql
-CREATE TABLE position_candidate_matches (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    position_id INTEGER NOT NULL,
-    candidate_id INTEGER NOT NULL,
-
-    match_source TEXT NOT NULL DEFAULT 'system_auto'
-        CHECK (match_source IN (
-            'system_auto',
-            'manual_search',
-            'referral',
-            'candidate_apply'
-        )),
-
-    score REAL NOT NULL DEFAULT 0,
-    score_details_json TEXT NOT NULL DEFAULT '{}',
-    match_reason_json TEXT NOT NULL DEFAULT '{}',
-
-    decision TEXT NOT NULL DEFAULT 'pending'
-        CHECK (decision IN (
-            'pending',
-            'system_recommended',
-            'accepted',
-            'dismissed'
-        )),
-
-    pipeline_stage TEXT NOT NULL DEFAULT 'sourced'
-        CHECK (pipeline_stage IN (
-            'sourced',
-            'contacted',
-            'submitted',
-            'client_interview',
-            'offer',
-            'onboarded',
-            'archived'
-        )),
-
-    is_dismissed INTEGER NOT NULL DEFAULT 0,
-    dismiss_reason TEXT NOT NULL DEFAULT '',
-
-    last_scored_at TEXT,
-    last_action_at TEXT,
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (position_id)
-        REFERENCES position_openings(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    UNIQUE (position_id, candidate_id)
-);
-
-CREATE INDEX idx_matches_position
-ON position_candidate_matches(position_id);
-
-CREATE INDEX idx_matches_candidate
-ON position_candidate_matches(candidate_id);
-
-CREATE INDEX idx_matches_score
-ON position_candidate_matches(score);
-
-CREATE INDEX idx_matches_decision
-ON position_candidate_matches(decision);
-
-CREATE INDEX idx_matches_stage
-ON position_candidate_matches(pipeline_stage);
-```
-
----
-
-# 13. Separation of decision and pipeline_stage
-
-`decision` (matching evaluation) and `pipeline_stage` (recruitment workflow) MUST remain strictly decoupled.
-
-## 13.1 decision (Matching Decision)
-
-Controls whether a candidate is recognized as viable for the position opening:
-
-- `pending`: Newly ingested or awaiting review;
-- `system_recommended`: Scored high by matching engine and awaiting human triage;
-- `accepted`: Human headhunter confirmed candidate is suitable; enters recruitment pipeline;
-- `dismissed`: Human headhunter or rules dismissed candidate as a mismatch.
-
-## 13.2 pipeline_stage (Recruitment Workflow Stage)
-
-Controls the operational status across the headhunting sales funnel:
-
-- `sourced`: Candidate sourced / matched;
-- `contacted`: Initial contact / pitch conducted;
-- `submitted`: Resume formally submitted to hiring company;
-- `client_interview`: Client interview scheduled or in progress;
-- `offer`: Offer extended or negotiating terms;
-- `onboarded`: Successfully hired and onboarded;
-- `archived`: Process terminated / archived.
-
-## 13.3 Automated Matching Must Never Overwrite Human Decisions
-
-Rule:
-- If a match has already been marked as `accepted` or `dismissed` by a human recruiter, subsequent automated re-scoring runs may update `score` and `score_details_json`, but MUST NEVER mutate `decision` or `pipeline_stage`.
-- Human decisions always take absolute precedence over algorithm scores.
-
----
-
-# 14. Recruitment Process History & Auditing
-
-## 14.1 position_candidate_stage_history
-
-Records every stage progression in the recruitment pipeline.
-
-```sql
-CREATE TABLE position_candidate_stage_history (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    match_id INTEGER NOT NULL,
-
-    from_stage TEXT NOT NULL DEFAULT '',
-    to_stage TEXT NOT NULL,
-
-    remark TEXT NOT NULL DEFAULT '',
-    operator_name TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-
-    FOREIGN KEY (match_id)
-        REFERENCES position_candidate_matches(id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX idx_stage_history_match
-ON position_candidate_stage_history(match_id);
-```
-
----
-
-## 14.2 position_candidate_events
-
-Tracks all business milestones and interaction logs associated with a match.
-
-```sql
-CREATE TABLE position_candidate_events (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    match_id INTEGER NOT NULL,
-
-    event_type TEXT NOT NULL
-        CHECK (event_type IN (
-            'matched',
-            'recommended',
-            'accepted',
-            'dismissed',
-            'contacted',
-            'submitted',
-            'interview_scheduled',
-            'interview_feedback',
-            'offer_issued',
-            'offer_accepted',
-            'onboarded',
-            'stage_changed',
-            'rescore'
-        )),
-
-    payload_json TEXT NOT NULL DEFAULT '{}',
-    remark TEXT NOT NULL DEFAULT '',
-    operator_name TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-
-    FOREIGN KEY (match_id)
-        REFERENCES position_candidate_matches(id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX idx_match_events_match
-ON position_candidate_events(match_id);
-
-CREATE INDEX idx_match_events_type
-ON position_candidate_events(event_type);
-```
-
----
-
-# 15. Company Module
-
-## 15.1 company_profiles
-
-Hiring company / Client profile table.
-
-```sql
-CREATE TABLE company_profiles (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    company_name TEXT NOT NULL UNIQUE,
-    short_name TEXT NOT NULL DEFAULT '',
-
-    industry TEXT NOT NULL DEFAULT '',
-    city TEXT NOT NULL DEFAULT '',
-    scale TEXT NOT NULL DEFAULT '',
-    nature TEXT NOT NULL DEFAULT '',
-
-    website TEXT NOT NULL DEFAULT '',
-    address TEXT NOT NULL DEFAULT '',
-
-    status TEXT NOT NULL DEFAULT 'active'
-        CHECK (status IN ('active', 'inactive', 'blacklisted')),
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL
-);
-
-CREATE INDEX idx_company_profiles_name
-ON company_profiles(company_name);
-
-CREATE INDEX idx_company_profiles_city
-ON company_profiles(city);
-
-CREATE INDEX idx_company_profiles_industry
-ON company_profiles(industry);
-```
-
----
-
-## 15.2 company_contacts
-
-Client company contact persons (HR, Hiring Managers, Directors).
-
-```sql
-CREATE TABLE company_contacts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    company_id INTEGER NOT NULL,
-
-    contact_name TEXT NOT NULL,
-    title TEXT NOT NULL DEFAULT '',
-    department TEXT NOT NULL DEFAULT '',
-
-    phone TEXT NOT NULL DEFAULT '',
-    email TEXT NOT NULL DEFAULT '',
-    wechat TEXT NOT NULL DEFAULT '',
-
-    is_primary INTEGER NOT NULL DEFAULT 0,
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (company_id)
-        REFERENCES company_profiles(id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX idx_company_contacts_company
-ON company_contacts(company_id);
-```
-
----
-
-## 15.3 company_notes
-
-Follow-up logs, contract notes, and hiring preferences for the client company.
-
-```sql
-CREATE TABLE company_notes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    company_id INTEGER NOT NULL,
-
-    note_type TEXT NOT NULL DEFAULT 'general'
-        CHECK (note_type IN ('general', 'contract', 'interview', 'preference')),
-
-    content TEXT NOT NULL,
-    creator_name TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (company_id)
-        REFERENCES company_profiles(id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX idx_company_notes_company
-ON company_notes(company_id);
-```
-
----
-
-# 16. Company → Position Relationships
-
-- A Company owns multiple Position Openings (`1:N`).
-- When deleting a Company, cascading deletion of associated Openings requires strict confirmation; default business behavior is to archive or soft-delete (`status = 'inactive'`).
-- Deleting an Opening cascades to delete requirement rules, keyword indexes, and matches (`position_candidate_matches`).
-
----
-
-# 17. System Infrastructure Tables
-
-## 17.1 system_schema_migrations
-
-Tracks database migration revisions and execution history.
-
-```sql
-CREATE TABLE system_schema_migrations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    version TEXT NOT NULL UNIQUE,
-    applied_at TEXT NOT NULL
-);
-```
-
----
-
-## 17.2 system_settings
-
-Application-wide configuration parameters (key-value store).
-
-```sql
-CREATE TABLE system_settings (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    key TEXT NOT NULL UNIQUE,
-    value TEXT NOT NULL,
-    remark TEXT NOT NULL DEFAULT '',
-    updated_at TEXT NOT NULL
-);
-```
-
----
-
-## 17.3 system_jobs
-
-Background worker task queue and execution logs.
-
-```sql
-CREATE TABLE system_jobs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    job_type TEXT NOT NULL,
-    payload_json TEXT NOT NULL DEFAULT '{}',
-
-    status TEXT NOT NULL DEFAULT 'pending'
-        CHECK (status IN ('pending', 'processing', 'completed', 'failed')),
-
-    retry_count INTEGER NOT NULL DEFAULT 0,
-    error_message TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    started_at TEXT,
-    finished_at TEXT
-);
-
-CREATE INDEX idx_system_jobs_status
-ON system_jobs(status);
-```
-
----
-
-## 17.4 system_audit_logs
-
-High-privilege operation and security audit trails.
-
-```sql
-CREATE TABLE system_audit_logs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    module TEXT NOT NULL,
-    action TEXT NOT NULL,
-    target_id TEXT NOT NULL DEFAULT '',
-
-    operator_name TEXT NOT NULL DEFAULT '',
-    detail_json TEXT NOT NULL DEFAULT '{}',
-
-    created_at TEXT NOT NULL
-);
-
-CREATE INDEX idx_system_audit_logs_module
-ON system_audit_logs(module);
-```
-
----
-
-# 18. Initial Candidate JSON Ingestion Pipeline
-
-## 18.1 Pipeline Workflow
-
-```text
-Read JSON file from source directory
-         ↓
-Extract candidate_uuid & compute file sha256
-         ↓
-Check if candidate_uuid exists in candidate_profiles
-   ├── If exists: Verify hash; skip if identical, update if modified
-   └── If not exists: Begin atomic SQLite transaction
-         ↓
-Insert into candidate_profiles (master record)
-Insert into candidate_contacts
-Insert into candidate_expectations
-Insert into candidate_work_experiences
-Insert into candidate_educations
-Insert into candidate_projects
-Insert into candidate_trainings
-Insert into candidate_languages
-Insert into candidate_certificates
-Insert into candidate_skills
-Insert into candidate_resume_variants (for secondary language versions)
-Insert into candidate_import_records (original JSON audit payload)
-Insert into candidate_search_documents (raw_text document)
-         ↓
-Commit SQLite transaction (triggers automatically update candidate_search_fts)
-```
-
----
-
-## 18.2 Importer Idempotency
-
-- Verification mechanism: Combines `candidate_uuid` unique constraint and `source_file_hash`.
-- Re-running the import command against the same directory:
-  - Scans all files without duplicating records;
-  - Skips unchanged candidates with zero DB overhead;
-  - Guarantees 100% idempotent execution.
-
----
-
-## 18.3 Ingestion Telemetry and Diagnostics
-
-Upon completing an ingestion run, report:
-
-- `totalFiles`: Total JSON files discovered in source path;
-- `created`: Number of newly ingested candidates;
-- `updated`: Number of updated existing candidates;
-- `skipped`: Number of unchanged candidates skipped;
-- `failed`: Number of failed imports (with error log trace);
-- `durationMs`: Total execution time in milliseconds.
-
----
-
-# 19. Candidate Mutation Core Implementation
-
-When candidate data is edited in the frontend:
-
-```text
-Execute Update API inside dedicated SQLite transaction
-         ↓
-Commit changes to candidate_* tables
-         ↓
-Query candidateRepository.getFullSnapshot(candidateId)
-         ↓
-CandidateRawTextBuilder.build(snapshot)
-         ↓
-Compute SHA-256 hash of new raw_text
-   ├── If hash matches existing: Skip document update
-   └── If hash differs: Update candidate_search_documents
-         ↓
-Triggers automatically update candidate_search_fts
-         ↓
-Emit background matching event (Position-Candidate Re-scoring)
-```
-
----
-
-## 19.1 RawText Hash Checking
-
-To prevent unnecessary FTS5 write overhead:
-- Compute SHA-256 hash of the generated `raw_text`;
-- If the hash is identical to the current stored document, bypass writing to `candidate_search_documents`;
-- Only trigger FTS index updates when substantive text content has actually changed.
-
----
-
-# 20. Automated Matching Architecture Overview
-
-The core matching architecture is event-driven:
-
-```text
-Event: Position Created / Updated
-Event: Candidate Created / Updated
-         ↓
-Worker Thread: Candidate Recall (FTS5 trigram + hard filters)
-         ↓
-Worker Thread: MatchEngine Scoring
-         ↓
-Persist / Update position_candidate_matches
-```
-
----
-
-# 21. Matching Trigger: New Position Creation
-
-When a new job opening is transitioned to `status = 'open'`:
-
-```text
-1. Extract position_keywords & position_requirements
-2. Query candidate_search_fts using keywords for candidate recall
-3. Apply hard filtering (degree rank, minimum work years, target cities)
-4. Score recalled candidates via MatchEngine
-5. Top-ranked candidates (e.g. score >= 70) are saved as:
-   - decision = 'system_recommended'
-   - pipeline_stage = 'sourced'
-```
-
----
-
-# 22. Matching Trigger: Candidate Created / Updated
-
-When a candidate's profile is created or substantively modified:
-
-```text
-1. Complete candidate mutation & raw_text rebuild
-2. Query all active positions (status = 'open')
-3. Evaluate MatchEngine score against each active opening
-4. If score exceeds threshold:
-   - If match record does not exist: Create new match (decision = 'system_recommended')
-   - If match record exists and decision is 'pending': Update score
-   - If match record was manually 'accepted' or 'dismissed': Update score details only; preserve decision
-```
-
----
-
-# 23. Matching Trigger: Position Requirements Modification
-
-When a recruiter updates job requirements or keywords:
-
-```text
-1. Fetch all existing matches associated with this position
-2. Recalculate scores for existing matches (preserves manual decisions)
-3. Execute fresh FTS recall using updated keywords to discover new potential candidates
-4. Insert newly discovered candidates meeting recommendation threshold
-```
-
----
-
-# 24. Position Status Lifecycle
-
-Position status transitions:
-
-```text
-draft (Draft)
-  ↓
-open (Actively Recruiting - Triggers Matching)
-  ├── paused (Temporarily Paused - Pauses Auto-Matching)
-  ├── filled (Successfully Filled)
-  └── cancelled (Cancelled / Terminated)
-```
-
-Rules:
-- Auto-matching runs exclusively for positions in `open` status.
-- When an opening transitions to `filled` or `cancelled`, all unclosed matches in `pending` or `system_recommended` status are automatically transitioned to `pipeline_stage = 'archived'`.
-
----
-
-# 25. MatchEngine Version 1 Scoring Framework
-
-Weighted composite score calculated on a 0-100 scale:
-
-```text
-Composite Score =
-    KeywordScore     * 0.25 +
-    SkillScore       * 0.25 +
-    ExperienceScore  * 0.20 +
-    EducationScore   * 0.10 +
-    LanguageScore    * 0.10 +
-    LocationScore    * 0.10
-```
-
-Criteria Breakdown:
-- **KeywordScore (25%)**: BM25 relevance score from FTS5 recall against candidate `raw_text`.
-- **SkillScore (25%)**: Percentage of required skills matched + bonus for optional skills.
-- **ExperienceScore (20%)**: Alignment of candidate work years with required experience range.
-- **EducationScore (10%)**: Verification that candidate degree meets or exceeds `min_degree_rank`.
-- **LanguageScore (10%)**: Verification that required language certifications or proficiency levels are met.
-- **LocationScore (10%)**: Matching between candidate current/expected city and opening target cities.
-
----
-
-## 25.1 MatchEngine Output Specification
-
-```js
-// MatchResult Data Structure
-{
-  score: 85.5,             // Overall composite match score (0 - 100)
-
-  keywordScore: 90,        // Keyword relevance score
-  skillScore: 80,          // Skill alignment score
-  experienceScore: 85,     // Years of experience score
-  educationScore: 90,      // Degree alignment score
-  languageScore: 80,       // Language requirement score
-  industryScore: 85,       // Industry experience score
-  locationScore: 100,      // Geographic alignment score
-
-  reasons: [],             // MatchReason[] Array of detailed explanation strings
-
-  algorithmVersion: '1.0'  // Version string of matching algorithm
-}
-```
-
-Stored inside `match_reason_json`:
-
-```json
-{
-  "matched": [
-    "Proficient in Vue 3 and TypeScript",
-    "Over 5 years frontend architecture experience",
-    "Fluent spoken English (CET-6)"
-  ],
-  "partial": [
-    "Desired salary slightly above target budget range"
-  ],
-  "missing": [
-    "Electron desktop development experience not mentioned"
-  ]
-}
-```
-
----
-
-# 26. Full-Text Search is for Recall, Not Final Decisions
-
-Crucial architectural distinction:
-
-```text
-FTS5 (raw_text)
-     ↓
-Fast Candidate Recall Pool (Top 100-300 Candidates)
-     ↓
-Structured MatchEngine & Business Filtering
-     ↓
-Ranked Recommendations & Candidate Matches
-```
-
-FTS provides rapid candidate retrieval, but must never bypass structured validation. Final recommendations must be validated through structured entity evaluation.
-
----
-
-# 27. "Dismissed / Mismatch" Business Rules
-
-When a recruiter marks a candidate as "Dismissed / Mismatch" (`decision = 'dismissed'`):
-
-```text
-Recruiter clicks "Dismiss"
-         ↓
-Prompt for dismissal reason (Optional or Selected from Dropdown)
-         ↓
-Update position_candidate_matches:
-  - decision = 'dismissed'
-  - is_dismissed = 1
-  - dismiss_reason = <reason>
-  - last_action_at = <timestamp>
-         ↓
-Record event in position_candidate_events
-```
-
-Immutability Rule:
-- Once marked as `dismissed`, this candidate will never reappear in the "Recommended" tab for this position opening, regardless of future score recalculations.
-- Recruiter may explicitly undo dismissal by manually changing status back to `accepted` or `pending`.
-
----
-
-# 28. Candidate Progression into Recruitment Pipeline
-
-When a candidate is accepted:
-
-```text
-decision = 'accepted'
-pipeline_stage = 'contacted'
-         ↓
-Candidate appears on Position Candidate Kanban Board
-         ↓
-Recruiter logs communications & tracks interview stages:
-  contacted → submitted → client_interview → offer → onboarded
-```
-
----
-
-# 29. Communication Logs and PositionCandidate Integration
-
-When logging a candidate communication (`candidate_communications`):
-- Recruiter may optionally bind the log to a specific `position_id`.
-- If bound, the communication appears both on the Candidate Profile timeline and the Position Candidate detail drawer.
-- Logging a communication automatically creates a `position_candidate_events` entry (`event_type = 'contacted'`) if associated with an active match.
-
----
-
-# 30. Frontend Page Architecture
-
-## 30.1 Main Navigation Structure
-
-```text
-Sidebar Navigation:
-├── Candidates (Candidate Pool, Full-text Search, Filtering)
-├── Positions (Job Openings, Pipeline Kanban, Recommendation Triage)
-├── Companies (Client Companies, Client Contacts, Contracts)
-└── Settings (Database Seed, System Status, Data Backups)
-```
-
-Frontend Principles:
-- Single-page application built on Vue 3 + Vue Router.
-- Element Plus component library for unified UI experience.
-- Vue-i18n multilingual localization (English default, Simplified Chinese, Japanese).
-- Persistent layout with responsive search filters and drawer modals.
-
----
-
-# 31. Candidate Subsystem Pages
-
-## 31.1 Candidate List Page
-
-Key Capabilities:
-- **Unified Keyword Search**: Queries `candidate_search_fts` across all resume versions;
-- **Multi-dimensional Structured Filters**: City, Degree Rank, Work Years, Current Company, Current Position;
-- **Deterministic Pagination**: Limit + Offset with exact count queries;
-- **Dynamic Age Calculation**: Dynamically computed from `birth_date` and today's date (never relies on stale static resume age);
-- **Sorting Options**: Defaults to descending sort by `sys_updated_date`.
-
-## 31.2 Candidate Detail Drawer
-
-Lifecycle & Structure:
-- Triggered by clicking any candidate row;
-- Uses a slide-out drawer layout (`CandidateDetailDrawer.vue`);
-- **Multilingual Variant Switching**: Shows Chinese master by default; dynamically renders language tabs (`ZH`, `EN`, `JA`) only for versions actually present in `candidate_resume_variants`;
-- **Modular Sub-tabs**:
-  - Profile (Basic Information)
-  - Career Expectations
-  - Work Experiences
-  - Educational Background
-  - Project Experience
-  - Professional Trainings
-  - Technical & Professional Skills
-  - Language Proficiencies
-  - Certifications
-  - Communication History & Outreach Log
-
-## 31.3 Candidate Editing and Mutation Flow
-
-- Each tab manages its own editing state and independent update API;
-- Changes to structured data trigger an atomic transaction;
-- Upon completion, the system automatically triggers `raw_text` full rebuild and FTS5 synchronization.
-
----
-
-# 32. Position Subsystem Pages
-
-## 32.1 Position List Page
-
-- Comprehensive overview of job openings across all client companies;
-- Status filters: `draft`, `open`, `paused`, `filled`, `cancelled`;
-- Visual badges for priority (`urgent`, `high`, `medium`, `low`);
-- Recruiter assignment and headcount tracking.
-
-## 32.2 Position Detail View
-
-- Detailed job requirements, target industries, target cities;
-- Required vs preferred technical skills and language requirements;
-- Associated client company information and hiring manager contacts;
-- Keyword configuration for automated FTS recall tuning.
-
-## 32.3 Position Candidate Kanban Board
-
-A visual recruitment ATS pipeline board representing candidates across stages:
-
-```text
-[ Sourced ] → [ Contacted ] → [ Submitted ] → [ Client Interview ] → [ Offer ] → [ Onboarded ]
-```
-
-Capabilities:
-- Drag-and-drop or one-click stage progression;
-- Quick access to match score and rationale breakdown (`match_reason_json`);
-- Quick-log communication popups directly from Kanban cards;
-- Tab for reviewing and dismissing `system_recommended` candidates.
-
----
-
-# 33. Company Subsystem Pages
-
-## 33.1 Company List Page
-
-- Client company directory with industry, city, and scale filters;
-- Real-time count of active job openings per company;
-- Status badges: `active`, `inactive`, `blacklisted`.
-
-## 33.2 Company Detail View
-
-- Company profile and overview;
-- Contact directory (Hiring managers, HR directors);
-- Tabbed list of historical and active job openings;
-- Company-specific notes, interview feedback patterns, and contract agreements.
-
----
-
-# 34. Electron Project Folder Hierarchy
-
-Standardized production architecture:
-
-```text
-resume-candidate-system/
-├── electron/
-│   ├── main.js                      # Application main entry point & window lifecycle
-│   ├── preload.js                   # contextBridge API exposure
-│   ├── src/
-│   │   ├── database/
-│   │   │   ├── Database.js          # better-sqlite3 connection manager
-│   │   │   ├── DatabasePath.js      # Cross-platform runtime database path resolver
-│   │   │   ├── MigrationRunner.js   # Automated schema migrations
-│   │   │   └── migrations/          # Versioned SQL migration scripts
-│   │   ├── database/repositories/   # Data access layer (pure SQL queries)
-│   │   ├── services/                # Business domain logic & transaction coordinators
-│   │   ├── ipc/                     # Typed IPC channel registration handlers
-│   │   ├── candidate/search/        # CandidateRawTextBuilder & FTS builders
-│   │   └── workers/                 # Worker Threads for background processing
-├── frontend/
-│   ├── src/
-│   │   ├── api/                     # IPC client invocation wrappers
-│   │   ├── pages/                   # Application views (Candidate, Position, Company)
-│   │   ├── pages/candidate/tabs/    # Isolated candidate sub-tabs
-│   │   ├── router/                  # Vue Router navigation mapping
-│   │   ├── i18n/                    # Multilingual dictionaries (en, zh-cn, ja)
-│   │   └── electron/                # Ajax / IPC communication adapters
-└── data/
-    └── recruitment.db               # SQLite database file (ignored in git)
-```
-
----
-
-# 35. Repository Layering Rules
-
-- **Pure Data Access**: Contains SQL queries and prepared statements exclusively;
-- **Zero Business Logic**: Repositories do not make business workflow decisions;
-- **Prepared Statement Caching**: Reuse prepared statements on high-frequency lookups;
-- **Single Aggregate Scope**: Each repository manages queries for its designated domain table group.
-
----
-
-# 36. Service Layering Rules
-
-- **Business Domain Workflow**: Services coordinate business rules, calculations, and orchestrations;
-- **Transaction Boundaries**: Services initiate and commit SQLite transactions;
-- **Multi-Repository Coordination**: Services compose calls across multiple repositories;
-- **Background Dispatch**: Services enqueue background jobs (such as re-scoring and raw_text rebuilds).
-
----
-
-# 37. IPC Layering Rules
-
-- **Typed Handler Registration**: All IPC channels register via `ipcMain.handle`;
-- **Input Validation**: Cleanly sanitize and validate renderer payload arguments;
-- **Standardized Response Envelope**:
-  ```js
-  {
-    success: true,
-    data: { ... },
-    error: null
-  }
-  ```
-  On failure:
-  ```js
-  {
-    success: false,
-    data: null,
-    error: {
-      message: 'Failed to execute query',
-      code: 'ERR_QUERY_FAILED'
-    }
-  }
-  ```
-- **Zero Raw SQL in IPC Handlers**: Never execute raw SQL queries inside IPC files.
-
----
-
-# 38. Preload API Rules
-
-- Use `contextBridge.exposeInMainWorld` exclusively;
-- Group APIs into modular, domain-driven namespaces:
-  ```js
-  window.electronApi = {
-    candidate: candidateApi,
-    position: positionApi,
-    company: companyApi,
-    system: systemApi
-  };
-  ```
-- Never expose direct database instances, `require`, or raw Node `fs` / `child_process` modules to the Renderer.
-
----
-
-# 39. Background Worker Architecture
-
-Heavy, compute-intensive workloads run in isolated Node `worker_threads`:
-- High-volume batch candidate imports;
-- Full-database `raw_text` batch rebuilding;
-- Multi-position automated matching and scoring passes.
-
-The Main Process remains responsive to UI requests while background threads process analytical pipelines.
-
----
-
-# 40. Job Deduplication Rules
-
-- Before queuing a job in `system_jobs`:
-  - Check if a job with identical `job_type` and `target_id` is currently `pending` or `processing`;
-  - If a duplicate job is already queued, coalesce or skip the new job to prevent redundant computational load.
-
----
-
-# 41. Database Transaction Boundaries
-
-Mandatory Transaction Invariants:
-- Candidate profile mutations spanning multiple tables (`profiles`, `contacts`, `expectations`, `experiences`) MUST be wrapped inside a single atomic `db.transaction`;
-- Batch imports of candidate JSONs MUST commit candidates atomically;
-- Match state updates coupled with event logging MUST execute within an atomic transaction.
-
----
-
-# 42. Search API Specifications
-
-Core Search Signatures:
-
-```js
-// Search Candidates
-async candidatesSearch({
-  keyword = '',
-  city = '',
-  degreeRank = null,
-  workYearsMin = null,
-  workYearsMax = null,
-  candidateStatus = 'active',
-  sortBy = 'updated_at',
-  sortOrder = 'desc',
-  page = 1,
-  pageSize = 20
-})
-
-// Count Candidates Matching Criteria
-async candidatesCount({
-  keyword = '',
-  city = '',
-  degreeRank = null,
-  workYearsMin = null,
-  workYearsMax = null,
-  candidateStatus = 'active'
-})
-```
-
----
-
-# 43. Search Execution Pipeline
-
-High-performance query path:
-
-```text
-1. Parse Keyword:
-   ├── Empty keyword:
-   │   Query candidate_profiles directly with structured WHERE clauses
-   └── Non-empty keyword:
-       Query candidate_search_fts with MATCH or LIKE
-       Retrieve matched candidate_id array
-2. Build Dynamic SQL with Prepared Statements:
-   JOIN candidate_profiles ON id IN (matched_ids)
-   Append structured conditions (city, degree_rank, work_years)
-3. Execute Paginated Query (LIMIT ? OFFSET ?)
-4. Execute Total Count Query
-5. Enrich each candidate with dynamic calculated age:
-   age = calculateAge(birth_date, now)
-```
-
----
-
-# 44. Candidate Detail API Specifications
-
-```js
-// Fetch Complete Candidate Snapshot
-async candidateGet(candidateId)
-
-// Fetch Multilingual Resume Variant
-async candidateResumeGet(candidateId, languageCode)
-
-// Update Sub-Entities Independently
-async candidateUpdate(candidateId, profileData)
-async candidateWorkExperiencesUpdate(candidateId, workExperiences)
-async candidateEducationsUpdate(candidateId, educations)
-async candidateSkillsUpdate(candidateId, skills)
-async candidateLanguagesUpdate(candidateId, languages)
-async candidateExpectationsUpdate(candidateId, expectations)
-async candidateCommunicationAdd(candidateId, communicationRecord)
-```
-
----
-
-# 45. Position Detail API Specifications
-
-```js
-// Fetch Job Opening with Requirements & Statistics
-async positionGet(positionId)
-
-// Fetch Associated Candidate Pipeline
-async positionCandidatesGet(positionId, {
-  pipelineStage = null,
-  decision = null,
-  page = 1,
-  pageSize = 50
-})
-```
-
----
-
-# 46. Position Candidate Query API
-
-```js
-// Query Matches by Stage for Kanban Board
-async positionKanbanGet(positionId)
-// Returns candidates partitioned by pipeline stages:
-// {
-//   sourced: [...],
-//   contacted: [...],
-//   submitted: [...],
-//   client_interview: [...],
-//   offer: [...],
-//   onboarded: [...]
-// }
-```
-
----
-
-# 47. Data Deletion and Archival Policies
-
-## Candidate Deletion
-- **Soft Delete Preferred**: Set `candidate_status = 'archived'`. Candidate is omitted from default search lists but historical matches and communication records remain intact.
-- **Hard Delete (Admin Only)**: Cascades to remove `candidate_profiles`, contacts, experiences, educations, `candidate_search_documents`, FTS indexes, and all `position_candidate_matches`.
-
-## Position Deletion
-- **Soft Delete Preferred**: Set `status = 'cancelled'`. Closes active recruitment and suppresses future automated candidate matches.
-- **Hard Delete**: Removes opening, requirements, keyword rules, and cascades to delete all associated matches.
-
-## Company Deletion
-- **Soft Delete Preferred**: Set `status = 'inactive'`.
-- **Hard Delete**: Refused if the company owns active job openings (`status = 'open'`). Requires positions to be archived or deleted prior to company deletion.
-
----
-
-# 48. Security and Operation Auditing
-
-All sensitive state mutations record an entry in `system_audit_logs`:
-- Deleting candidates, positions, or client companies;
-- Overriding system-recommended match decisions;
-- Modifying system settings and database seeds;
-- Manual trigger of bulk import or data re-indexing.
-
----
-
-# 49. Database Backups and Recovery
-
-SQLite Native Online Backup:
-- Executes non-blocking hot backups via `better-sqlite3` backup API:
-  ```js
-  await db.backup(`backups/recruitment_${timestamp}.db`);
-  ```
-- **Automated Schedule**: Triggered daily on application startup or idle background timer;
-- **Retention Policy**: Retains the most recent 14 snapshots, pruning older backups automatically;
-- **Zero Lock Contention**: Runs concurrently with WAL mode without locking read operations.
-
----
-
-# 50. Phased Development Roadmap
-
-## Phase 0: Project Scaffolding
-- Initial Electron 43 + Vue 3 + Webpack 5 repository scaffolding;
-- SQLite connection manager with WAL configuration;
-- MigrationRunner infrastructure and base schema migrations (`001_initial.sql`, `002_candidate_fts.sql`).
-
-## Phase 1: Candidate Subsystem (Current Phase)
-- **1A. Database**: Complete candidate schema deployment, indexes, and FTS5 triggers;
-- **1B. Importer**: Verified idempotent candidate JSON ingestion pipeline;
-- **1C. Candidate UI**: Candidate List with dynamic age, multilingual detail drawer with isolated tabs;
-- **1D. RawText Rebuild**: Mutation pipeline with deterministic `raw_text` compilation;
-- **Phase 1 Acceptance**: 9,860 candidates searchable with sub-second response, full i18n support.
-
-## Phase 2: Position Openings & Automated Matching
-- **2A. Position CRUD**: Position opening creation, requirement definition, skill/keyword weighting;
-- **2B. MatchEngine**: Multi-factor scoring engine (BM25, skills, experience, education, location);
-- **2C. ATS Pipeline**: Drag-and-drop Kanban board for candidate stage progression;
-- **2D. Reverse Matching**: Two-way auto-matching triggered on candidate and position mutations;
-- **Phase 2 Acceptance**: New position instantly recalls and scores top candidates with detailed match rationale.
-
-## Phase 3: Client Company Management
-- **3A. Company Management**: Client company CRUD, contact directories, contract notes;
-- **3B. Relationship Binding**: Company-to-Position hierarchy with quota tracking;
-- **Phase 3 Acceptance**: End-to-end recruitment lifecycle from client intake to candidate onboarding.
-
----
-
-# 51. Future Extensibility (Phase 4 Roadmap)
-
-- Direct resume file parsing (Word, PDF, Excel) within Electron using local background workers;
-- Local LLM integration for automated candidate profile summarization;
-- Email client integration for one-click candidate pitch submissions.
-
----
-
-# 52. Testing Specifications
-
-## 52.1 Repository Unit Tests
-- Verify CRUD operations across all repositories;
-- Verify prepared statement reuse and parameterized input sanitization.
-
-## 52.2 RawTextBuilder Tests
-- Verify deterministic ordering of snapshot elements;
-- Verify robust filtering of null/undefined fields and delimiter formatting (` | `).
-
-## 52.3 FTS5 Search Tests
-- Verify trigram search accuracy across Chinese, English, and Japanese tokens;
-- Verify synchronization triggers on document inserts, updates, and deletes.
-
-## 52.4 MatchEngine Tests
-- Verify score calculation fidelity across edge cases (e.g. over-qualified, missing optional skills);
-- Verify structured breakdown in `match_reason_json`.
-
----
-
-# 53. Core Data Consistency Invariants
-
-### Candidate Invariants
-- Each candidate has exactly one master record in `candidate_profiles` with a unique `candidate_uuid`;
-- Dynamic age is calculated on the fly and never stored as a stale integer;
-- Primary language resume content resides in structured tables; secondary variants reside in `candidate_resume_variants`.
-
-### Search Invariants
-- `candidate_search_documents` contains exactly one document per candidate;
-- `candidate_search_fts` rowid strictly mirrors `candidate_search_documents.id`.
-
-### Match Invariants
-- A candidate and position pair has at most one record in `position_candidate_matches` (`UNIQUE(position_id, candidate_id)`);
-- Human decisions (`decision = 'accepted'` / `'dismissed'`) are immutable against automated score updates.
-
-### Company Invariants
-- `company_name` is strictly unique;
-- Client company contacts must link to a valid `company_id`.
-
-### raw_text Invariants
-- Incremental or partial string patching (`+=` or `replace`) is prohibited;
-- Must always be recompiled via deterministic full rebuild.
-
----
-
-# 54. Developer Disciplines for Codex / Engineers
-
-1. **Strictly Abide by Documented Architecture**: Do not arbitrarily introduce unauthorized dependencies (e.g. Redis, MySQL, external server daemons).
-2. **Zero Schema Deviation**: All database tables, column names, constraints, and data types must strictly correspond to the DDL specifications defined herein.
-3. **Zero Mock Fallbacks**: When backend IPC or database queries fail, display errors explicitly with full diagnostic telemetry. Never silently fallback to fake mock data.
-4. **Preserve Layering Purity**: Renderer MUST NOT execute database queries or call Node APIs directly. All mutations pass through typed IPC and Service boundaries.
-5. **Deterministic raw_text Generation**: Never patch `raw_text` with partial string replacement. Always perform a complete rebuild from candidate snapshot.
-
----
-
-# 55. Initial Recommended Scaffolding Files
-
-```text
-electron/
-├── src/database/Database.js
-├── src/database/DatabasePath.js
-├── src/database/MigrationRunner.js
-├── src/database/migrations/001_initial.sql
-├── src/database/migrations/002_candidate_fts.sql
-├── src/database/repositories/CandidateRepository.js
-├── src/database/repositories/CandidateSearchRepository.js
-├── src/services/CandidateService.js
-├── src/services/CandidateSearchService.js
-├── src/candidate/search/CandidateRawTextBuilder.js
-├── src/ipc/candidate.ipc.js
-├── preload.js
-frontend/
-├── src/api/candidateApi.js
-├── src/pages/candidate/CandidateList.vue
-├── src/pages/candidate/CandidateDetailDrawer.vue
-└── src/pages/candidate/tabs/
-```
-
----
-
-# 56. Step-by-Step Implementation Sequence for Phase 1
-
-```text
-Step 1: Database Infrastructure
-├── Configure better-sqlite3 connection with WAL mode
-├── Implement MigrationRunner
-└── Execute 001_initial.sql and 002_candidate_fts.sql
-
-Step 2: Candidate Importer & Data Verification
-├── Implement CandidateImportService
-├── Test idempotent ingestion of candidate JSONs
-└── Verify 9,860 rows across profiles, import_records, search_documents, and FTS
-
-Step 3: Search Subsystem & IPC
-├── Implement CandidateSearchRepository & CandidateSearchService
-├── Implement CandidateRawTextBuilder
-├── Expose IPC channels in candidate.ipc.js and preload.js
-└── Validate keyword search and structured filtering with sub-second latency
-
-Step 4: Frontend Candidate UI
-├── Implement CandidateList.vue with dynamic age calculation & pagination
-├── Implement CandidateDetailDrawer.vue with multilingual variant toggling
-└── Implement isolated candidate sub-tabs (Profile, Expectations, Work, Education, etc.)
-
-Step 5: Mutation & Multilingual Localization (i18n)
-├── Implement update APIs for each sub-tab
-├── Trigger raw_text rebuild and FTS5 update upon mutation
-└── Integrate vue-i18n across all frontend pages and navigation elements
-```
-
----
-
-# 57. Pre-Flight Checklist Before First Execution
-
-- [x] Node.js version verified compatible (Node 18+ / 20+);
-- [x] `better-sqlite3` compiled and linked natively against Electron ABI;
-- [x] Database file path verified to have full write permissions for current Windows user;
-- [x] Source candidate JSON path verified via `--source` CLI parameter;
-- [x] MigrationRunner executes base schemas cleanly with `integrity_check = ok`;
-- [x] Automated unit tests pass with 0 errors.
-
----
-
-# 58. Comprehensive System Architecture Diagram
-
-```text
-┌────────────────────────────────────────────────────────────────────────┐
-│                        Vue 3 Frontend (Renderer)                       │
-│  ┌───────────────────────┐  ┌────────────────────────────────────────┐ │
-│  │   CandidateList.vue   │  │       CandidateDetailDrawer.vue        │ │
-│  │ (FTS Search & Filter) │  │  (Profile / Work / Education / Tabs)   │ │
-│  └───────────┬───────────┘  └───────────────────┬────────────────────┘ │
-│              └─────────────────┬────────────────┘                      │
-│                                ▼                                       │
-│                       src/api/candidateApi.js                          │
-└────────────────────────────────┬───────────────────────────────────────┘
-                                 │
-                                 ▼ (contextBridge)
-┌────────────────────────────────────────────────────────────────────────┐
-│                         Electron Preload API                           │
-│                      window.electronApi.candidate                      │
-└────────────────────────────────┬───────────────────────────────────────┘
-                                 │
-                                 ▼ (IPC invoke: 'candidate:channel')
-┌────────────────────────────────────────────────────────────────────────┐
-│                        Electron Main Process                           │
-│  ┌──────────────────────────────────────────────────────────────────┐  │
-│  │                  src/ipc/candidate.ipc.js                        │  │
-│  └─────────────────────────────┬────────────────────────────────────┘  │
-│                                ▼                                       │
-│  ┌──────────────────────────────────────────────────────────────────┐  │
-│  │               CandidateService / CandidateSearchService          │  │
-│  └──────────────┬───────────────────────────────────┬───────────────┘  │
-│                 ▼                                   ▼                  │
-│  ┌──────────────────────────────┐   ┌───────────────────────────────┐  │
-│  │  CandidateRawTextBuilder.js  │   │   CandidateSearchRepository   │  │
-│  └──────────────────────────────┘   └───────────────┬───────────────┘  │
-│                                                     ▼                  │
-│  ┌──────────────────────────────────────────────────────────────────┐  │
-│  │                   Database.js (better-sqlite3)                   │  │
-│  └─────────────────────────────┬────────────────────────────────────┘  │
-└────────────────────────────────┼───────────────────────────────────────┘
-                                 │
-                                 ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│                          SQLite Database                               │
-│  ┌──────────────────────────────┐   ┌───────────────────────────────┐  │
-│  │ candidate_* Structured Tables│   │ candidate_search_fts (FTS5)   │  │
-│  └──────────────────────────────┘   └───────────────────────────────┘  │
-└────────────────────────────────────────────────────────────────────────┘
-```
-
----
-
-# 59. Summary of Core Business Principles
-
-## Candidate Domain
-- Structured database is the sole truth for candidate operations;
-- `raw_text` is dynamically rebuilt on-demand for full-text search;
-- Dynamic age calculation on the fly; static age from resume is deprecated.
-
-## Position Domain
-- Job openings drive candidate discovery;
-- Requirements combine hard filters (degree, experience, city) with weighted soft factors (skills, languages).
-
-## Company Domain
-- Clients own multiple job openings (`1:N`);
-- Deletion of clients with active job openings is strictly restricted.
-
-## PositionCandidateMatch Domain
-- `decision` (matching evaluation) and `pipeline_stage` (workflow progress) are strictly decoupled;
-- Human recruiter decisions take permanent precedence over automated algorithm scores.
-
 ---
-
-# 60. Core Long-Term Invariants to Maintain Permanently
-
-1. **Single Source of Truth**: The structured SQLite database is the only business truth; original JSON files are immutable audit logs.
-2. **Deterministic Full Rebuild**: All modifications to candidate data trigger a complete rebuild of `raw_text` from snapshot; partial text splicing is forbidden.
-3. **Decoupled Workflow & Decision**: `decision` and `pipeline_stage` remain independent; auto-matching never alters human-reviewed candidate states.
-4. **Architectural Purity**: Renderer accesses data exclusively through typed IPC APIs; direct database connections from Renderer are strictly forbidden.
-
----
-
-# 61. Development Milestones Execution
-
-Priority execution order:
-
-```text
-Scaffold Electron + Vue + JavaScript Base Application
-        ↓
-Implement SQLite Database Connection & MigrationRunner
-        ↓
-Execute 001_initial.sql & 002_candidate_fts.sql
-        ↓
-Implement Candidate JSON Importer & Verify Idempotency
-        ↓
-Deliver Phase 1 Candidate Subsystem UI & Search APIs
-```
-
----
-
-# 62. Candidate List Fields Acceptance Verification (2026-08-10)
-
-- Full scan of 9,860 source candidate JSONs across 11,637 resumes;
-- Target career expectations standardized to `resumes[i].expected_list`;
-- List view fields mapped cleanly across SQLite, Electron Repositories, and Frontend components;
-- Communication records bound to candidate level (`candidate_communications`);
-- Database reconstructed cleanly from canonical JSONs: 9,860 candidates, 11,637 resumes, 0 failures, 0 data loss, `integrity_check = ok`;
-- Verification command:
-  ```bash
-  cd electron && npm run audit:candidate-lists -- E:\resume-system\codex-complete-jsons\complete E:\resume-system\code\data\recruitment.db
-  ```
-- Normalization command:
-  ```bash
-  cd electron && npm run normalize:candidate-json-lists -- E:\resume-system\codex-complete-jsons\complete
-  ```
-
----
-
-**END OF DOCUMENT**
+**END OF V2 SPECIFICATION**

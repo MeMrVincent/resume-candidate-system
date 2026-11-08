@@ -1,170 +1,108 @@
-# Candidate Recruitment System (resume-candidate-system)
+# Headhunting & Recruitment Management System V2 (resume-candidate-system-v2)
 
-**English** | [简体中文](README.cn.md) | [日本語](README.ja.md)
+> **Language Navigation / 语言导航 / 言語ナビゲーション**  
+> **English** | [简体中文](README.cn.md) | [日本語](README.ja.md)
 
-A high-performance, local offline desktop CRM / ATS (Applicant Tracking System) for recruitment agencies, built with Electron, Vue 3, Webpack 5, and SQLite (`better-sqlite3`).
-
----
-
-## Key Features
-
-- **100% Local & Offline**: All candidate and recruitment data persists locally in a SQLite database (with WAL mode, foreign key enforcement, busy timeout, and NORMAL synchronous settings). The entire application directory can be copied and migrated across drives without data loss.
-- **Full Internationalization (i18n)**: Out-of-the-box trilingual UI localization (English default, Simplified Chinese, Japanese) with instant language switching and synchronized Element Plus locale across all modules.
-- **Sub-Millisecond Full-Text Search**: Embedded SQLite FTS5 search engine with bigram/character fallback, supporting fast text discovery across multi-version and multilingual CV contents alongside structured precision filtering.
-- **Modern Modular Component Design**: Built with Vue 3 and Element Plus. Candidate details drawer features decoupled tabs for profile, work experience, education, skills, languages, projects, training, and cross-language communication logs.
-- **Multilingual Candidate CV Management**: Chinese primary version is displayed by default, while foreign language CVs (English, Japanese, German, etc.) are managed independently without overwriting each other. Follow-up communication records are shared across languages.
-- **One-Click JSON Batch Importer**: Seamlessly integrates with the companion parsing system (`resume-parsing-system`), featuring schema validation, atomic transactions, idempotency checks, and automatic FTS5 index rebuilding.
+An enterprise-grade, offline-first local recruitment CRM & ATS (Applicant Tracking System) desktop platform for executive search and headhunting agencies, engineered with Electron, Vue 3, Element Plus, Webpack 5, and SQLite (`better-sqlite3`).
 
 ---
 
-## Architecture & Layering
+## What's New in Version 2.0.0
+
+- **Client Company CRM Subsystem**: Full enterprise directory with company scale, industry classifications, multiple hiring manager contacts, and cascading lifecycle controls (safeguarding active openings with soft-deletion).
+- **Position & Candidate Match Flow**: Decoupled matching decision engine (`pending`, `system_recommended`, `accepted`, `dismissed`) and recruitment pipeline stages (`sourced`, `contacted`, `submitted`, `client_interview`, `offer`, `onboarded`, `archived`).
+- **Enhanced Candidate Import Engine**: High-performance batch JSON importer featuring interactive folder/file dialogs, content-hash deduplication, strict conflict detection, and multilingual alignment warning telemetry.
+- **Advanced Full-Text Search (FTS5) & Trigram Tokenizer**: High-speed keyword discovery across Chinese, English, and Japanese CVs alongside rich structured SQL analytical views (`005_search_views.sql`).
+- **Comprehensive Electron Builder Packaging**: Native packaging pipeline for Windows (`nsis` installer, `portable` binary, and `unpacked` standalone directory) with automatic read-only seed bootstrapping.
+- **Robust Automated Test Suite**: 24/24 backend unit and integration test coverage verifying database migrations, transactional invariants, and IPC contracts.
+
+---
+
+## Core Technical Architecture
 
 ```text
-Vue 3 Renderer Process
-  ├── frontend/src/pages/candidate/tabs/ (Independent Tab Components)
-  ├── frontend/src/api/candidateApi.js (Domain API Layer)
-  └── frontend/src/electron/ajax.js (Controlled Preload Invoker)
+Vue 3 Renderer Process (Frontend)
+  ├── frontend/src/pages/company/ (Company CRM: list, detail, contact, edit)
+  ├── frontend/src/pages/candidate/ (Candidate Import Subsystem)
+  ├── frontend/src/pages/layout/ (Responsive Layout & Language Switcher)
+  ├── frontend/src/i18n/ (vue-i18n with on-demand chunked locale loading)
+  └── frontend/src/http/ajax.js (Controlled IPC Invoker)
           │
           ▼
-Electron IPC Channel (contextIsolation: true, nodeIntegration: false)
-  └── electron/preload.js (Controlled window.electronApi.<domain> Bridge)
+Electron IPC Bridge (contextIsolation: true, nodeIntegration: false)
+  └── electron/preload.js (Secure window.electronApi.<domain> namespace)
           │
           ▼
-Electron Main Process
-  ├── electron/src/ipc/*.ipc.js (IPC Routes & Parameter Validation)
-  ├── electron/src/services/ (Business Logic: CandidateService, CandidateSearchService)
-  ├── electron/src/database/repositories/ (Data Access: CandidateRepository, CandidateSearchRepository)
-  ├── electron/src/database/MigrationRunner.js (Automated Incremental Migrations 001~007)
-  └── better-sqlite3 (Native SQLite 3 Engine + FTS5)
-```
-
-Domain naming conventions:
-- `candidate`: Candidate business domain (`candidate_*` tables).
-- `position`: Job opening & requirements domain (`position_*` tables).
-- `company`: Client company domain (`company_*` tables).
-
-API methods strictly follow the "Entity before Action" convention (e.g., `candidatesSearch`, `candidateGet`, `candidateUpdate`).
-
----
-
-## Directory Layout
-
-```text
-resume-candidate-system/
-├── data/                                # Local database & templates
-│   ├── recruitment.db.example           # Empty schema template (tracked by Git)
-│   └── recruitment.db                   # Active database (auto-generated, git-ignored)
-├── electron/                            # Electron main process
-│   ├── main.js                          # Application entry point & window manager
-│   ├── preload.js                       # Secure IPC preload bridge
-│   ├── src/
-│   │   ├── database/                    # SQLite connection, path resolution & migrations (001~007)
-│   │   ├── ipc/                         # IPC channel registrations
-│   │   ├── services/                    # Business services
-│   │   ├── repositories/                # Data repositories
-│   │   └── import_runner.js             # Batch candidate JSON import runner
-│   └── test/                            # Automated test suite (Native Node.js test runner)
-├── frontend/                            # Vue 3 renderer process
-│   ├── build/                           # Webpack 5 configurations (dev / prod)
-│   ├── src/                             # Frontend source (Vue 3, Element Plus, Vue Router, Vue I18n)
-│   │   ├── api/                         # Domain API modules
-│   │   ├── electron/                    # Electron IPC client wrapper
-│   │   └── pages/candidate/             # Candidate list & detail drawer tabs
-│   └── static/                          # Static assets, fonts, and styles
-├── recruitment_system_development_plan.md # In-depth technical specifications & schema dictionary
-├── LICENSE                              # MIT License
-├── README.md                            # English documentation (default)
-├── README.cn.md                         # Simplified Chinese documentation
-└── README.ja.md                         # Japanese documentation
+Electron Main Process (Backend)
+  ├── electron/src/ipc/*.ipc.js (company.ipc, candidate.ipc, system.ipc)
+  ├── electron/src/services/ (CompanyService, CandidateImportService, SystemService)
+  ├── electron/src/database/ (SqliteDatabase, DatabasePath, MigrationRunner)
+  └── electron/src/database/migrations/ (001_system to 005_search_views)
+          │
+          ▼
+Embedded SQLite Database (better-sqlite3)
+  ├── data/recruitment.db (Portable, WAL mode, foreign keys enabled)
+  └── candidate_search_fts (FTS5 virtual table with trigram tokenizer)
 ```
 
 ---
 
-## Quick Start & Development
+## Packaging and Build Instructions
 
-### 1. Prerequisites
-- **Node.js**: >= 20.0.0 (Node.js 22/24 LTS recommended)
-- **Windows OS**: Windows 10 / 11 recommended
+### Prerequisites
+- Node.js 18+ or 20+
+- Windows OS (x64)
 
-### 2. Dependency Installation
+### Development Mode
 
-```powershell
-# 1. Install frontend dependencies
-cd frontend
-npm install
-
-# 2. Install Electron and better-sqlite3 dependencies
-cd ..\electron
-npm install
-```
-
-### 3. Development Workflow
-
-```powershell
-# Mode A: Dual-process development (Recommended)
-# Terminal 1 - start frontend hot-reload dev server:
+```bash
+# Terminal 1: Start Frontend Dev Server
 cd frontend
 npm run dev
 
-# Terminal 2 - start Electron desktop shell:
+# Terminal 2: Start Electron Application
 cd electron
 npm run dev
 ```
 
-> **Tip**: If the frontend dev server is not started, you can run `npm run build` in the `frontend` directory first; the Electron main process will automatically load `frontend/dist/index.html` in offline mode.
+### Production Build & Packaging
 
-### 4. Automated Testing
+```bash
+# 1. Build Frontend Static Assets (Webpack 5)
+cd frontend
+npm run build
 
-```powershell
+# 2. Package Electron Application into Portable/Unpacked Directory
 cd electron
+npm run dist:dir
 
-# Run full test suite: migrations, FTS5 index, transaction atomicity & services
+# 3. Create Windows Installer (NSIS Setup & Portable Exe)
+npm run dist
+```
+
+Outputs are generated in `release/win-unpacked/` and `release/`.
+
+### Automated Testing
+
+```bash
+# Run 24/24 Automated Test Suite
+cd electron
 npm test
 
-# Run native Electron runtime smoke tests
+# Run Native Electron Smoke Test
 npm run test:electron
 ```
 
 ---
 
-## Data Import (From Parsing System)
+## AI Engineering Credits
 
-To import candidate JSON files produced by `resume-parsing-system` directly into SQLite and automatically construct FTS5 full-text search indexes:
-
-```powershell
-cd electron
-npm run import:candidates -- --source=..\resume-parsing-system\output\merge-v3\latest\formal --db=..\data\recruitment.db --fresh
-```
-
-- `--fresh`: Validates candidate counts, verifies idempotency, constructs FTS5 indexes, and checks foreign key integrity in a temporary database first before atomically replacing the destination database.
-
----
-
-## Production Packaging
-
-```powershell
-# 1. Build frontend distribution assets
-cd frontend
-npm run build
-
-# 2. Package Electron desktop application
-cd ..\electron
-npm run dist:dir  # Unpacked directory for local smoke verification
-npm run dist      # NSIS installer and standalone portable executable
-```
-
----
-
-## AI-Driven Development
-
-All code, architectural design, database schemas, and engineering implementations in this project were created through AI collaboration:
-
-- **Google Antigravity**: Architected the core system, wrote the foundational codebase, refactored Electron 43 and Vue 3 decoupling, tuned the `better-sqlite3` WAL/FTS5 database engine, developed comprehensive automated test suites, and managed code clean-up and Git repository standards.
-- **OpenAI Codex**: Assisted in the V1 data model definitions, initial entity mappings, and prototype views.
-- **Anthropic Claude**: Collaborated on the cross-language data alignment specifications and multilingual CV isolation designs.
+- **Google DeepMind Antigravity**: System architecture, dependency modernizations, electron packaging infrastructure, full i18n implementation, trilingual documentation, and test verification.
+- **OpenAI Codex**: Foundation data transformations, multilingual schema design, and candidate parser migrations.
+- **Anthropic Claude**: System testing and verification.
 
 ---
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+MIT License. See [LICENSE](LICENSE) for details.

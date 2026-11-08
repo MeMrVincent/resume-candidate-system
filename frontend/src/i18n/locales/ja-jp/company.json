@@ -1,0 +1,46 @@
+{
+  "company": {
+    "title": "企業一覧",
+    "companyName": "企業名",
+    "shortName": "略称",
+    "industry": "業種",
+    "companySize": "規模",
+    "country": "国",
+    "province": "都道府県",
+    "city": "市区町村",
+    "address": "住所",
+    "website": "ウェブサイト",
+    "description": "企業紹介",
+    "positionTotal": "求人数",
+    "positionOpen": "募集中",
+    "createCompany": "企業を新規作成",
+    "editCompany": "企業を編集",
+    "deactivatedTip": "求人があるため、削除ではなく無効化しました（履歴は保持されます）",
+    "status": {
+      "active": "取引中",
+      "inactive": "無効",
+      "blacklisted": "ブラックリスト"
+    },
+    "contacts": "担当者",
+    "contactName": "氏名",
+    "contactTitle": "役職",
+    "department": "部署",
+    "phone": "電話",
+    "email": "メール",
+    "wechat": "WeChat",
+    "isPrimary": "主担当",
+    "primaryTag": "主",
+    "contactStatus": {
+      "active": "在籍",
+      "left": "退職"
+    },
+    "positionCount": "担当求人",
+    "note": "メモ",
+    "addContact": "担当者を追加",
+    "editContact": "担当者を編集",
+    "notes": "フォローメモ",
+    "addNote": "メモを追加",
+    "noteContent": "メモ内容",
+    "basicInfo": "基本情報"
+  }
+}

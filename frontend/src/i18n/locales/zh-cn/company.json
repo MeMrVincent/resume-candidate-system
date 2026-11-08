@@ -1,0 +1,46 @@
+{
+  "company": {
+    "title": "公司列表",
+    "companyName": "公司名称",
+    "shortName": "简称",
+    "industry": "行业",
+    "companySize": "规模",
+    "country": "国家",
+    "province": "省份",
+    "city": "城市",
+    "address": "地址",
+    "website": "网站",
+    "description": "公司介绍",
+    "positionTotal": "职位数",
+    "positionOpen": "招聘中",
+    "createCompany": "新建公司",
+    "editCompany": "编辑公司",
+    "deactivatedTip": "该公司名下有职位，已改为停用状态（历史数据保留）",
+    "status": {
+      "active": "合作中",
+      "inactive": "已停用",
+      "blacklisted": "黑名单"
+    },
+    "contacts": "对接人",
+    "contactName": "姓名",
+    "contactTitle": "职务",
+    "department": "部门",
+    "phone": "电话",
+    "email": "邮箱",
+    "wechat": "微信",
+    "isPrimary": "主对接人",
+    "primaryTag": "主",
+    "contactStatus": {
+      "active": "在职",
+      "left": "已离职"
+    },
+    "positionCount": "负责职位",
+    "note": "备注",
+    "addContact": "添加对接人",
+    "editContact": "编辑对接人",
+    "notes": "跟进备注",
+    "addNote": "添加备注",
+    "noteContent": "备注内容",
+    "basicInfo": "基本信息"
+  }
+}

@@ -1,10 +1,9 @@
 @charset "utf-8";
 /* CSS Document */
-@font-face{ font-family:'PlusJakartaSans'; src:url('font/PlusJakartaSans.eot');src:url('font/PlusJakartaSans.woff') format('woff'),url('font/PlusJakartaSans.ttf') format('truetype'),url('font/PlusJakartaSans.svg') format('svg'); }
 html,body,#app { height:100%; width:100%; position:relative; overflow:hidden; }
 html { background:#fafafa; }
 * { margin:0; padding:0; list-style:none; box-sizing: border-box; }
-body { font-size:14px; color:#222; font-family:'PlusJakartaSans'; }
+body { font-size:14px; color:#222; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans JP',sans-serif; }
 .fl , .left { float:left; }
 .fr , .right { float:right; }
 .none,.hide { display:none; }
@@ -55,24 +54,24 @@ span,i,em,big,small,b,strong { font-size:inherit; font-weight:normal; font-style
 /** single row, multiple columns, aligned to the top left **/
 .Flex[tag='LT'] { align-items:flex-start; justify-content: flex-start; }
 .Flex[tag='RT'] { align-items:flex-end; justify-content: flex-end; }
-/** 单行，两端对齐，垂直居中 / EN: Single-row, space-between, vertically centered / JA: 1行、両端揃え、垂直中央揃え **/
+/**单行，两端对齐，文字居中对齐**/
 .Flex[tag='SE'] { justify-content:space-between; -webkit-justify-content:space-between; }
-/** 单行，靠左对齐，垂直居中 / EN: Single-row, left-aligned, vertically centered / JA: 1行、左揃え、垂直中央揃え **/
+/**单行，靠左对齐，文字居中对齐**/
 .LFlex { display:flex; -webkit-box-pack:center; justify-content:flex-start; align-items:center; }
-/** 单行，靠右对齐，垂直居中 / EN: Single-row, right-aligned, vertically centered / JA: 1行、右揃え、垂直中央揃え **/
+/**单行，靠右对齐，文字居中对齐**/
 .RFlex { display:flex; -webkit-box-pack:center; justify-content:flex-end; align-items:center; }
-/** 多行，上下居中，水平居中 / EN: Multi-row, column-centered / JA: 複数行、垂直・水平中央揃え **/
+/**多行，上下居中，文字居中对齐**/
 .MFlex { display:flex; -webkit-box-pack:center; justify-content:center; align-items:center; flex-direction:column; -webkit-flex-direction:column; text-align:center; }
-/** 多行，顶端对齐 / EN: Multi-row, top-aligned / JA: 複数行、上端揃え **/
+/**多行，顶端对齐，文字居中对齐**/
 .MFlex[tag='TM']  { justify-content:flex-start; }
-/** 多行，靠左对齐 / EN: Multi-row, left-aligned / JA: 複数行、左揃え **/
+/**多行，靠左对齐，文字居中对齐**/
 .MFlex[tag='LM']  { align-items:flex-start; }
-/** 多行，靠右对齐 / EN: Multi-row, right-aligned / JA: 複数行、右揃え **/
+/**多行，靠右对齐，文字居中对齐**/
 .MFlex[tag='RM']  { align-items:flex-end; -webkit-align-items:flex-end; }
 .TMFlex { display:flex; -webkit-box-pack:center; justify-content:center; align-items:flex-start; }
 article,aside,figcaption,figure,footer,header,hgroup,main,nav,section{display:block}
-input,textarea,button { border-radius:0; -webkit-appearance:none; appearance:none; background:none; border:0; box-shadow:0 0 0; font-family:'PlusJakartaSans'; font-size:16px; color:#222; }
-input::placeholder { color:#b8b8b8; font-size:16px; font-family:'PlusJakartaSans'; }
+input,textarea,button { border-radius:0; -webkit-appearance:none; appearance:none; background:none; border:0; box-shadow:0 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans JP',sans-serif; font-size:16px; color:#222; }
+input::placeholder { color:#b8b8b8; font-size:16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans JP',sans-serif; }
 
 .wh100 { width:100%; height:100%; }
 .CRound { border-radius:10px; background:#fff; }

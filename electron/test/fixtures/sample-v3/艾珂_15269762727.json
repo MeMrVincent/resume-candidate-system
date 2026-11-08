@@ -1,0 +1,323 @@
+{
+  "schema_version": "resume-merge-v3.0",
+  "record_id": "merge-v3-55c52bc8c68c4646",
+  "source": {
+    "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\孙晓丹\\sxd\\2020年  简历\\日文\\0316\\艾珂.docx",
+    "html_path": "",
+    "source_count": 2,
+    "source_files": [
+      {
+        "index": 0,
+        "version": "v2",
+        "json_path": "E:\\resume-system\\complete-v2-temp\\企划_15269762727.json",
+        "sha256": "db0b4ce89e5e19f64ee2489db84b6f717b348f47e795a093e65d9ae72abe158c",
+        "duplicate_paths": [
+          "E:\\resume-system\\complete-v1\\企划_15269762727.json"
+        ],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\孙晓丹\\sxd\\2020年  简历\\日文\\0316\\艾珂.docx",
+        "html_path": "",
+        "resume_updated_date": "2020-03-16 14:13:51",
+        "languages": [
+          "zh"
+        ]
+      },
+      {
+        "index": 1,
+        "version": "v2",
+        "json_path": "E:\\resume-system\\complete-v2-temp\\企划_15269762727_8.json",
+        "sha256": "7754a3e37a2533da3fc6b9d784c5473947d8b7ba75bc1826bf0d4a1a41362bbb",
+        "duplicate_paths": [],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\胖子\\2013年8月开始人才\\2014、8\\职位介绍\\菱华\\人材募集（1307）RD企划副经理cn.doc",
+        "html_path": "",
+        "resume_updated_date": "2020-03-16 14:13:51",
+        "languages": [
+          "zh"
+        ]
+      }
+    ]
+  },
+  "dates": {
+    "resume_updated_date": "2020-03-16 14:13:51",
+    "resume_download_date": "2020-03-16 14:13:51",
+    "resume_updated_date_source": "",
+    "resume_download_date_source": "",
+    "sys_created_date": "2026-08-01T15:33:59+09:00",
+    "sys_updated_date": "2026-10-12T00:00:00+09:00"
+  },
+  "extraction": {
+    "merger": "claude_merge.v3.py",
+    "rule_version": "merge-v3.0-contact-key"
+  },
+  "classification": {
+    "document_type": "resume",
+    "reason": "按手机号/邮箱合并的候选人"
+  },
+  "structured_data": {
+    "base_info": {
+      "full_name": "艾珂",
+      "gender": "女",
+      "age": "27",
+      "birth_date": "",
+      "birth_year": "",
+      "marital_status": "未婚",
+      "children_status": "",
+      "political_status": "",
+      "height_cm": "",
+      "weight_kg": "",
+      "household_registration": "济宁",
+      "address": "上海 长宁区",
+      "postal_code": "",
+      "platform_from": "智联招聘",
+      "platform_resume_id": "f13f29eab7d1",
+      "phone": "15269762727",
+      "email": "376197776@qq.com",
+      "city": "上海市",
+      "nationality": "",
+      "pr": "两年以上代表处工作经验，秘书兼市场担当。2018年起担任县对外投资担当，负责茨城县投资政策对外宣传。负责对本县基本观光资源及吉祥物进行宣传，同时出席各大旅游展及企业展会、商谈会，负责口译工作及相关外籍人士访华接待工作。脚踏实地，有较强的团队意识，乐于帮助他人，喜欢结交朋友。"
+    },
+    "expected_info": {
+      "expected_city": "上海",
+      "expected_position": "企划",
+      "expected_salary": "8001-10000元/月",
+      "expected_annual_salary_min": "",
+      "expected_annual_salary_max": "",
+      "expected_industry": "游戏、快速消费品、文化艺术/娱乐",
+      "expected_employment_type": "全职",
+      "expected_start_date": "我对现有工作还算满意，如有更好的工作机会，我也可以考虑。"
+    },
+    "current_info": {
+      "company_name": "日本公益财团法人茨城县国际交流协会上海代表处",
+      "company_employees": "",
+      "company_industry": "",
+      "position": "秘书兼市场担当",
+      "position_type": "",
+      "position_salary": "6001-8000元/月",
+      "position_dept": "",
+      "position_report_to": "",
+      "position_subordinate": "",
+      "employment_type": "全职",
+      "annual_salary_min": "",
+      "annual_salary_max": "",
+      "status": "在职",
+      "position_start": "2017年07月01日",
+      "position_resigned": ""
+    },
+    "education_info": {
+      "school_name": "曲阜师范大学",
+      "school_major_name": "日语（国际商务）",
+      "school_degree_type": "本科",
+      "school_degree_rank": "4",
+      "school_education_type": "全日制大学",
+      "school_start_ym": "2012年09月01日",
+      "school_end_ym": "2017年07月01日"
+    },
+    "resumes": [
+      {
+        "resume_languge": "zh",
+        "base_info": {
+          "full_name": "艾珂",
+          "gender": "女",
+          "age": "27",
+          "birth_date": "",
+          "birth_year": "",
+          "marital_status": "未婚",
+          "children_status": "",
+          "political_status": "",
+          "height_cm": "",
+          "weight_kg": "",
+          "household_registration": "济宁",
+          "address": "上海 长宁区",
+          "postal_code": "",
+          "platform_from": "智联招聘",
+          "platform_resume_id": "f13f29eab7d1",
+          "phone": "15269762727",
+          "email": "376197776@qq.com",
+          "city": "上海市",
+          "nationality": "",
+          "pr": "两年以上代表处工作经验，秘书兼市场担当。2018年起担任县对外投资担当，负责茨城县投资政策对外宣传。负责对本县基本观光资源及吉祥物进行宣传，同时出席各大旅游展及企业展会、商谈会，负责口译工作及相关外籍人士访华接待工作。脚踏实地，有较强的团队意识，乐于帮助他人，喜欢结交朋友。"
+        },
+        "expected_list": [
+          {
+            "expected_city": "上海",
+            "expected_position": "企划",
+            "expected_salary": "8001-10000元/月",
+            "expected_annual_salary_min": "",
+            "expected_annual_salary_max": "",
+            "expected_industry": "游戏、快速消费品、文化艺术/娱乐",
+            "expected_employment_type": "全职",
+            "expected_start_date": "我对现有工作还算满意，如有更好的工作机会，我也可以考虑。"
+          }
+        ],
+        "work_experiences": [
+          {
+            "company_name": "日本公益财团法人茨城县国际交流协会上海代表处",
+            "company_employees": "",
+            "company_industry": "",
+            "position": "秘书兼市场担当",
+            "position_type": "",
+            "position_salary": "6001-8000元/月",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "在职",
+            "position_start": "2017年07月01日",
+            "position_resigned": "",
+            "resigned_reason": "",
+            "position_responsibilities": "1. 出席各类旅游推介会、商谈会，负责前期联络、PPT制作及现场发表，根据国内旅行社诉求进行提案修正及后续回访2.出席旅游博览会及商品博览会，负责前期联络、物料准备、海报设计、 现场搭建及舞台活动策划·实施3.为提升事务所吉祥物知名度，进行线下活动联络、活动流程策划及周边产品开发提案4.管理事务所微信公众号，负责公众号文章编撰，实施线下微信·微博活动以增加粉丝数5.县内领导人及企业管理层人员访华日程协调及接待工作6.县内声优线下活动（限上海地区）支援7. 负责公司财务工作，月度报表制作及年度决算工作8.全权负责事务所登记、年检手续办理及外国人工作管理相关事务9.领导交代的其他书面文件翻译及口译工作",
+            "position_achievements": ""
+          },
+          {
+            "company_name": "山东省智博威教育集团",
+            "company_employees": "",
+            "company_industry": "",
+            "position": "英语教师兼课程销售",
+            "position_type": "",
+            "position_salary": "4001-6000元/月",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2016年06月01日",
+            "position_resigned": "2017年07月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "1.负责面向中小学生的英语教学工作（最高学员数达百人以上）2.作为英语学习顾问，对学生进行学习方法指导3.针对学生个人情况定期与家长进行联络4.负责定期学员维护和生源拓展",
+            "position_achievements": ""
+          },
+          {
+            "company_name": "济宁精伦工程机械有限公司",
+            "company_employees": "",
+            "company_industry": "",
+            "position": "翻译",
+            "position_type": "",
+            "position_salary": "1000元/月 以下",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2016年04月01日",
+            "position_resigned": "2016年05月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "作为实习生负责相关资料的翻译工作。",
+            "position_achievements": ""
+          }
+        ],
+        "education_list": [
+          {
+            "school_name": "日本岩手大学",
+            "school_major_name": "教育学",
+            "school_degree_type": "本科",
+            "school_degree_rank": "4",
+            "school_education_type": "全日制大学",
+            "school_start_ym": "2015年04月01日",
+            "school_end_ym": "2016年04月01日"
+          },
+          {
+            "school_name": "曲阜师范大学",
+            "school_major_name": "日语（国际商务）",
+            "school_degree_type": "本科",
+            "school_degree_rank": "4",
+            "school_education_type": "全日制大学",
+            "school_start_ym": "2012年09月01日",
+            "school_end_ym": "2017年07月01日"
+          }
+        ],
+        "certificate_list": [
+          {
+            "certificate_name": "大学英语四级",
+            "certificate_type": "证书",
+            "certificate_time": "2013年06月01日"
+          },
+          {
+            "certificate_name": "日语一级证书",
+            "certificate_type": "证书",
+            "certificate_time": "2015年07月01日"
+          },
+          {
+            "certificate_name": "C1驾照",
+            "certificate_type": "证书",
+            "certificate_time": "2016年07月01日"
+          },
+          {
+            "certificate_name": "中级英语教师资格证",
+            "certificate_type": "证书",
+            "certificate_time": "2017年07月01日"
+          }
+        ],
+        "language_list": [
+          {
+            "language_name": "日语",
+            "language_level": "读写能力精通 | 听说能力精通",
+            "language_certificate": "有",
+            "language_certificate_time": "2015年07月01日"
+          },
+          {
+            "language_name": "英语",
+            "language_level": "读写能力熟练 | 听说能力良好",
+            "language_certificate": "有",
+            "language_certificate_time": "2013年06月01日"
+          }
+        ],
+        "skills_list": [],
+        "training_list": [],
+        "project_list": [],
+        "communication_list": [
+          {
+            "communicate_time": "",
+            "communicate_content": "两年以上代表处工作经验，秘书兼市场担当。2018年起担任县对外投资担当，负责茨城县投资政策对外宣传。负责对本县基本观光资源及吉祥物进行宣传，同时出席各大旅游展及企业展会、商谈会，负责口译工作及相关外籍人士访华接待工作。脚踏实地，有较强的团队意识，乐于帮助他人，喜欢结交朋友。"
+          }
+        ]
+      }
+    ]
+  },
+  "raw_text": "艾珂\n女\n27\n未婚\n济宁\n上海 长宁区\n智联招聘\nf13f29eab7d1\n15269762727\n376197776@qq.com\n上海市\n两年以上代表处工作经验，秘书兼市场担当。2018年起担任县对外投资担当，负责茨城县投资政策对外宣传。负责对本县基本观光资源及吉祥物进行宣传，同时出席各大旅游展及企业展会、商谈会，负责口译工作及相关外籍人士访华接待工作。脚踏实地，有较强的团队意识，乐于帮助他人，喜欢结交朋友。\n上海\n企划\n8001-10000元/月\n游戏、快速消费品、文化艺术/娱乐\n全职\n我对现有工作还算满意，如有更好的工作机会，我也可以考虑。\n日本公益财团法人茨城县国际交流协会上海代表处\n秘书兼市场担当\n6001-8000元/月\n全职\n在职\n2017年07月01日\n1. 出席各类旅游推介会、商谈会，负责前期联络、PPT制作及现场发表，根据国内旅行社诉求进行提案修正及后续回访2.出席旅游博览会及商品博览会，负责前期联络、物料准备、海报设计、 现场搭建及舞台活动策划·实施3.为提升事务所吉祥物知名度，进行线下活动联络、活动流程策划及周边产品开发提案4.管理事务所微信公众号，负责公众号文章编撰，实施线下微信·微博活动以增加粉丝数5.县内领导人及企业管理层人员访华日程协调及接待工作6.县内声优线下活动（限上海地区）支援7. 负责公司财务工作，月度报表制作及年度决算工作8.全权负责事务所登记、年检手续办理及外国人工作管理相关事务9.领导交代的其他书面文件翻译及口译工作\n山东省智博威教育集团\n英语教师兼课程销售\n4001-6000元/月\n全职\n离职\n2016年06月01日\n2017年07月01日\n1.负责面向中小学生的英语教学工作（最高学员数达百人以上）2.作为英语学习顾问，对学生进行学习方法指导3.针对学生个人情况定期与家长进行联络4.负责定期学员维护和生源拓展\n济宁精伦工程机械有限公司\n翻译\n1000元/月 以下\n全职\n离职\n2016年04月01日\n2016年05月01日\n作为实习生负责相关资料的翻译工作。\n日本岩手大学\n教育学\n本科\n4\n全日制大学\n2015年04月01日\n2016年04月01日\n曲阜师范大学\n日语（国际商务）\n本科\n4\n全日制大学\n2012年09月01日\n2017年07月01日\n大学英语四级\n证书\n2013年06月01日\n日语一级证书\n证书\n2015年07月01日\nC1驾照\n证书\n2016年07月01日\n中级英语教师资格证\n证书\n2017年07月01日\n日语\n读写能力精通 | 听说能力精通\n有\n2015年07月01日\n英语\n读写能力熟练 | 听说能力良好\n有\n2013年06月01日\n两年以上代表处工作经验，秘书兼市场担当。2018年起担任县对外投资担当，负责茨城县投资政策对外宣传。负责对本县基本观光资源及吉祥物进行宣传，同时出席各大旅游展及企业展会、商谈会，负责口译工作及相关外籍人士访华接待工作。脚踏实地，有较强的团队意识，乐于帮助他人，喜欢结交朋友。",
+  "quality": {
+    "full_name": "艾珂",
+    "has_work": true,
+    "work_count": 3,
+    "has_education": true,
+    "education_count": 2,
+    "languages": [
+      "zh"
+    ],
+    "raw_text_length": 1258
+  },
+  "merge_info": {
+    "group_id": "55c52bc8c68c4646",
+    "rule_version": "merge-v3.0-contact-key",
+    "output_filename": "艾珂_15269762727.json",
+    "name_status": "valid",
+    "canonical_name": "艾珂",
+    "english_name": "",
+    "primary_phone": "15269762727",
+    "primary_email": "376197776@qq.com",
+    "other_phones": [],
+    "other_emails": [],
+    "landlines": [],
+    "shared_contacts_ignored": [],
+    "needs_translation": false,
+    "v2_count": 2,
+    "v1_count": 0,
+    "language_sources": {
+      "zh": [
+        0,
+        1
+      ]
+    },
+    "translated_from": "",
+    "name_note": "",
+    "conflict_count": 3,
+    "field_issue_count": 3,
+    "name_linked_sources": [],
+    "output_category": "formal",
+    "high_issue_count": 0
+  }
+}

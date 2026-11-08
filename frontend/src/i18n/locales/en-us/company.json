@@ -1,0 +1,46 @@
+{
+  "company": {
+    "title": "Companies",
+    "companyName": "Company name",
+    "shortName": "Short name",
+    "industry": "Industry",
+    "companySize": "Size",
+    "country": "Country",
+    "province": "Province",
+    "city": "City",
+    "address": "Address",
+    "website": "Website",
+    "description": "About",
+    "positionTotal": "Positions",
+    "positionOpen": "Open",
+    "createCompany": "New company",
+    "editCompany": "Edit company",
+    "deactivatedTip": "This company has positions, so it was deactivated instead (history is kept)",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "blacklisted": "Blacklisted"
+    },
+    "contacts": "Contacts",
+    "contactName": "Name",
+    "contactTitle": "Title",
+    "department": "Department",
+    "phone": "Phone",
+    "email": "Email",
+    "wechat": "WeChat",
+    "isPrimary": "Primary contact",
+    "primaryTag": "Primary",
+    "contactStatus": {
+      "active": "Active",
+      "left": "Left company"
+    },
+    "positionCount": "Positions owned",
+    "note": "Note",
+    "addContact": "Add contact",
+    "editContact": "Edit contact",
+    "notes": "Follow-up notes",
+    "addNote": "Add note",
+    "noteContent": "Note",
+    "basicInfo": "Basic info"
+  }
+}

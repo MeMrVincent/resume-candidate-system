@@ -1,0 +1,46 @@
+批次 #1
+warning	list_misaligned	35
+warning	bad_date	4
+
+=== list_misaligned（前 15 条样例）===
+于宏伟_18658859882.json	work_experiences 的 position_start 顺序与主简历不一致
+余卡卡_17321117369.json	education_list 的 school_start_ym 顺序与主简历不一致
+凌云_13816781866.json	education_list 的 school_start_ym 顺序与主简历不一致
+吕雯婷_18017545257.json	education_list 的 school_start_ym 顺序与主简历不一致
+吴广友_13761943521.json	work_experiences 的 position_start 顺序与主简历不一致
+吴怡_13918447233.json	education_list 的 school_start_ym 顺序与主简历不一致
+周琴莹_13564933271.json	work_experiences 的 position_start 顺序与主简历不一致
+夏飞虎_13122633039.json	education_list 的 school_start_ym 顺序与主简历不一致
+廖雅娟_15273187004.json	education_list 的 school_start_ym 顺序与主简历不一致
+张一哲_15259434262.json	education_list 的 school_start_ym 顺序与主简历不一致
+张凯_13074138301.json	education_list 的 school_start_ym 顺序与主简历不一致
+张莉_15900479725.json	education_list 的 school_start_ym 顺序与主简历不一致
+彭小权_18818232702.json	work_experiences 的 position_start 顺序与主简历不一致
+徐亮亮_18912478487.json	education_list 的 school_start_ym 顺序与主简历不一致
+朱魏仙_13817192085.json	work_experiences 的 position_start 顺序与主简历不一致
+
+=== bad_date（前 15 条样例）===
+张怡雯_13636333583.json	无法识别的日期: 2009年12年
+梁甫超_13817296592.json	无法识别的日期: November 2, 1965
+梁甫超_13817296592.json	无法识别的日期: 1996 and 1997
+武会_13585990346.json	无法识别的日期: July 3rd 1989
+
+=== 冲突联系方式涉及的类型分布 ===
+
+=== 无主手机 / 无主邮箱的候选人数 ===
+{"no_phone":161,"no_email":247,"total":10576}
+
+=== 无主手机样例（前 10）===
+#42	丁丹	merge-v3-32114fc212f9a2e1	email:dingdanecust@126.com | landline:01057964666
+#63	丁彤彬	merge-v3-e7b34a7704d5ab31	email:dingtongbin@hotmail.com
+#66	丁彦岚	merge-v3-598ef2e8eacec252	email:dingyanlan@hotmail.com
+#70	丁敏慧	merge-v3-bb0659f1fc879dee	email:willevil@qq.com | landline:01053733037
+#103	丁践学	merge-v3-26a05e260608fff0	email:ding-jianxue@ojipaper.cn
+#169	严英爱	merge-v3-eebd4acf43482f1f	email:yingaiyan@126.com
+#242	于皓琴	merge-v3-fa894c33e0915697	email:yuailin26@sina.com | landline:02163130507
+#326	任高峰	merge-v3-b22808982ecf25c9	email:gaofengtj@hotmail.com | landline:+49017638642332
+#366	何女士	merge-v3-6b07102f6b3507b8	email:sakura_xiaohe@live.cn
+#439	余天府	merge-v3-d086084307cefbf9	email:987310169@qq.com
+
+=== 无主手机且无主邮箱 ===
+0

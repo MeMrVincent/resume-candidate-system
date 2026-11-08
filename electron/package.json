@@ -1,7 +1,7 @@
 {
-  "name": "recruitment-system-electron",
-  "version": "1.0.0",
-  "description": "Recruitment Management CRM / ATS - Electron Main Process",
+  "name": "recruitment-system-v2-electron",
+  "version": "2.0.0",
+  "description": "Recruitment Management CRM / ATS V2 - Electron Main Process",
   "main": "main.js",
   "author": "Vincent",
   "license": "MIT",
@@ -12,22 +12,21 @@
     "dist": "npm run build:renderer && electron-builder",
     "dist:dir": "npm run build:renderer && electron-builder --dir",
     "test:electron": "electron test/electron-native-smoke.js",
+    "test": "node --test test/*.test.js",
     "import:candidates": "node src/import_runner.js",
-    "audit:candidate-lists": "node src/audit_candidate_lists.js",
-    "normalize:candidate-json-lists": "node src/normalize_candidate_json_lists.js",
-    "test": "node --test test/*.test.js"
+    "report:import-warnings": "node src/report_import_warnings.js"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",
     "electron-is-dev": "^3.0.1"
   },
   "devDependencies": {
-    "electron": "^43.3.0",
-    "electron-builder": "^26.15.3"
+    "electron": "^45.2.3",
+    "electron-builder": "^26.18.0"
   },
   "build": {
-    "appId": "com.recruitment.system",
-    "productName": "RecruitmentSystem",
+    "appId": "com.recruitment.system.v2",
+    "productName": "RecruitmentSystemV2",
     "electronDist": "node_modules/electron/dist",
     "asar": true,
     "npmRebuild": false,

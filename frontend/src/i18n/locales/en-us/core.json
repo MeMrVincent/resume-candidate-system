@@ -1,0 +1,51 @@
+{
+  "lan": {
+    "input": "Please enter ",
+    "select": "Please select",
+    "all": "All",
+    "operate": "Actions",
+    "colon": ": ",
+    "createdTime": "Created",
+    "updatedTime": "Updated",
+    "status": "Status",
+    "language": "Language",
+    "empty": "No data",
+    "none": "--"
+  },
+  "btn": {
+    "search": "Search",
+    "reset": "Reset",
+    "create": "New",
+    "edit": "Edit",
+    "delete": "Delete",
+    "detail": "Details",
+    "confirm": "OK",
+    "cancel": "Cancel",
+    "save": "Save",
+    "back": "Back",
+    "add": "Add"
+  },
+  "menu": {
+    "company": "Companies",
+    "position": "Positions",
+    "candidate": "Candidates",
+    "home": "Home",
+    "systemName": "Recruitment System",
+    "candidateImport": "Candidate Import"
+  },
+  "message": {
+    "saveSuccess": "Saved",
+    "deleteSuccess": "Deleted",
+    "confirmTitle": "Notice",
+    "deleteConfirm": "Are you sure you want to delete this?"
+  },
+  "errorCode": {
+    "VALIDATION": "Invalid input",
+    "NOT_FOUND": "Data not found",
+    "DUPLICATE": "Duplicate data",
+    "IN_USE": "Data is in use and cannot be deleted",
+    "INVALID_TRANSITION": "This action is not allowed in the current state",
+    "INTERNAL_ERROR": "Internal error",
+    "PRELOAD_UNAVAILABLE": "Cannot reach the main process. Please open this in the desktop app"
+  }
+}

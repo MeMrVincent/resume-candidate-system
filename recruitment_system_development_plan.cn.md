@@ -1,4257 +1,1047 @@
-# 猎头招聘管理系统开发规划与数据库设计
+# 猎头招聘管理系统 V2 开发规划与完整功能设计规范
 
 > **语言导航 / Language Navigation / 言語ナビゲーション**  
 > [English](recruitment_system_development_plan.md) | **简体中文** | [日本語](recruitment_system_development_plan.ja.md)
 
 ---
 
-
-**文档版本**：1.1
-**日期**：2026-08-10
-**目标读者**：Codex / Antigravity / 开发人员
-**系统形态**：本地 Electron 桌面应用  
-**当前阶段**：候选人数据已完成解析、清洗、跨语言合并与 `raw_text` 构建，正式进入 Electron + 前端 + SQLite 开发阶段。
-
----
-
-## 0. 文档定位与优先级
-
-本文件是从“数据转换阶段”切换到“业务系统开发阶段”后的开发权威说明。
-
-开发时遵循以下优先级：
-
-1. 本文件中标记为 **必须 / 强制 / 不允许** 的约定。
-2. 已完成的最终候选人 JSON 数据结构。
-3. 原项目 `CONTEXT.md` 中 2026-08-02 及之后没有被本文件覆盖的规则。
-4. 历史解析脚本、旧 MySQL / PHP / 阿里云方案仅作为历史资料，不作为当前应用架构依据。
-
-### 0.1 当前已确认事实
-
-- 所有历史简历文件已经完成转换。
-- 同一候选人的数据已经完成合并。
-- 多语言简历已经按最终规则完成处理。
-- 候选人的最终 JSON 已经包含结构化数据。
-- 每个候选人已经预先生成候选人级 `raw_text`。
-- `raw_text` 已包含该候选人现有简历中的可搜索文本，用于全文搜索。
-- 第一阶段不再重新解析 Word / PDF / Excel / HTML。
-- 正式应用使用 **Electron + SQLite**。
-- 前端使用 **Vue 3 + JavaScript**。
-- 表名前缀按业务域统一：
-  - `candidate_`：候选人域
-  - `position_`：职位域
-  - `company_`：公司域
-  - `system_`：系统基础设施域
-
-> 注意：统一使用正确英文拼写 `position_`，不使用 `postion_`。
-
-### 0.2 2026-08-10 已落地实现决策
-
-- 正式运行时：Electron 43.3.0；数据库驱动：`better-sqlite3` 13.0.3，不再使用内存型 `sql.js`。
-- 数据库位置：开发期为 `code/data/recruitment.db`；打包后为程序可执行文件同目录下的 `data/recruitment.db`。
-- 正式包在 `resources/seed/recruitment.db` 携带只读种子；首次启动复制到上述正式位置，已有正式数据库绝不覆盖。
-- 安装器允许选择其他磁盘；安装目录必须允许当前 Windows 用户写入，避免数据库因目录权限变成只读。
-- 整套程序目录允许复制到其他磁盘；程序升级不得覆盖 `data/` 与 `backups/`。
-- 最终 JSON 数据源由命令行 `--source` 传入，当前全量源为 `E:\resume-system\codex-complete-jsons\complete`，不得硬编码在业务服务中。
-- 已从 9,860 个最终 JSON 创建新库：`candidate_profiles`、`candidate_import_records`、`candidate_search_documents`、`candidate_search_fts` 均为 9,860 条。
-- Importer 已验证幂等：第二次全量扫描新增 0、跳过 9,860、失败 0。
-- 业务域名称固定为 `candidate / position / company`；不再使用 `customer`。
-- Renderer 不使用全局 Store 保存查询结果，页面通过领域 API 模块调用 Electron 服务。
-- 不允许 Mock 数据在 Electron 服务失败时回退，错误必须直接显示并保留诊断信息。
-- 候选人列表默认按 `dates.sys_updated_date` 对应的数据库字段降序；年龄由出生日期与当前日期动态计算，不使用历史简历中的静态年龄。
-- 候选人详情抽屉只负责加载和编排，基础档案、工作、教育、技能、语言、沟通分别使用独立 Vue 组件和独立更新 API。
-- 多语言候选人默认展示中文主档；姓名后只展示实际存在的语言切换按钮。外文版本从 `candidate_resume_variants.content_json` 独立读取和保存，修改任一语言不得覆盖其他语言。
-- 沟通跟进属于候选人业务数据，不属于某一份语言简历，因此跨语言共享；所有简历内容仍共同进入候选人全文索引。
-
-### 0.3 API 与服务命名规则
-
-所有方法采用“业务对象在前、动作在后”：
-
-```text
-candidatesSearch
-candidatesCount
-candidateGet
-candidateResumeGet
-candidateUpdate
-candidateCommunicationAdd
-candidateCommunicationUpdate
-candidateCommunicationDelete
-candidateWorkExperiencesUpdate
-candidateEducationsUpdate
-candidateSkillsUpdate
-candidateLanguagesUpdate
-candidateExpectationsUpdate
-```
-
-各层映射：
-
-```text
-Vue 页面
-  → candidateApi.candidatesSearch()
-  → window.electronApi.candidate.candidatesSearch()
-  → IPC candidate:candidatesSearch
-  → CandidateSearchService.candidatesSearch()
-  → CandidateSearchRepository
-  → candidate_* tables
-```
+**文档版本**：2.0.0  
+**更新日期**：2026-11-08  
+**目标读者**：Codex / Antigravity / 全栈工程开发团队  
+**系统形态**：企业级本地离线 Electron 桌面应用程序  
+**核心技术基准**：Electron 45.2.3 + better-sqlite3 13.0.3 + SQLite 3.53.4 (WAL模式) + Vue 3.5.45 + Element Plus 2.14.8 + vue-i18n 11.4.18  
+**当前系统完成状态**：
+- **Phase 1（候选人核心资产库）**：9,860 份简历清洗入库、跨语言合并与 FTS5 全文搜索已全量落地。
+- **Phase 2（职位与 ATS 招聘流转）**：职位开缺、适合度判定、多轮面试记录、Offer 及入职保用期流转与三大实时统计视图已全量落地。
+- **Phase 3（企业客户 CRM）**：企业档案、多联系人维护、级联软删除保护与交互前端已全栈闭环实现。
+- **工程化与质量保证**：全量 24/24 项后端测试 100% 通过；Electron Builder 本地打包（Portable / Unpacked / NSIS）已完全验证。
 
 ---
 
-# 1. 系统目标
+## 0. 版本演进与 V2 核心差异说明 (V1 vs V2)
 
-系统最终是一个本地运行的猎头 CRM + ATS + 人才库自动匹配系统。
+相比于 V1 版本，V2 版本在业务深度、数据库架构、导入审计及工程化打包上实现了重大演进：
 
-核心业务闭环：
+### 0.1 核心差异对比清单
 
-```text
-公司
-   ↓
-创建职位
-   ↓
-职位自动从候选人库召回并评分
-   ↓
-系统推荐候选人
-   ↓
-人工确认 / 不匹配
-   ↓
-沟通
-   ↓
-推送公司
-   ↓
-面试
-   ↓
-Offer
-   ↓
-入职
-```
-
-反向闭环：
-
-```text
-新增 / 更新候选人
-   ↓
-重建该候选人 raw_text
-   ↓
-重新匹配所有正在招聘的职位
-   ↓
-产生 / 更新职位候选关系
-```
-
-候选人详情页必须能够反向看到：
-
-- 该候选人关联过哪些职位；
-- 每个职位当前走到什么进度；
-- 历史上什么时候被匹配；
-- 是否曾被人工判定不匹配；
-- 是否正在沟通；
-- 是否已经推送公司；
-- 是否面试；
-- 是否 Offer；
-- 是否已入职；
-- 所有沟通记录。
+| 维度 | V1.0 版本实现 | V2.0 版本重大演进 |
+| :--- | :--- | :--- |
+| **数据库迁移体系** | 7 个累积增量补丁（`001_initial` 至 `007_communication_list_fields`） | 重构为 **5 个基于领域驱动设计（DDD）的独立版本文件**（`001_system` 至 `005_search_views`） |
+| **系统基础设施域** | 仅含配置与简单审计日志 | 新增 **`system_users` 系统操作员表**，为企业、职位、沟通记录提供明确的顾问归属与审计追踪 |
+| **企业客户 CRM (Phase 3)** | 仅有架构规划草案，无前后端落地代码 | **全栈闭环落地**：`company_profiles`、`company_contacts`、`company_notes`，主联系人自动更替，级联软删除保护，前端完整 CRM 视图 |
+| **职位与 ATS 流程流转** | 仅包含基础匹配表 | **深度精细化建模**：新增 `position_candidate_interviews`（多轮面试与反馈）、`position_candidate_placements`（入职、Offer 薪酬、保用期天数与佣金结算）、`position_candidate_history`（全生命周期演进追溯） |
+| **判定与流转解耦** | 约定性逻辑 | **数据库强校验约束**：`CHECK (stage IS NULL OR decision = 'accepted')`，严密保障只有在确认适合后才允许推进招聘流转 |
+| **数据统计与分析** | 页面端临时拼接 SQL 查询 | **内置 3 大高性能分析聚合视图**：`v_candidate_stats`、`v_position_pipeline_counts`、`v_company_position_counts` |
+| **候选人导入引擎** | 命令行单次批量导入脚本 | **交互式导入引擎 (Import V3)**：支持图形化选目录/文件，新增 `candidate_import_batches` 批次流水与 `candidate_import_errors` 告警明细表，支持**严格模式冲突检测**与多语言不对齐容差诊断 |
+| **前端多语言 (i18n)** | 全局静态打包语言字典 | **按需异步分块加载**（`meta.i18nPacks` 动态路由守卫）：启动仅加载 `core.json`，进入具体模块才异步下载对应包，默认英文（`en-us`），中英日 100% 键对齐 |
+| **客户端打包工程** | 基础配置未跑通 | **全面打通 `electron-builder`**：支持绿色解包目录（`dist:dir`）与 NSIS 安装包，内置只读模板库热挂载，通过原生冒烟测试 |
+| **自动化测试覆盖** | 10 项基础测试用例 | **扩充至 24 项全量测试**（覆盖企业管理、导入严格模式、冲突判定、多语言对齐容差等），保持 100% 全部通过 |
 
 ---
 
-# 2. 总体技术架构
+## 1. 系统业务目标与端到端闭环
 
-## 2.1 推荐技术栈
+本系统最终形态为一个在顾问本地桌面高速稳定运行的企业级猎头 CRM + ATS + 人才智能检索匹配管理平台。
+
+### 1.1 正向核心招聘业务闭环
 
 ```text
-Desktop
-├── Electron
-├── JavaScript (ES6+)
-├── Vue 3
-├── Vue Router
-├── Webpack 5
-│
-Database
-├── SQLite
-├── FTS5
-└── better-sqlite3
-│
-Background
-└── Node Worker Threads
+客户企业 (Company)
+      ↓
+创建职位需求 (Position Openings)
+      ↓
+FTS5 全文召回 + 结构化条件过滤 (Recall)
+      ↓
+系统智能初筛与推荐 (MatchEngine Scoring)
+      ↓
+猎头顾问人工判定 (decision: accepted / dismissed)
+      ↓
+候选人意向沟通跟进 (candidate_communications)
+      ↓
+向客户企业推选简历 (stage: submitted)
+      ↓
+多轮客户面试管理 (position_candidate_interviews)
+      ↓
+录用 Offer 与佣金结算 (position_candidate_placements)
+      ↓
+入职与保用期审核 (guarantee_passed)
 ```
 
-不建议第一版引入：
+### 1.2 反向流转与数据穿透追踪
 
-- MySQL
-- PostgreSQL
-- Redis
-- Elasticsearch
-- 独立后端服务
-- Docker
-- 微服务
-- 云数据库
-
-当前系统是本地单机桌面应用，优先保证：
-
-- 简单；
-- 快速；
-- 可备份；
-- 可恢复；
-- 数据一致；
-- 易调试；
-- 易迁移。
+在候选人详情界面，顾问必须能够反向穿透追踪：
+- 该候选人历史上与哪些企业、哪些职位建立过推荐关系；
+- 每个职位当前行进到何种流程（沟通中、已推选、面试轮次、Offer、已入职）；
+- 每次面试的面试官反馈与历史评语；
+- 候选人的历史保用期状态与沟通记录时间线。
 
 ---
 
-## 2.2 Electron 分层
+## 2. V2 完整功能架构与业务能力全景 (Full Feature Matrix)
 
-强制使用以下调用链：
+V2 版本的核心功能划分为 **10 大功能模块**，覆盖企业客户管理、职位开缺、人才库管理、智能检索、ATS 流程、交互导入、统计分析、系统管理、国际化及离线运行交付：
 
-```text
-Vue Renderer
-    ↓
-Preload API
-    ↓
-Electron IPC
-    ↓
-Service
-    ↓
-Repository
-    ↓
-SQLite
-```
-
-**禁止：**
-
-```text
-Vue Renderer → 直接访问 SQLite
-```
-
-**禁止：**
-
-```text
-IPC 文件内部散落大量 SQL
-```
-
-**禁止：**
-
-```text
-Renderer 开启 nodeIntegration 后直接调用 Node API
-```
-
-Electron Main Process 持有数据库连接。
-
-Renderer 只能通过受控 IPC API 操作业务数据。
+### 模块 1：企业客户 CRM 系统 (Client Company CRM)
+1. **企业档案全生命周期管理**：
+   - 企业建档、编辑、查看、查询与状态变更；
+   - 核心字段：企业全称（全局唯一索引）、企业简称、所属行业、人员规模、所在国家/省份/城市、详细地址、官方网站、公司介绍与背景；
+   - 企业状态机：`active`（合作中）、`inactive`（暂停合作）、`blacklisted`（黑名单）；
+   - 顾问归属：支持绑定归属顾问（`owner_user_id`），支持创建人与更新人审计。
+2. **多对接人体系 (Company Contacts)**：
+   - 一个企业支持维护多位对接人（HR、业务部门负责人、招聘经理等）；
+   - 字段支持：姓名、职务、部门、联系电话、电子邮箱、微信号、对接人状态（`active` 在职 / `left` 离职）、备注信息；
+   - **主联系人机制**：新增的首个联系人自动设置为主联系人（`is_primary=1`）；若更新或新增联系人勾选为主联系人，系统自动将原主联系人降级为普通联系人，确保企业名下恒有且仅有一个主联系人；
+   - 外键防误删防护：正在被职位引用的对接人**严禁删除**，系统抛出 `IN_USE` 业务错误，强制要求先更换职位负责人或标记离职。
+3. **企业级联保护与智能软删除**：
+   - 当企业名下**不存在任何职位**时，允许执行物理删除（`deleted`），同时级联清理关联对接人与备忘录；
+   - 当企业名下**已开设有职位**时，系统自动拦截物理删除，转为**智能软删除**（`deactivated`），将企业状态标记为 `inactive`，完整保留职位与招聘历史。
+4. **企业商务跟进备忘录 (Company Notes)**：
+   - 记录顾问对企业的拜访记录、合作条款沟通、商务纪要；
+   - 包含记录时间（`noted_at`）、备忘类型（`note_type`）、具体内容与记录人，按时间倒序排列展示。
+5. **前端交互工作台**：
+   - 企业列表页（支持公司名称/简称模糊搜索、合作状态筛选、分页浏览）；
+   - 企业详情卡片视图（企业基本信息、职位开缺计数统计、多对接人列表维护、备忘录快速录入流）；
+   - 对接人维护弹窗（`contact.popup.vue`）与企业编辑弹窗（`edit.popup.vue`）。
 
 ---
 
-## 2.3 数据库配置
+### 模块 2：职位开缺与需求管理 (Position Openings & Requirements)
+1. **职位发布与信息建模**：
+   - 关联客户企业（`company_id`）与具体企业对接人（`contact_id`）；
+   - 职位核心参数：职位名称、所属部门、招聘编制人数（`headcount >= 1`）、工作城市、具体办公地点、工作类型（全职/兼职/外包）；
+   - 薪资与福利待遇：年薪范围（`salary_min` ～ `salary_max`）、薪资币种（CNY/USD/JPY 等）、薪资月数（如 12、14、16 薪）；
+   - 任职要求：经验年限区间（`experience_min` ～ `experience_max`）、最低学历要求（`degree_min_rank` 1-7 等级映射）、职位职责描述（JD）、岗位要求文本；
+   - 招聘配置：保用期天数（`guarantee_days`）、招聘紧急程度（`priority`: `low`, `normal`, `high`, `urgent`）；
+   - 职位状态机：`draft`（草稿） -> `open`（招聘中） -> `paused`（暂停） -> `filled`（已招满） -> `closed`（已关闭） / `cancelled`（已取消）。
+2. **职位对接人归属数据库强校验触发器**：
+   - 数据库级内置双向触发器 `trg_position_contact_belongs_ins` 与 `trg_position_contact_belongs_upd`；
+   - 严密校验：职位的对接人（`contact_id`）必须属于该职位所在的企业（`company_id`），严防跨公司错乱关联。
+3. **职位画像与特征技能词库 (`position_keywords`)**：
+   - 技能（skill）、语言（language）、行业（industry）、城市（city）、职能（title）、学历（degree）等结构化关键词；
+   - 关键词权重配置（weight）与类别划分（must_have 必备项 / nice_to_have 加分项）。
+4. **职位招聘漏斗管线看板**：
+   - 配合 `v_position_pipeline_counts` 视图，直接呈现每个职位下当前待筛选、初筛通过、淘汰、推荐中、面试中、Offer中、已入职的人员数据。
 
-应用启动连接 SQLite 后执行：
+---
+
+### 模块 3：候选人人事档案与多语言治理 (Candidate Profiles & Multilingual Management)
+1. **候选人主档案卡 (`candidate_profiles`)**：
+   - 候选人唯一标识（`candidate_uuid`）、清洗入库分组标识（`record_id`）；
+   - 基本属性：中文姓名、英文名、性别、出生日期、所在城市、当前公司、当前职位、最高学历、总工作年限；
+   - 主联系信息冗余加速：主手机号（`primary_phone`）、主邮箱（`primary_email`）挂载唯一索引；
+   - 状态标识：`active`（活跃储备）、`archived`（已归档）。
+2. **多维联系方式治理 (`candidate_contacts`)**：
+   - 支持移动电话（mobile）、固定电话/座机（landline）、电子邮箱（email）；
+   - 规范化去噪：手机号自动剔除国家码 `+86`，邮箱自动转换为全小写；
+   - **唯一性与共用联系方式判定**：
+     - 主手机号与主邮箱在系统中全局唯一，防止一人重复录入；
+     - 座机电话（landline）常为企业前台或总机，系统免除唯一性约束，支持多位候选人共用，彻底杜绝误报冲突；
+     - 非主联系方式支持标记为共用（`is_shared=1`）。
+3. **八大子维度结构化模型**：
+   - `candidate_resumes`：多语言简历版本存储（`zh` 恒为主简历，支持 `en` 与 `ja` 多语言版本，记录身高、体重、婚育、户籍、自述 PR）；
+   - `candidate_expectations`：求职期望（期望职位、行业、城市、雇佣方式、期望年薪范围 min/max、到岗时间）；
+   - `candidate_work_experiences`：工作经历（公司名称、所属行业、人员规模、任职起止年月、部门、汇报对象、下属人数、职责业绩、离职原因）；
+   - `candidate_educations`：教育经历（学校名称、专业名称、学历类型与等级权重 1-7、教育性质统招/成教、就读起止年月）；
+   - `candidate_projects`：项目经验（项目名称、服务公司/客户、担任角色、起止年月、职责业绩、关键字、特征指纹）；
+   - `candidate_trainings`：培训认证经历（培训机构、课程名称、起止日期、内容描述）；
+   - `candidate_languages`：语言能力等级（语种、熟练度、证书与获取时间）；
+   - `candidate_certificates`：执业资格证书（证书名称、颁发机构、获取时间）；
+   - `candidate_skills`：专业技能清单（技能名、熟练程度）。
+4. **多语言简历智能对齐与合并引擎 (V3 Merge Parser)**：
+   - 智能解析中日英多语言简历结构；
+   - **结构对齐与容差诊断**：比对中文与日文经历、学历列表项数；容忍轻微月份误差；当检测到经历段数缺失或时间大幅偏差时，输出诊断日志并写入 `import_warnings_report.txt`。
+5. **候选人沟通记录 (`candidate_communications`)**：
+   - 记录顾问与候选人的电话沟通、意向沟通、回访纪要；
+   - 严格区分人工沟通（`manual`）、系统日志（`system`）与导入生成的历史记录（`imported_resume`）。
+
+---
+
+### 模块 4：智能检索与人岗精准召回 (Smart Search & Match Engine)
+1. **SQLite FTS5 Trigram 跨语言全文检索**：
+   - 内置 FTS5 全文索引，使用 `trigram` 分词器；
+   - 支持跨中、英、日任意 3 字符及以上字串的高性能模糊召回与高亮匹配。
+2. **非结构化检索大文档自动合成 (`CandidateRawTextBuilder`)**：
+   - 自动聚合候选人基础信息、工作经历、项目经验、教育经历、技能、自述 PR 等全维度文本；
+   - 配合数据库级触发器（`trg_search_doc_ai`、`trg_search_doc_ad`、`trg_search_doc_au`），在候选人新增、删除、更新时实现 FTS5 索引 100% 毫秒级自动同步，杜绝脏索引。
+3. **多维结构化复合筛选**：
+   - 支持工作年限区间、最低学历、薪资范围、所在城市、期望城市等多条件组合召回。
+4. **人岗匹配与判定机制**：
+   - 匹配打分与特征词比对（`match_score`, `matched_keywords`）；
+   - 顾问人工判定：`suggested`（系统建议） -> `accepted`（初筛通过） / `dismissed`（淘汰并记录淘汰原因）。
+
+---
+
+### 模块 5：ATS 招聘流程闭环管理 (ATS Pipeline & Match Flow)
+1. **判定与阶段强隔离约束**：
+   - 数据库底层内置强约束规则：
+     - `CHECK (stage IS NULL OR decision = 'accepted')`：只有初筛通过的候选人，才允许进入推进阶段；
+     - `CHECK (decision <> 'accepted' OR stage IS NOT NULL)`：初筛通过的候选人，必须分配流程阶段。
+2. **招聘全生命周期阶段流转**：
+   - 正常推进链条：`pending_contact`（待联系） -> `contacting`（联系中） -> `interested`（有意向） -> `submitted`（已推荐给客户） -> `interviewing`（客户面试中） -> `interview_passed`（面试通过） -> `background_check`（背调中） -> `offer`（已发Offer） -> `hired`（已入职） -> `guarantee_passed`（顺利过保）；
+   - 终止链条：`candidate_declined`（候选人放弃）、`client_rejected`（客户淘汰）、`background_check_failed`（背调未通过）、`offer_declined`（拒绝Offer）、`left_during_guarantee`（保用期内离职）。
+3. **多轮面试精细化管理 (`position_candidate_interviews`)**：
+   - 记录面试轮次（`round_no`，第 1 轮、第 2 轮、终面等）；
+   - 面试类型（HR初试、业务复试、技术深访、现场终面）；
+   - 预约时间（`scheduled_at`）、面试官（`interviewer`）、面试结果（`pending`, `passed`, `failed`, `cancelled`）、综合反馈与评语（`feedback`）。
+4. **Offer 录用与入职保用期结算 (`position_candidate_placements`)**：
+   - 录用 Offer 日期（`offer_date`）、Offer 薪资（`offer_salary`）；
+   - 实际到岗入职日期（`onboard_date`）；
+   - 入职时自动从职位快照继承保用期天数（`guarantee_days`，如 90 天、180 天）；
+   - 自动推算保用期截止日期（`guarantee_end_date`）；
+   - 保用期管理状态：在保监控、过保成功确认、未过保异常登记。
+5. **全流程审计轨迹记录 (`position_candidate_history`)**：
+   - 精准记录决策变更（`decision`）与阶段推进（`stage`）；
+   - 记录变更前状态（`from_value`）、变更后状态（`to_value`）、变更原因（`reason`）、操作人与系统标记，为招聘漏斗转化分析提供原始依据。
+
+---
+
+### 模块 6：批量简历交互式导入工作台与冲突审计 (Interactive Batch Import & Conflict Workbench)
+1. **原生桌面文件/目录选择器**：
+   - 通过 Electron 主进程原生对话框，支持点选单个/多个 JSON 文件或指定整个目录递归扫描。
+2. **批次流水审计 (`candidate_import_batches`)**：
+   - 记录批次 UUID、扫描源路径、总文件数、新建数、更新数、跳过数、失败数、严格模式拒绝数、告警数、执行耗时。
+3. **内容哈希去重与幂等重跑**：
+   - 基于 SHA-256 计算文件内容哈希（`content_hash`）；
+   - 文件内容完全一致时快速跳过；文件内容修改后再次导入时自动就地更新，不产生重复候选人。
+4. **严格模式冲突拦截 (Strict Mode Conflict Protection)**：
+   - 开启严格模式时，若导入的简历主手机号或主邮箱与系统中现有候选人发生冲突，立即阻断写入数据库并回滚单个文件事务；
+   - 确保顾问核心资产不被污染，并将冲突明细记录至错误表供人工排查。
+5. **错误与告警多维度审计 (`candidate_import_errors`)**：
+   - 详细记录错误级别（`warning` / `error`）、错误代码（`contact_conflict`, `list_misaligned`, `bad_date`, `parse_error` 等）、问题文件路径与具体堆栈。
+6. **前端导入工作台 UI (`candidate/import.vue`)**：
+   - 交互式路径选择清单、重置按钮、导入进度展示；
+   - 导入结果概览卡片；
+   - 历史导入批次明细表格；
+   - 告警/错误排查弹窗（`issueDialog`），一键查看问题文件及排查建议。
+
+---
+
+### 模块 7：实时数据报表与统计洞察 (Real-Time Analytics & Dashboard Views)
+1. **候选人人效与履历转化视图 (`v_candidate_stats`)**：
+   - `recommend_count`：推荐次数（历史上推进至 `submitted` 的次数）；
+   - `success_count`：成单入职次数（历史上推进至 `hired` 的次数）；
+   - `communication_count`：有效沟通次数（自动剔除导入时系统生成的通信记录，精准反映真实跟进频次）。
+2. **职位在招漏斗管线视图 (`v_position_pipeline_counts`)**：
+   - 实时聚合职位维度的流转漏斗：初筛建议数（`suggested_count`）、初筛通过数（`accepted_count`）、淘汰数（`dismissed_count`）、当前推荐中（`submitted_now`）、当前面试中（`interviewing_now`）、当前发Offer中（`offer_now`）、成功入职数（`hired_count`）。
+3. **企业客户职位活跃度视图 (`v_company_position_counts`)**：
+   - 实时聚合企业维度的总职位数（`position_total`）与在招开放职位数（`position_open`）。
+
+---
+
+### 模块 8：系统管理与安全审计体系 (System Administration & Security Infrastructure)
+1. **系统用户体系 (`system_users`)**：
+   - 支持管理员（`admin`）与猎头顾问（`consultant`）角色；
+   - 支持账号激活与停用状态管理；
+   - 单机版内置系统固定用户（`id=1, username='system'`），作为默认数据负责人。
+2. **全局操作安全审计日志 (`system_audit_logs`)**：
+   - 统一审计关键业务实体的创建、修改、删除动作；
+   - 记录操作前后 JSON 差异（`before_json`, `after_json`）与操作人员。
+3. **系统动态配置 (`system_settings`)**：
+   - 键值对存储离线环境运行时配置与参数。
+4. **后台异步作业管理 (`system_jobs`)**：
+   - 统一调度批处理导入、索引重建、人岗批量匹配等长耗时异步任务，支持任务排队、进度报告与自动重试。
+
+---
+
+### 模块 9：全栈多语言国际化工程 (i18n Multi-Language Architecture)
+1. **中英日三语全局覆盖**：
+   - 默认语言为英文（`en-us`），完整支持简体中文（`zh-cn`）与日语（`ja-jp`）；
+   - 界面语言即选即换，运行时免重启热生效。
+2. **路由级按需动态分包加载 (`meta.i18nPacks`)**：
+   - 启动时仅加载轻量基础核心包（`core.json`）；
+   - 路由导航守卫拦截页面跳转，按需动态加载 `company.json`、`candidateImport.json`，显著降低初始内存开销。
+3. **深度集成 Element Plus 语言包**：
+   - 切换系统语言时，Element Plus 组件库内置文案（分页、日期选择器、弹窗确认等）自动同步切换。
+
+---
+
+### 模块 10：客户端离线化运行与打包交付 (Desktop Distribution & Offline Architecture)
+1. **纯单机离线运行能力**：
+   - 完全离线无外网依赖，所有数据存储于本地 SQLite 数据库，保护核心私密资产。
+2. **现代化技术基准**：
+   - 基于 Electron 45.2.3 原生运行时与 Node 20+，搭载 better-sqlite3 13.0.3 原生 C++ 预编译驱动。
+3. **原生打包发布管道 (`electron-builder`)**：
+   - 绿色免安装目录（`npm run dist:dir` -> `release/win-unpacked`）；
+   - 便携式单执行文件（Portable）；
+   - 标准 Windows 安装向导（NSIS）。
+4. **模板数据热挂载与平滑升级**：
+   - 生产环境中首次启动时，若用户数据目录不存在数据库，自动将内置种子库平滑复制挂载并执行最新增量迁移。
+
+---
+
+## 3. 总体技术栈与分层架构
+
+```text
+Desktop Runtime: Electron 45.2.3 (Node 20+ 原生集成环境)
+Database Engine: SQLite 3.53.4 (WAL 模式, foreign keys 强约束, busy_timeout=5000)
+Database Driver: better-sqlite3 13.0.3 (原生 C++ 绑定驱动)
+Frontend Framework: Vue 3 (Composition API) + Vue Router + Element Plus 2.14.8
+Internationalization: vue-i18n 11.4.18 (按需动态路由分包加载，中/英/日三语支持)
+Build Toolchain: Webpack 5.112.2 + Babel 8.1.0 + electron-builder 26.18.0
+```
+
+### 3.1 强制分层调用链与安全边界
+
+```text
+Vue 3 Renderer Process
+    ↓
+Preload API (contextBridge.exposeInMainWorld)
+    ↓
+Typed Electron IPC (ipcMain.handle via registerServiceMethods)
+    ↓
+Domain Services (CompanyService, CandidateImportService, SystemService)
+    ↓
+Repositories (CompanyRepository, CandidateRepository)
+    ↓
+SQLite Database (SqliteDatabase.js / better-sqlite3)
+```
+
+**工程安全规范：**
+- 严禁 Vue 渲染进程直接引用底层 `better-sqlite3` 模块；
+- 严禁在 IPC 路由文件中编写裸 SQL 查询语句；
+- 严禁开启 `nodeIntegration`，彻底杜绝渲染端越权调用系统底层的安全漏洞。
+
+---
+
+## 4. 数据库全量架构与 DDL 设计 (5 大 Migration)
+
+V2 数据库由 5 个结构清晰的迁移脚本组成，共计 29 张实体/虚拟表与 3 个分析视图：
+
+### 4.1 Migration 001: 系统基盘 (`001_system.sql`)
 
 ```sql
-PRAGMA foreign_keys = ON;
-PRAGMA journal_mode = WAL;
-PRAGMA busy_timeout = 5000;
-PRAGMA synchronous = NORMAL;
-```
+-- 001_system.sql  系统基础表 | System base tables | システム基本テーブル
 
-数据库文件位置（已确认）：
+CREATE TABLE system_users (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_uuid     TEXT NOT NULL UNIQUE,
+    username      TEXT NOT NULL UNIQUE,
+    display_name  TEXT NOT NULL DEFAULT '',
+    role          TEXT NOT NULL DEFAULT 'consultant' CHECK (role IN ('admin','consultant')),
+    status        TEXT NOT NULL DEFAULT 'active'     CHECK (status IN ('active','disabled')),
+    created_at    TEXT NOT NULL,
+    updated_at    TEXT NOT NULL
+);
 
-```text
-<应用根目录>/
-├── <程序文件>
-├── data/
-│   └── recruitment.db
-└── backups/
-```
+CREATE TABLE system_settings (
+    setting_key   TEXT PRIMARY KEY,
+    setting_value TEXT NOT NULL DEFAULT '',
+    updated_at    TEXT NOT NULL
+);
 
-开发环境的应用根目录是 `code/`；打包后是可执行文件所在目录。正式安装目录必须可写，推荐安装到用户指定的数据盘目录。数据库不得放入 `app.asar` 或可能被程序升级覆盖的资源目录。
+CREATE TABLE system_jobs (
+    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    job_type          TEXT NOT NULL CHECK (job_type IN (
+        'import_candidates','rebuild_raw_text','match_position','match_candidate',
+        'guarantee_check','database_backup')),
+    entity_type       TEXT NOT NULL DEFAULT '',
+    entity_id         INTEGER,
+    dedupe_key        TEXT NOT NULL DEFAULT '',
+    payload_json      TEXT NOT NULL DEFAULT '{}',
+    status            TEXT NOT NULL DEFAULT 'queued' CHECK (status IN (
+        'queued','running','completed','failed','cancelled')),
+    progress_current  INTEGER NOT NULL DEFAULT 0,
+    progress_total    INTEGER NOT NULL DEFAULT 0,
+    error_message     TEXT NOT NULL DEFAULT '',
+    created_by        INTEGER REFERENCES system_users(id),
+    created_at        TEXT NOT NULL,
+    started_at        TEXT,
+    finished_at       TEXT
+);
+CREATE INDEX idx_system_jobs_status ON system_jobs(status);
+CREATE INDEX idx_system_jobs_dedupe ON system_jobs(job_type, dedupe_key, status);
 
----
+CREATE TABLE system_audit_logs (
+    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    entity_type       TEXT NOT NULL,
+    entity_id         INTEGER,
+    action            TEXT NOT NULL,
+    before_json       TEXT,
+    after_json        TEXT,
+    operator_user_id  INTEGER REFERENCES system_users(id),
+    created_at        TEXT NOT NULL
+);
+CREATE INDEX idx_system_audit_entity ON system_audit_logs(entity_type, entity_id);
 
-# 3. 核心领域模型
-
-系统核心不是三个孤立模块，而是：
-
-```text
-Company
-   │
-   │ 1:N
-   ▼
-Position
-   │
-   │ N:N
-   ▼
-PositionCandidateMatch
-   │
-   ▼
-Candidate
-```
-
-其中最重要的是：
-
-```text
-PositionCandidateMatch
-```
-
-它不是普通中间表，而是完整业务实体。
-
-它负责记录：
-
-- 为什么匹配；
-- 匹配得分；
-- 系统是否推荐；
-- 是否被人工接受；
-- 是否被人工判定“不匹配”；
-- 当前招聘阶段；
-- 历史阶段；
-- 每次重新评分；
-- 每次人工操作。
-
----
-
-# 4. 数据真值原则
-
-## 4.1 结构化数据库是真值
-
-候选人进入系统后：
-
-```text
-candidate_* 结构化表
-```
-
-是候选人的当前业务数据真值。
-
-`raw_text` 是根据当前候选人数据派生出来的全文搜索文档。
-
----
-
-## 4.2 原始导入 JSON 是审计证据
-
-首次导入时必须保留原 JSON：
-
-```text
-candidate_import_records.original_json
-```
-
-该字段用于：
-
-- 数据审计；
-- 恢复；
-- 排查导入错误；
-- 未来 Schema 迁移；
-- 对照历史转换结果。
-
-**原始 JSON 不直接作为后续编辑后的业务真值。**
-
----
-
-# 5. raw_text 核心规则
-
-这是整个 Candidate 搜索系统最重要的规则之一。
-
-## 5.1 raw_text 定义
-
-`raw_text` 定义为：
-
-> **Candidate Full-text Search Document**
-
-它不是普通“源文件原文”。
-
-它是已经整理好的：
-
-```text
-候选人级全文搜索文档
-```
-
-用于：
-
-- 人才库关键词搜索；
-- 自动职位候选人召回；
-- 候选人全文查询。
-
----
-
-## 5.2 首次历史数据导入
-
-历史 JSON 已经生成高质量 `raw_text`。
-
-因此首次导入：
-
-```text
-JSON.raw_text
-    ↓
-candidate_search_documents.raw_text
-```
-
-**直接使用。**
-
-首次入库阶段不要重新生成，不要重新解释，不要重新拼接。
-
----
-
-## 5.3 后续任何 Candidate 修改
-
-以后 Electron 内：
-
-- 修改基本信息；
-- 增加手机号；
-- 删除手机号；
-- 修改求职意向；
-- 添加工作经历；
-- 修改工作经历；
-- 删除工作经历；
-- 修改教育；
-- 添加项目；
-- 删除项目；
-- 添加语言；
-- 添加技能；
-- 添加证书；
-- 添加培训；
-- 添加沟通记录；
-- 修改沟通记录；
-- 删除沟通记录；
-
-全部执行：
-
-```text
-修改结构化数据
-    ↓
-重新读取这个 Candidate 的全部当前信息
-    ↓
-从 0 开始重新生成 raw_text
-    ↓
-覆盖旧 raw_text
-    ↓
-同步 FTS 索引
-```
-
-### 强制规则
-
-**禁止：**
-
-```text
-raw_text += 新内容
-```
-
-**禁止：**
-
-```text
-raw_text.replace(...)
-```
-
-**禁止局部维护 raw_text。**
-
-必须：
-
-```text
-FULL REBUILD
+-- 单机版固定的本地系统用户（所有 owner / created_by / updated_by 默认指向它）
+-- Fixed local system user of the standalone edition (every owner / created_by / updated_by points to it by default)
+-- スタンドアロン版の固定ローカルシステムユーザー（owner / created_by / updated_by は既定でこのユーザーを指す）
+INSERT INTO system_users (id, user_uuid, username, display_name, role, status, created_at, updated_at)
+VALUES (1, 'system-local-user', 'system', '系统', 'admin', 'active',
+        strftime('%Y-%m-%dT%H:%M:%fZ','now'), strftime('%Y-%m-%dT%H:%M:%fZ','now'));
 ```
 
 ---
 
-## 5.4 RawTextBuilder
-
-独立模块：
-
-```text
-CandidateRawTextBuilder
-```
-
-建议接口与规范：
-
-```js
-class CandidateRawTextBuilder {
-  /**
-   * @param {Object} snapshot - CandidateFullSnapshot 对象
-   * @returns {string} rawText 文档
-   */
-  build(snapshot) {}
-}
-```
-
-`CandidateRawTextBuilder` 不负责数据库查询。
-
-完整数据由：
-
-```js
-candidateRepository.getFullSnapshot(candidateId)
-```
-
-提供。
-
----
-
-## 5.5 CandidateFullSnapshot
-
-建议快照结构：
-
-```js
-// CandidateFullSnapshot 数据结构
-{
-  profile: {},           // CandidateProfile 候选人基础信息
-  contacts: [],          // CandidateContact[] 联系方式列表
-  expectations: [],      // CandidateExpectation[] 求职意向
-  workExperiences: [],  // CandidateWorkExperience[] 工作经历
-  educations: [],        // CandidateEducation[] 教育经历
-  projects: [],          // CandidateProject[] 项目经历
-  trainings: [],         // CandidateTraining[] 培训经历
-  languages: [],         // CandidateLanguage[] 语言能力
-  certificates: [],      // CandidateCertificate[] 证书
-  skills: [],            // CandidateSkill[] 技能
-  resumeVariants: [],    // CandidateResumeVariant[] 其他多语言简历快照
-  communications: []     // CandidateCommunication[] 沟通记录
-}
-```
-
----
-
-## 5.6 raw_text 重建顺序
-
-固定使用：
-
-```text
-1. 当前候选人基础资料
-2. 联系方式
-3. 求职意向
-4. 当前工作快照
-5. 工作经历
-6. 教育经历
-7. 项目经历
-8. 培训经历
-9. 语言能力
-10. 证书
-11. 技能
-12. 外文 / 其他简历语言版本
-13. 沟通记录
-```
-
-只写有值字段。
-
-过滤：
-
-- `null`
-- `undefined`
-- 空字符串
-- 空数组
-- 纯占位对象
-
-建议统一使用：
-
-```text
-" | "
-```
-
-连接。
-
-可以对完全相同的字符串做稳定去重，但不得误删不同语言或不同上下文内容。
-
----
-
-## 5.7 raw_text 与 FTS
-
-```text
-candidate_search_documents
-        │
-        └── raw_text
-                │
-                ▼
-candidate_search_fts
-```
-
-`candidate_search_documents` 保存正文。
-
-`candidate_search_fts` 只作为 SQLite FTS5 索引。
-
----
-
-# 6. 全文搜索原则
-
-## 6.1 不进行全库全文 JOIN
-
-搜索：
-
-```text
-汽车 日语 供应链
-```
-
-不允许：
-
-```text
-JOIN candidate_work_experiences
-JOIN candidate_educations
-JOIN candidate_projects
-JOIN candidate_languages
-JOIN candidate_certificates
-...
-```
-
-做全文搜索。
-
-全文搜索唯一入口：
-
-```text
-candidate_search_documents.raw_text
-```
-
----
-
-## 6.2 结构化筛选仍然使用结构化表
-
-例如：
-
-```text
-关键词：汽车 日语
-学历：本科以上
-工作年限：8年以上
-城市：上海
-```
-
-执行逻辑：
-
-```text
-FTS raw_text
-     ↓
-candidate_id
-     ↓
-结构化条件过滤
-     ↓
-candidate_profiles / candidate_* tables
-```
-
----
-
-## 6.3 FTS5 策略
-
-第一版建议：
-
-```text
-3个 Unicode 字符及以上关键词
-    → FTS5 trigram
-
-1~2个中文字符
-    → raw_text LIKE / instr fallback
-```
-
-不要因为 2 字中文查询问题一开始就引入 Elasticsearch。
-
-先对真实候选人数据 Benchmark。
-
----
-
-# 7. 数据库总览
-
-```text
-system_schema_migrations
-system_settings
-system_jobs
-system_audit_logs
-
-company_profiles
-company_contacts
-company_notes
-
-candidate_profiles
-candidate_contacts
-candidate_import_records
-candidate_resume_variants
-candidate_expectations
-candidate_work_experiences
-candidate_educations
-candidate_projects
-candidate_trainings
-candidate_languages
-candidate_certificates
-candidate_skills
-candidate_search_documents
-candidate_search_fts
-
-position_openings
-position_requirements
-position_skill_requirements
-position_language_requirements
-position_keywords
-position_candidate_matches
-position_candidate_stage_history
-position_candidate_events
-
-candidate_communications
-```
-
----
-
-# 8. Candidate 表结构规划
-
-## 8.1 candidate_profiles
-
-候选人主表。
-
-只保存：
-
-- 当前快照；
-- 高频列表字段；
-- 高频筛选字段。
-
-不要把全部 Resume JSON 塞这里。
+### 4.2 Migration 002: 企业客户与职位需求 (`002_company_position.sql`)
 
 ```sql
+-- 002_company_position.sql  公司、对接人、职位、职位关键词 | Companies, contacts, positions, position keywords | 企業、担当者、求人、求人キーワード
+
+CREATE TABLE company_profiles (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    company_uuid  TEXT NOT NULL UNIQUE,
+    company_name  TEXT NOT NULL UNIQUE,
+    short_name    TEXT NOT NULL DEFAULT '',
+    industry      TEXT NOT NULL DEFAULT '',
+    company_size  TEXT NOT NULL DEFAULT '',
+    country       TEXT NOT NULL DEFAULT '',
+    province      TEXT NOT NULL DEFAULT '',
+    city          TEXT NOT NULL DEFAULT '',
+    address       TEXT NOT NULL DEFAULT '',
+    website       TEXT NOT NULL DEFAULT '',
+    description   TEXT NOT NULL DEFAULT '',
+    status        TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active','inactive','blacklisted')),
+    owner_user_id INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    created_by    INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    updated_by    INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    created_at    TEXT NOT NULL,
+    updated_at    TEXT NOT NULL
+);
+CREATE INDEX idx_company_profiles_status ON company_profiles(status);
+
+CREATE TABLE company_contacts (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    company_id    INTEGER NOT NULL REFERENCES company_profiles(id) ON DELETE CASCADE,
+    contact_name  TEXT NOT NULL,
+    title         TEXT NOT NULL DEFAULT '',
+    department    TEXT NOT NULL DEFAULT '',
+    phone         TEXT NOT NULL DEFAULT '',
+    email         TEXT NOT NULL DEFAULT '',
+    wechat        TEXT NOT NULL DEFAULT '',
+    is_primary    INTEGER NOT NULL DEFAULT 0 CHECK (is_primary IN (0,1)),
+    status        TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active','left')),
+    note          TEXT NOT NULL DEFAULT '',
+    created_at    TEXT NOT NULL,
+    updated_at    TEXT NOT NULL
+);
+CREATE INDEX idx_company_contacts_company ON company_contacts(company_id);
+CREATE UNIQUE INDEX uq_company_contacts_one_primary
+    ON company_contacts(company_id) WHERE is_primary = 1;
+
+CREATE TABLE company_notes (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    company_id    INTEGER NOT NULL REFERENCES company_profiles(id) ON DELETE CASCADE,
+    noted_at      TEXT NOT NULL,
+    note_type     TEXT NOT NULL DEFAULT 'note',
+    content       TEXT NOT NULL,
+    created_by    INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    created_at    TEXT NOT NULL,
+    updated_at    TEXT NOT NULL
+);
+CREATE INDEX idx_company_notes_company ON company_notes(company_id);
+
+CREATE TABLE position_openings (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    position_uuid    TEXT NOT NULL UNIQUE,
+    company_id       INTEGER NOT NULL REFERENCES company_profiles(id) ON DELETE RESTRICT,
+    contact_id       INTEGER NOT NULL REFERENCES company_contacts(id) ON DELETE RESTRICT,
+    owner_user_id    INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    title            TEXT NOT NULL,
+    department       TEXT NOT NULL DEFAULT '',
+    city             TEXT NOT NULL DEFAULT '',
+    work_location    TEXT NOT NULL DEFAULT '',
+    employment_type  TEXT NOT NULL DEFAULT '全职',
+    headcount        INTEGER NOT NULL DEFAULT 1 CHECK (headcount >= 1),
+    salary_min       REAL,
+    salary_max       REAL,
+    salary_currency  TEXT NOT NULL DEFAULT 'CNY',
+    salary_months    REAL,
+    experience_min   REAL,
+    experience_max   REAL,
+    degree_min_rank  INTEGER CHECK (degree_min_rank IS NULL OR degree_min_rank BETWEEN 1 AND 7),
+    jd_text          TEXT NOT NULL DEFAULT '',
+    responsibilities TEXT NOT NULL DEFAULT '',
+    requirements_text TEXT NOT NULL DEFAULT '',
+    guarantee_days   INTEGER NOT NULL DEFAULT 0 CHECK (guarantee_days >= 0),
+    priority         TEXT NOT NULL DEFAULT 'normal' CHECK (priority IN ('low','normal','high','urgent')),
+    status           TEXT NOT NULL DEFAULT 'draft'  CHECK (status IN (
+        'draft','open','paused','filled','closed','cancelled')),
+    opened_at        TEXT,
+    closed_at        TEXT,
+    last_matched_at  TEXT,
+    created_by       INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    updated_by       INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    created_at       TEXT NOT NULL,
+    updated_at       TEXT NOT NULL
+);
+CREATE INDEX idx_position_openings_company ON position_openings(company_id);
+CREATE INDEX idx_position_openings_contact ON position_openings(contact_id);
+CREATE INDEX idx_position_openings_status  ON position_openings(status);
+CREATE INDEX idx_position_openings_title   ON position_openings(title);
+
+-- 职位负责人（对接人）必须属于该职位所在的公司
+-- The person in charge of a position (a company contact) must belong to the company of that position
+-- 求人の担当者（先方窓口）は、その求人が属する企業の窓口でなければならない
+CREATE TRIGGER trg_position_contact_belongs_ins
+BEFORE INSERT ON position_openings
+BEGIN
+    SELECT RAISE(ABORT, 'position contact must belong to the position company')
+    WHERE NOT EXISTS (
+        SELECT 1 FROM company_contacts WHERE id = NEW.contact_id AND company_id = NEW.company_id);
+END;
+
+CREATE TRIGGER trg_position_contact_belongs_upd
+BEFORE UPDATE OF company_id, contact_id ON position_openings
+BEGIN
+    SELECT RAISE(ABORT, 'position contact must belong to the position company')
+    WHERE NOT EXISTS (
+        SELECT 1 FROM company_contacts WHERE id = NEW.contact_id AND company_id = NEW.company_id);
+END;
+
+CREATE TABLE position_keywords (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    position_id   INTEGER NOT NULL REFERENCES position_openings(id) ON DELETE CASCADE,
+    keyword       TEXT NOT NULL,
+    keyword_type  TEXT NOT NULL DEFAULT 'other' CHECK (keyword_type IN (
+        'skill','language','industry','city','title','degree','other')),
+    weight        REAL NOT NULL DEFAULT 1,
+    is_required   INTEGER NOT NULL DEFAULT 0 CHECK (is_required IN (0,1)),
+    source        TEXT NOT NULL DEFAULT 'rule' CHECK (source IN ('rule','manual')),
+    created_at    TEXT NOT NULL,
+    updated_at    TEXT NOT NULL,
+    UNIQUE (position_id, keyword)
+);
+```
+
+---
+
+### 4.3 Migration 003: 候选人档案与导入审计 (`003_candidate.sql`)
+
+```sql
+-- 003_candidate.sql  候选人主档、联系方式、导入批次、简历及其列表子表 | Candidate profile, contacts, import batches, resumes and their list tables | 候補者マスタ、連絡先、インポートバッチ、履歴書とそのリストテーブル
+-- 列表子表沿用 v3 JSON 字段名；日期统一 ISO（YYYY-MM-DD / YYYY-MM）；薪资 REAL。 | List tables reuse the v3 JSON field names; dates are ISO (YYYY-MM-DD / YYYY-MM); salaries are REAL. | リストテーブルは v3 JSON のフィールド名を踏襲し、日付は ISO（YYYY-MM-DD / YYYY-MM）、給与は REAL とする。
+
 CREATE TABLE candidate_profiles (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_uuid TEXT NOT NULL UNIQUE,
-
-    full_name TEXT NOT NULL DEFAULT '',
-    gender TEXT NOT NULL DEFAULT '',
-    age INTEGER,
-    birth_date TEXT NOT NULL DEFAULT '',
-    birth_year INTEGER,
-
-    marital_status TEXT NOT NULL DEFAULT '',
-    children_status TEXT NOT NULL DEFAULT '',
-    political_status TEXT NOT NULL DEFAULT '',
-
-    height_cm REAL,
-    weight_kg REAL,
-
-    household_registration TEXT NOT NULL DEFAULT '',
-    address TEXT NOT NULL DEFAULT '',
-    postal_code TEXT NOT NULL DEFAULT '',
-    platform_from TEXT NOT NULL DEFAULT '',
-    platform_resume_id TEXT NOT NULL DEFAULT '',
-    city TEXT NOT NULL DEFAULT '',
-    nationality TEXT NOT NULL DEFAULT '',
-
-    primary_phone TEXT NOT NULL DEFAULT '',
-    primary_email TEXT NOT NULL DEFAULT '',
-
-    current_company TEXT NOT NULL DEFAULT '',
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    candidate_uuid   TEXT NOT NULL UNIQUE,
+    record_id        TEXT NOT NULL DEFAULT '',          -- merge-v3-<group_id>
+    full_name        TEXT NOT NULL DEFAULT '',
+    english_name     TEXT NOT NULL DEFAULT '',
+    gender           TEXT NOT NULL DEFAULT '',
+    birth_date       TEXT NOT NULL DEFAULT '',
+    city             TEXT NOT NULL DEFAULT '',
+    primary_phone    TEXT NOT NULL DEFAULT '',          -- 冗余自 candidate_contacts（主号）
+    primary_email    TEXT NOT NULL DEFAULT '',
+    current_company  TEXT NOT NULL DEFAULT '',
     current_position TEXT NOT NULL DEFAULT '',
-    current_industry TEXT NOT NULL DEFAULT '',
-    current_employment_status TEXT NOT NULL DEFAULT '',
-
-    highest_school TEXT NOT NULL DEFAULT '',
-    highest_major TEXT NOT NULL DEFAULT '',
-    highest_degree_type TEXT NOT NULL DEFAULT '',
-    highest_degree_rank INTEGER,
-
-    work_years REAL,
-
-    personal_summary TEXT NOT NULL DEFAULT '',
-
-    candidate_status TEXT NOT NULL DEFAULT 'active'
-        CHECK (candidate_status IN (
-            'active',
-            'archived',
-            'do_not_contact'
-        )),
-
-    resume_updated_date TEXT NOT NULL DEFAULT '',
-    resume_download_date TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL
+    highest_degree   TEXT NOT NULL DEFAULT '',
+    work_years       REAL,
+    status           TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active','archived')),
+    source_type      TEXT NOT NULL DEFAULT 'import' CHECK (source_type IN ('import','manual','position')),
+    source_position_id INTEGER REFERENCES position_openings(id) ON DELETE SET NULL,
+    owner_user_id    INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    created_by       INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    updated_by       INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    created_at       TEXT NOT NULL,
+    updated_at       TEXT NOT NULL
 );
+CREATE UNIQUE INDEX uq_candidate_primary_phone ON candidate_profiles(primary_phone) WHERE primary_phone <> '';
+CREATE UNIQUE INDEX uq_candidate_primary_email ON candidate_profiles(primary_email) WHERE primary_email <> '';
+CREATE INDEX idx_candidate_profiles_name   ON candidate_profiles(full_name);
+CREATE INDEX idx_candidate_profiles_status ON candidate_profiles(status);
+CREATE INDEX idx_candidate_profiles_source_position ON candidate_profiles(source_position_id);
+CREATE INDEX idx_candidate_profiles_record ON candidate_profiles(record_id);
 
-CREATE INDEX idx_candidate_profiles_name
-ON candidate_profiles(full_name);
-
-CREATE INDEX idx_candidate_profiles_city
-ON candidate_profiles(city);
-
-CREATE INDEX idx_candidate_profiles_current_company
-ON candidate_profiles(current_company);
-
-CREATE INDEX idx_candidate_profiles_current_position
-ON candidate_profiles(current_position);
-
-CREATE INDEX idx_candidate_profiles_degree
-ON candidate_profiles(highest_degree_rank);
-
-CREATE INDEX idx_candidate_profiles_work_years
-ON candidate_profiles(work_years);
-
-CREATE INDEX idx_candidate_profiles_status
-ON candidate_profiles(candidate_status);
-```
-
----
-
-## 8.2 candidate_contacts
-
-一个候选人可以有多个电话 / 邮箱 / 微信等。
-
-```sql
 CREATE TABLE candidate_contacts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    candidate_id     INTEGER NOT NULL REFERENCES candidate_profiles(id) ON DELETE CASCADE,
+    contact_type     TEXT NOT NULL CHECK (contact_type IN ('mobile','landline','email')),
+    contact_value    TEXT NOT NULL,                      -- 原值
+    normalized_value TEXT NOT NULL,                      -- 手机/座机仅数字(去86)；邮箱小写
+    is_primary       INTEGER NOT NULL DEFAULT 0 CHECK (is_primary IN (0,1)),
+    is_shared        INTEGER NOT NULL DEFAULT 0 CHECK (is_shared IN (0,1)),
+    source           TEXT NOT NULL DEFAULT 'import' CHECK (source IN ('import','manual')),
+    created_at       TEXT NOT NULL,
+    updated_at       TEXT NOT NULL,
+    CHECK (NOT (is_primary = 1 AND is_shared = 1)),
+    UNIQUE (candidate_id, contact_type, normalized_value)
+);
+-- 手机/邮箱全局唯一（共用的允许多人重复出现；座机不限，常为公司总机）
+-- Mobile numbers / emails are globally unique (shared ones may appear for several people; landlines are not restricted since they are often a company switchboard)
+-- 携帯番号・メールは全体で一意（共用は複数人に重複可。固定電話は会社の代表番号が多いため制限しない）
+CREATE UNIQUE INDEX uq_candidate_contacts_value
+    ON candidate_contacts(contact_type, normalized_value) WHERE is_shared = 0 AND contact_type <> 'landline';
+CREATE UNIQUE INDEX uq_candidate_contacts_primary
+    ON candidate_contacts(candidate_id, contact_type) WHERE is_primary = 1;
+CREATE INDEX idx_candidate_contacts_lookup ON candidate_contacts(contact_type, normalized_value);
 
-    candidate_id INTEGER NOT NULL,
-
-    contact_type TEXT NOT NULL
-        CHECK (contact_type IN (
-            'phone',
-            'email',
-            'wechat',
-            'other'
-        )),
-
-    contact_value TEXT NOT NULL,
-    normalized_value TEXT NOT NULL DEFAULT '',
-
-    is_primary INTEGER NOT NULL DEFAULT 0,
-
-    source_resume_id INTEGER,
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+CREATE TABLE candidate_import_batches (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    batch_uuid       TEXT NOT NULL UNIQUE,
+    source_dir       TEXT NOT NULL DEFAULT '',
+    status           TEXT NOT NULL DEFAULT 'running' CHECK (status IN ('running','completed','failed')),
+    total_files      INTEGER NOT NULL DEFAULT 0,
+    created_count    INTEGER NOT NULL DEFAULT 0,
+    updated_count    INTEGER NOT NULL DEFAULT 0,
+    skipped_count    INTEGER NOT NULL DEFAULT 0,
+    failed_count     INTEGER NOT NULL DEFAULT 0,
+    rejected_count   INTEGER NOT NULL DEFAULT 0,   -- 严格模式下因警告被拒绝写库的文件数 | Files rejected in strict mode because of warnings | 厳格モードで警告のため書き込みを拒否したファイル数
+    warning_count    INTEGER NOT NULL DEFAULT 0,
+    created_by       INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    started_at       TEXT NOT NULL,
+    finished_at      TEXT
 );
 
-CREATE INDEX idx_candidate_contacts_candidate
-ON candidate_contacts(candidate_id);
-
-CREATE INDEX idx_candidate_contacts_normalized
-ON candidate_contacts(normalized_value);
-```
-
----
-
-## 8.3 candidate_import_records
-
-保存每次导入的完整 JSON。
-
-属于不可变审计证据。
-
-```sql
 CREATE TABLE candidate_import_records (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-
-    record_id TEXT NOT NULL UNIQUE,
-    schema_version TEXT NOT NULL DEFAULT '',
-
-    source_path TEXT NOT NULL DEFAULT '',
-    original_path TEXT NOT NULL DEFAULT '',
-    source_filename TEXT NOT NULL DEFAULT '',
-    source_extension TEXT NOT NULL DEFAULT '',
-
-    source_metadata_json TEXT NOT NULL DEFAULT '{}',
-    dates_json TEXT NOT NULL DEFAULT '{}',
-    extraction_json TEXT NOT NULL DEFAULT '{}',
-    classification_json TEXT NOT NULL DEFAULT '{}',
-    quality_json TEXT NOT NULL DEFAULT '{}',
-
-    original_json TEXT NOT NULL,
-
-    imported_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    batch_id         INTEGER NOT NULL REFERENCES candidate_import_batches(id) ON DELETE CASCADE,
+    candidate_id     INTEGER REFERENCES candidate_profiles(id) ON DELETE SET NULL,
+    file_name        TEXT NOT NULL,
+    record_id        TEXT NOT NULL DEFAULT '',
+    content_hash     TEXT NOT NULL DEFAULT '',
+    result           TEXT NOT NULL CHECK (result IN ('created','updated','skipped','failed','rejected')),
+    created_at       TEXT NOT NULL
 );
+CREATE INDEX idx_import_records_batch ON candidate_import_records(batch_id);
+CREATE INDEX idx_import_records_hash  ON candidate_import_records(content_hash);
+CREATE INDEX idx_import_records_candidate ON candidate_import_records(candidate_id);
 
-CREATE INDEX idx_candidate_import_records_candidate
-ON candidate_import_records(candidate_id);
-```
-
-### 强制
-
-`original_json`：
-
-- 初次写入后不修改；
-- 不参与正常 Candidate 编辑；
-- 不作为后续 raw_text 重建数据源；
-- 只用于历史证据和恢复。
-
----
-
-## 8.4 candidate_resume_variants
-
-保存多语言 Resume 版本。
-
-历史数据规则：
-
-```text
-resumes[0] = zh
-resumes[1...] = en / jp / de / ...
-```
-
-```sql
-CREATE TABLE candidate_resume_variants (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    import_record_id INTEGER,
-
-    language_code TEXT NOT NULL,
-    sequence_no INTEGER NOT NULL DEFAULT 0,
-
-    is_primary_language INTEGER NOT NULL DEFAULT 0,
-    is_active INTEGER NOT NULL DEFAULT 1,
-
-    variant_json TEXT NOT NULL DEFAULT '{}',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (import_record_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+CREATE TABLE candidate_import_errors (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    batch_id         INTEGER NOT NULL REFERENCES candidate_import_batches(id) ON DELETE CASCADE,
+    candidate_id     INTEGER REFERENCES candidate_profiles(id) ON DELETE SET NULL,
+    file_name        TEXT NOT NULL DEFAULT '',
+    severity         TEXT NOT NULL DEFAULT 'error' CHECK (severity IN ('warning','error')),
+    error_code       TEXT NOT NULL DEFAULT '',          -- contact_conflict / list_misaligned / bad_date / parse_error ...
+    message          TEXT NOT NULL DEFAULT '',
+    detail_json      TEXT NOT NULL DEFAULT '{}',
+    resolved         INTEGER NOT NULL DEFAULT 0 CHECK (resolved IN (0,1)),
+    created_at       TEXT NOT NULL
 );
+CREATE INDEX idx_import_errors_batch ON candidate_import_errors(batch_id);
+CREATE INDEX idx_import_errors_code  ON candidate_import_errors(error_code, resolved);
 
-CREATE INDEX idx_candidate_resume_variants_candidate
-ON candidate_resume_variants(candidate_id);
+-- 简历版本（resumes[]）；第 0 份恒为 zh 主简历
+-- Resume versions (resumes[]); the 0th one is always the main zh resume
+-- 履歴書バージョン（resumes[]）。0 番目は常に zh のメイン履歴書
+CREATE TABLE candidate_resumes (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    candidate_id     INTEGER NOT NULL REFERENCES candidate_profiles(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
+    language_code    TEXT NOT NULL DEFAULT 'zh',        -- JSON: resume_languge
+    is_primary       INTEGER NOT NULL DEFAULT 0 CHECK (is_primary IN (0,1)),
+    full_name        TEXT NOT NULL DEFAULT '',
+    gender           TEXT NOT NULL DEFAULT '',
+    age              INTEGER,
+    birth_date       TEXT NOT NULL DEFAULT '',
+    birth_year       INTEGER,
+    city             TEXT NOT NULL DEFAULT '',
+    address          TEXT NOT NULL DEFAULT '',
+    nationality      TEXT NOT NULL DEFAULT '',
+    marital_status   TEXT NOT NULL DEFAULT '',
+    children_status  TEXT NOT NULL DEFAULT '',
+    political_status TEXT NOT NULL DEFAULT '',
+    household_registration TEXT NOT NULL DEFAULT '',
+    postal_code      TEXT NOT NULL DEFAULT '',
+    height_cm        REAL,
+    weight_kg        REAL,
+    pr               TEXT NOT NULL DEFAULT '',
+    phone            TEXT NOT NULL DEFAULT '',
+    email            TEXT NOT NULL DEFAULT '',
+    platform_from    TEXT NOT NULL DEFAULT '',
+    platform_resume_id TEXT NOT NULL DEFAULT '',
+    created_at       TEXT NOT NULL,
+    updated_at       TEXT NOT NULL,
+    UNIQUE (candidate_id, sequence_no),
+    CHECK (is_primary = 0 OR language_code = 'zh')
+);
+CREATE UNIQUE INDEX uq_candidate_resumes_primary ON candidate_resumes(candidate_id) WHERE is_primary = 1;
 
-CREATE INDEX idx_candidate_resume_variants_language
-ON candidate_resume_variants(language_code);
-```
-
-当前中文结构化数据以 `candidate_*` 正规化表为主。
-
-非中文版本主要用于：
-
-- Resume 详情；
-- 多语言展示；
-- raw_text 重建补充；
-- 历史证据。
-
----
-
-## 8.5 candidate_expectations
-
-```sql
 CREATE TABLE candidate_expectations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    source_resume_id INTEGER,
-
-    sequence_no INTEGER NOT NULL DEFAULT 1,
-
-    expected_city TEXT NOT NULL DEFAULT '',
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    resume_id        INTEGER NOT NULL REFERENCES candidate_resumes(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
     expected_position TEXT NOT NULL DEFAULT '',
-    expected_salary TEXT NOT NULL DEFAULT '',
-
+    expected_industry TEXT NOT NULL DEFAULT '',
+    expected_city    TEXT NOT NULL DEFAULT '',
+    expected_employment_type TEXT NOT NULL DEFAULT '',
+    expected_salary  TEXT NOT NULL DEFAULT '',
     expected_annual_salary_min REAL,
     expected_annual_salary_max REAL,
-
-    expected_industry TEXT NOT NULL DEFAULT '',
-    expected_employment_type TEXT NOT NULL DEFAULT '',
     expected_start_date TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+    UNIQUE (resume_id, sequence_no)
 );
 
-CREATE INDEX idx_candidate_expectations_candidate
-ON candidate_expectations(candidate_id);
-
-CREATE INDEX idx_candidate_expectations_city
-ON candidate_expectations(expected_city);
-
-CREATE INDEX idx_candidate_expectations_position
-ON candidate_expectations(expected_position);
-```
-
-即使原始 JSON 中 `expected_info` 是完整空对象，数据库导入时可以选择：
-
-- 建一行空 expectation；
-- 或不建空行。
-
-推荐数据库层：
-
-```text
-空对象 → 不创建行
-```
-
-业务 API 返回详情时再补前端默认对象。
-
----
-
-## 8.6 candidate_work_experiences
-
-```sql
 CREATE TABLE candidate_work_experiences (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    source_resume_id INTEGER,
-
-    sequence_no INTEGER NOT NULL DEFAULT 1,
-
-    company_name TEXT NOT NULL DEFAULT '',
-    company_employees TEXT NOT NULL DEFAULT '',
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    resume_id        INTEGER NOT NULL REFERENCES candidate_resumes(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
+    company_name     TEXT NOT NULL DEFAULT '',
     company_industry TEXT NOT NULL DEFAULT '',
-
-    position TEXT NOT NULL DEFAULT '',
-    position_type TEXT NOT NULL DEFAULT '',
-    position_salary TEXT NOT NULL DEFAULT '',
-    position_dept TEXT NOT NULL DEFAULT '',
+    company_employees TEXT NOT NULL DEFAULT '',
+    position         TEXT NOT NULL DEFAULT '',
+    position_dept    TEXT NOT NULL DEFAULT '',
+    position_type    TEXT NOT NULL DEFAULT '',
+    position_start   TEXT NOT NULL DEFAULT '',          -- ISO YYYY-MM[-DD]
+    position_resigned TEXT NOT NULL DEFAULT '',         -- '' 表示至今
     position_report_to TEXT NOT NULL DEFAULT '',
     position_subordinate TEXT NOT NULL DEFAULT '',
-
-    employment_type TEXT NOT NULL DEFAULT '',
+    position_salary  TEXT NOT NULL DEFAULT '',
     annual_salary_min REAL,
     annual_salary_max REAL,
-
-    status TEXT NOT NULL DEFAULT '',
-    position_start TEXT NOT NULL DEFAULT '',
-    position_resigned TEXT NOT NULL DEFAULT '',
-
-    resigned_reason TEXT NOT NULL DEFAULT '',
+    employment_type  TEXT NOT NULL DEFAULT '',
+    status           TEXT NOT NULL DEFAULT '',
+    resigned_reason  TEXT NOT NULL DEFAULT '',
     position_responsibilities TEXT NOT NULL DEFAULT '',
     position_achievements TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+    UNIQUE (resume_id, sequence_no)
 );
 
-CREATE INDEX idx_candidate_work_candidate
-ON candidate_work_experiences(candidate_id);
-
-CREATE INDEX idx_candidate_work_company
-ON candidate_work_experiences(company_name);
-
-CREATE INDEX idx_candidate_work_position
-ON candidate_work_experiences(position);
-
-CREATE INDEX idx_candidate_work_industry
-ON candidate_work_experiences(company_industry);
-
-CREATE INDEX idx_candidate_work_start
-ON candidate_work_experiences(position_start);
-```
-
----
-
-## 8.7 candidate_educations
-
-```sql
 CREATE TABLE candidate_educations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    source_resume_id INTEGER,
-
-    sequence_no INTEGER NOT NULL DEFAULT 1,
-
-    school_name TEXT NOT NULL DEFAULT '',
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    resume_id        INTEGER NOT NULL REFERENCES candidate_resumes(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
+    school_name      TEXT NOT NULL DEFAULT '',
     school_major_name TEXT NOT NULL DEFAULT '',
     school_degree_type TEXT NOT NULL DEFAULT '',
     school_degree_rank INTEGER,
     school_education_type TEXT NOT NULL DEFAULT '',
-    school_start_ym TEXT NOT NULL DEFAULT '',
-    school_end_ym TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+    school_start_ym  TEXT NOT NULL DEFAULT '',
+    school_end_ym    TEXT NOT NULL DEFAULT '',
+    UNIQUE (resume_id, sequence_no)
 );
 
-CREATE INDEX idx_candidate_educations_candidate
-ON candidate_educations(candidate_id);
-
-CREATE INDEX idx_candidate_educations_school
-ON candidate_educations(school_name);
-
-CREATE INDEX idx_candidate_educations_major
-ON candidate_educations(school_major_name);
-
-CREATE INDEX idx_candidate_educations_degree
-ON candidate_educations(school_degree_rank);
-```
-
-学历等级：
-
-```text
-7 = 博士后
-6 = 博士
-5 = 硕士
-4 = 本科
-3 = 大专
-2 = 高中 / 中专
-1 = 初中及以下
-```
-
----
-
-## 8.8 candidate_projects
-
-```sql
 CREATE TABLE candidate_projects (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    source_resume_id INTEGER,
-
-    sequence_no INTEGER NOT NULL DEFAULT 1,
-
-    project_name TEXT NOT NULL DEFAULT '',
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    resume_id        INTEGER NOT NULL REFERENCES candidate_resumes(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
+    project_name     TEXT NOT NULL DEFAULT '',
     company_or_client TEXT NOT NULL DEFAULT '',
-    role_name TEXT NOT NULL DEFAULT '',
-
-    start_ym TEXT NOT NULL DEFAULT '',
-    end_ym TEXT NOT NULL DEFAULT '',
-
-    description TEXT NOT NULL DEFAULT '',
+    role_name        TEXT NOT NULL DEFAULT '',
+    start_ym         TEXT NOT NULL DEFAULT '',
+    end_ym           TEXT NOT NULL DEFAULT '',
+    description      TEXT NOT NULL DEFAULT '',
     responsibilities TEXT NOT NULL DEFAULT '',
-    achievements TEXT NOT NULL DEFAULT '',
-    keywords TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+    achievements     TEXT NOT NULL DEFAULT '',
+    keywords         TEXT NOT NULL DEFAULT '',
+    fingerprint      TEXT NOT NULL DEFAULT '',
+    UNIQUE (resume_id, sequence_no)
 );
 
-CREATE INDEX idx_candidate_projects_candidate
-ON candidate_projects(candidate_id);
-
-CREATE INDEX idx_candidate_projects_name
-ON candidate_projects(project_name);
-```
-
-不要把旧 JSON 中用于解析阶段的 fingerprint 暴露为业务字段。
-
-需要去重时，数据库内部自行计算。
-
----
-
-## 8.9 candidate_trainings
-
-```sql
 CREATE TABLE candidate_trainings (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    source_resume_id INTEGER,
-
-    sequence_no INTEGER NOT NULL DEFAULT 1,
-
-    organization_name TEXT NOT NULL DEFAULT '',
-    training_name TEXT NOT NULL DEFAULT '',
-
-    start_ym TEXT NOT NULL DEFAULT '',
-    end_ym TEXT NOT NULL DEFAULT '',
-
-    certificate_name TEXT NOT NULL DEFAULT '',
-    description TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    resume_id        INTEGER NOT NULL REFERENCES candidate_resumes(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
+    training_name    TEXT NOT NULL DEFAULT '',
+    training_org     TEXT NOT NULL DEFAULT '',
+    training_start   TEXT NOT NULL DEFAULT '',
+    training_end     TEXT NOT NULL DEFAULT '',
+    training_content TEXT NOT NULL DEFAULT '',
+    raw_json         TEXT NOT NULL DEFAULT '{}',        -- 样本中尚无训练字段，原样保留
+    UNIQUE (resume_id, sequence_no)
 );
 
-CREATE INDEX idx_candidate_trainings_candidate
-ON candidate_trainings(candidate_id);
-```
-
----
-
-## 8.10 candidate_languages
-
-```sql
 CREATE TABLE candidate_languages (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    source_resume_id INTEGER,
-
-    sequence_no INTEGER NOT NULL DEFAULT 1,
-
-    language_name TEXT NOT NULL DEFAULT '',
-    language_level TEXT NOT NULL DEFAULT '',
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    resume_id        INTEGER NOT NULL REFERENCES candidate_resumes(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
+    language_name    TEXT NOT NULL DEFAULT '',
+    language_level   TEXT NOT NULL DEFAULT '',
     language_certificate TEXT NOT NULL DEFAULT '',
     language_certificate_time TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+    UNIQUE (resume_id, sequence_no)
 );
 
-CREATE INDEX idx_candidate_languages_candidate
-ON candidate_languages(candidate_id);
-
-CREATE INDEX idx_candidate_languages_name
-ON candidate_languages(language_name);
-
-CREATE INDEX idx_candidate_languages_level
-ON candidate_languages(language_level);
-```
-
----
-
-## 8.11 candidate_certificates
-
-```sql
 CREATE TABLE candidate_certificates (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    source_resume_id INTEGER,
-
-    sequence_no INTEGER NOT NULL DEFAULT 1,
-
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    resume_id        INTEGER NOT NULL REFERENCES candidate_resumes(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
     certificate_name TEXT NOT NULL DEFAULT '',
     certificate_type TEXT NOT NULL DEFAULT '',
     certificate_time TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+    UNIQUE (resume_id, sequence_no)
 );
 
-CREATE INDEX idx_candidate_certificates_candidate
-ON candidate_certificates(candidate_id);
-
-CREATE INDEX idx_candidate_certificates_name
-ON candidate_certificates(certificate_name);
-```
-
-语言考试如：
-
-```text
-CET
-JLPT
-TOEIC
-TOEFL
-BEC
-```
-
-继续放 `candidate_languages`，不要同时重复写入 `candidate_certificates`。
-
----
-
-## 8.12 candidate_skills
-
-```sql
 CREATE TABLE candidate_skills (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-    source_resume_id INTEGER,
-
-    sequence_no INTEGER NOT NULL DEFAULT 1,
-
-    skill_name TEXT NOT NULL DEFAULT '',
-    skill_level TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    resume_id        INTEGER NOT NULL REFERENCES candidate_resumes(id) ON DELETE CASCADE,
+    sequence_no      INTEGER NOT NULL,
+    skill_name       TEXT NOT NULL DEFAULT '',
+    skill_level      TEXT NOT NULL DEFAULT '',
+    UNIQUE (resume_id, sequence_no)
 );
 
-CREATE INDEX idx_candidate_skills_candidate
-ON candidate_skills(candidate_id);
-
-CREATE INDEX idx_candidate_skills_name
-ON candidate_skills(skill_name);
+CREATE INDEX idx_work_company ON candidate_work_experiences(company_name);
+CREATE INDEX idx_edu_school   ON candidate_educations(school_name);
+CREATE INDEX idx_skill_name   ON candidate_skills(skill_name);
 ```
 
 ---
 
-# 9. Candidate 全文搜索表
-
-## 9.1 candidate_search_documents
+### 4.4 Migration 004: 人岗匹配、面试与入职 (`004_match_flow.sql`)
 
 ```sql
+-- 004_match_flow.sql  职位-候选人匹配、流转阶段、面试、入职、历史、沟通记录 | Position-candidate matches, pipeline stages, interviews, placements, history, communications | 求人と候補者のマッチング、選考ステージ、面接、入社、履歴、コミュニケーション記録
+
+CREATE TABLE position_candidate_matches (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    position_id      INTEGER NOT NULL REFERENCES position_openings(id) ON DELETE CASCADE,
+    candidate_id     INTEGER NOT NULL REFERENCES candidate_profiles(id) ON DELETE CASCADE,
+    decision         TEXT NOT NULL DEFAULT 'suggested' CHECK (decision IN ('suggested','accepted','dismissed')),
+    stage            TEXT CHECK (stage IS NULL OR stage IN (
+        'pending_contact','contacting','interested','submitted','interviewing',
+        'interview_passed','background_check','offer','hired','guarantee_passed',
+        'candidate_declined','client_rejected','background_check_failed',
+        'offer_declined','left_during_guarantee')),
+    origin           TEXT NOT NULL DEFAULT 'auto' CHECK (origin IN ('auto','import','manual')),
+    match_score      REAL NOT NULL DEFAULT 0,
+    matched_keywords TEXT NOT NULL DEFAULT '[]',        -- JSON 数组
+    dismissed_reason TEXT NOT NULL DEFAULT '',
+    manual_note      TEXT NOT NULL DEFAULT '',
+    decided_at       TEXT,
+    stage_changed_at TEXT,
+    created_by       INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    updated_by       INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    created_at       TEXT NOT NULL,
+    updated_at       TEXT NOT NULL,
+    UNIQUE (position_id, candidate_id),
+    CHECK (stage IS NULL OR decision = 'accepted'),
+    CHECK (decision <> 'accepted' OR stage IS NOT NULL)
+);
+CREATE INDEX idx_match_position  ON position_candidate_matches(position_id, decision);
+CREATE INDEX idx_match_candidate ON position_candidate_matches(candidate_id);
+CREATE INDEX idx_match_stage     ON position_candidate_matches(stage);
+
+CREATE TABLE position_candidate_interviews (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    match_id         INTEGER NOT NULL REFERENCES position_candidate_matches(id) ON DELETE CASCADE,
+    round_no         INTEGER NOT NULL DEFAULT 1,
+    interview_type   TEXT NOT NULL DEFAULT '',
+    scheduled_at     TEXT,
+    interviewer      TEXT NOT NULL DEFAULT '',
+    result           TEXT NOT NULL DEFAULT 'pending' CHECK (result IN ('pending','passed','failed','cancelled')),
+    feedback         TEXT NOT NULL DEFAULT '',
+    created_at       TEXT NOT NULL,
+    updated_at       TEXT NOT NULL,
+    UNIQUE (match_id, round_no)
+);
+
+CREATE TABLE position_candidate_placements (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    match_id         INTEGER NOT NULL UNIQUE REFERENCES position_candidate_matches(id) ON DELETE CASCADE,
+    offer_date       TEXT,
+    offer_salary     REAL,
+    onboard_date     TEXT,
+    guarantee_days   INTEGER NOT NULL DEFAULT 0 CHECK (guarantee_days >= 0),   -- 入职时从职位拷贝快照
+    guarantee_end_date TEXT,
+    note             TEXT NOT NULL DEFAULT '',
+    created_at       TEXT NOT NULL,
+    updated_at       TEXT NOT NULL
+);
+CREATE INDEX idx_placement_guarantee_end ON position_candidate_placements(guarantee_end_date);
+
+-- 决策与阶段变更历史（统计视图的基础）
+-- History of decisions and stage changes (the basis of the statistics views)
+-- 判定とステージ変更の履歴（統計ビューの基礎）
+CREATE TABLE position_candidate_history (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    match_id         INTEGER NOT NULL REFERENCES position_candidate_matches(id) ON DELETE CASCADE,
+    change_type      TEXT NOT NULL CHECK (change_type IN ('decision','stage')),
+    from_value       TEXT,
+    to_value         TEXT NOT NULL,
+    reason           TEXT NOT NULL DEFAULT '',
+    is_system        INTEGER NOT NULL DEFAULT 0 CHECK (is_system IN (0,1)),
+    operator_user_id INTEGER REFERENCES system_users(id),
+    created_at       TEXT NOT NULL
+);
+CREATE INDEX idx_history_match ON position_candidate_history(match_id, change_type);
+CREATE INDEX idx_history_to    ON position_candidate_history(change_type, to_value);
+
+CREATE TABLE candidate_communications (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    candidate_id     INTEGER NOT NULL REFERENCES candidate_profiles(id) ON DELETE CASCADE,
+    match_id         INTEGER REFERENCES position_candidate_matches(id) ON DELETE SET NULL,
+    resume_id        INTEGER REFERENCES candidate_resumes(id) ON DELETE SET NULL,
+    source_type      TEXT NOT NULL DEFAULT 'manual' CHECK (source_type IN ('manual','system','imported_resume')),
+    channel          TEXT NOT NULL DEFAULT '',
+    communicate_time TEXT NOT NULL DEFAULT '',
+    communicate_content TEXT NOT NULL DEFAULT '',
+    created_by       INTEGER NOT NULL DEFAULT 1 REFERENCES system_users(id),
+    created_at       TEXT NOT NULL,
+    updated_at       TEXT NOT NULL
+);
+CREATE INDEX idx_comm_candidate ON candidate_communications(candidate_id, source_type);
+CREATE INDEX idx_comm_match ON candidate_communications(match_id);
+```
+
+---
+
+### 4.5 Migration 005: 全文检索与聚合统计视图 (`005_search_views.sql`)
+
+```sql
+-- 005_search_views.sql  检索文档、FTS5 trigram、统计视图 | Search documents, FTS5 trigram, statistics views | 検索ドキュメント、FTS5 trigram、統計ビュー
+
 CREATE TABLE candidate_search_documents (
-    candidate_id INTEGER PRIMARY KEY,
-
-    raw_text TEXT NOT NULL,
-
-    raw_text_hash TEXT NOT NULL DEFAULT '',
-    raw_text_length INTEGER NOT NULL DEFAULT 0,
-
-    search_document_version INTEGER NOT NULL DEFAULT 1,
-
-    source_mode TEXT NOT NULL DEFAULT 'imported_json'
-        CHECK (source_mode IN (
-            'imported_json',
-            'rebuilt_from_db'
-        )),
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE
+    candidate_id INTEGER PRIMARY KEY REFERENCES candidate_profiles(id) ON DELETE CASCADE,
+    raw_text     TEXT NOT NULL DEFAULT '',
+    text_hash    TEXT NOT NULL DEFAULT '',
+    updated_at   TEXT NOT NULL
 );
-```
 
----
-
-## 9.2 candidate_search_fts
-
-建议使用 FTS5 external-content table：
-
-```sql
-CREATE VIRTUAL TABLE candidate_search_fts
-USING fts5(
+CREATE VIRTUAL TABLE candidate_search_fts USING fts5(
     raw_text,
     content='candidate_search_documents',
     content_rowid='candidate_id',
     tokenize='trigram'
 );
-```
 
-同步 Trigger：
-
-```sql
-CREATE TRIGGER candidate_search_documents_ai
-AFTER INSERT ON candidate_search_documents
-BEGIN
-    INSERT INTO candidate_search_fts(rowid, raw_text)
-    VALUES (new.candidate_id, new.raw_text);
+CREATE TRIGGER trg_search_doc_ai AFTER INSERT ON candidate_search_documents BEGIN
+    INSERT INTO candidate_search_fts(rowid, raw_text) VALUES (new.candidate_id, new.raw_text);
 END;
-```
-
-```sql
-CREATE TRIGGER candidate_search_documents_ad
-AFTER DELETE ON candidate_search_documents
-BEGIN
-    INSERT INTO candidate_search_fts(
-        candidate_search_fts,
-        rowid,
-        raw_text
-    )
-    VALUES (
-        'delete',
-        old.candidate_id,
-        old.raw_text
-    );
+CREATE TRIGGER trg_search_doc_ad AFTER DELETE ON candidate_search_documents BEGIN
+    INSERT INTO candidate_search_fts(candidate_search_fts, rowid, raw_text) VALUES ('delete', old.candidate_id, old.raw_text);
 END;
-```
-
-```sql
-CREATE TRIGGER candidate_search_documents_au
-AFTER UPDATE OF raw_text ON candidate_search_documents
-BEGIN
-    INSERT INTO candidate_search_fts(
-        candidate_search_fts,
-        rowid,
-        raw_text
-    )
-    VALUES (
-        'delete',
-        old.candidate_id,
-        old.raw_text
-    );
-
-    INSERT INTO candidate_search_fts(rowid, raw_text)
-    VALUES (new.candidate_id, new.raw_text);
+CREATE TRIGGER trg_search_doc_au AFTER UPDATE ON candidate_search_documents BEGIN
+    INSERT INTO candidate_search_fts(candidate_search_fts, rowid, raw_text) VALUES ('delete', old.candidate_id, old.raw_text);
+    INSERT INTO candidate_search_fts(rowid, raw_text) VALUES (new.candidate_id, new.raw_text);
 END;
-```
-
----
-
-# 10. Candidate 沟通记录
-
-## 10.1 candidate_communications
-
-这是正式 CRM 沟通表。
-
-历史 JSON 中的：
-
-```text
-communication_list
-```
-
-导入这里。
-
-以后手工沟通记录也写这里。
-
-```sql
-CREATE TABLE candidate_communications (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    candidate_id INTEGER NOT NULL,
-
-    position_candidate_match_id INTEGER,
-    company_id INTEGER,
-    source_resume_id INTEGER,
-
-    communication_time TEXT NOT NULL,
-
-    communication_type TEXT NOT NULL DEFAULT 'note',
-    direction TEXT NOT NULL DEFAULT 'unknown',
-
-    communicate_content TEXT NOT NULL,
-
-    source_type TEXT NOT NULL DEFAULT 'manual'
-        CHECK (source_type IN (
-            'imported_resume',
-            'manual',
-            'system'
-        )),
-
-    operator_name TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (position_candidate_match_id)
-        REFERENCES position_candidate_matches(id)
-        ON DELETE SET NULL,
-
-    FOREIGN KEY (company_id)
-        REFERENCES company_profiles(id)
-        ON DELETE SET NULL,
-
-    FOREIGN KEY (source_resume_id)
-        REFERENCES candidate_import_records(id)
-        ON DELETE SET NULL
-);
-
-CREATE INDEX idx_candidate_communications_candidate
-ON candidate_communications(candidate_id);
-
-CREATE INDEX idx_candidate_communications_match
-ON candidate_communications(position_candidate_match_id);
-
-CREATE INDEX idx_candidate_communications_time
-ON candidate_communications(communication_time);
-```
-
-### communication_type 建议值
-
-```text
-note
-phone
-wechat
-email
-meeting
-interview_feedback
-client_feedback
-other
-```
-
-### direction 建议值
-
-```text
-inbound
-outbound
-internal
-unknown
-```
-
----
-
-# 11. Position 职位模块
-
-## 11.1 position_openings
-
-```sql
-CREATE TABLE position_openings (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    position_uuid TEXT NOT NULL UNIQUE,
-
-    company_id INTEGER,
-
-    title TEXT NOT NULL,
-    department TEXT NOT NULL DEFAULT '',
-
-    city TEXT NOT NULL DEFAULT '',
-    work_location TEXT NOT NULL DEFAULT '',
-
-    employment_type TEXT NOT NULL DEFAULT '全职',
-
-    headcount INTEGER NOT NULL DEFAULT 1,
-
-    salary_min REAL,
-    salary_max REAL,
-    salary_currency TEXT NOT NULL DEFAULT 'CNY',
-    salary_period TEXT NOT NULL DEFAULT 'annual',
-    salary_months REAL,
-
-    experience_min REAL,
-    experience_max REAL,
-
-    degree_min_rank INTEGER,
-
-    description TEXT NOT NULL DEFAULT '',
-    responsibilities TEXT NOT NULL DEFAULT '',
-    requirements_text TEXT NOT NULL DEFAULT '',
-
-    status TEXT NOT NULL DEFAULT 'draft'
-        CHECK (status IN (
-            'draft',
-            'open',
-            'paused',
-            'filled',
-            'closed',
-            'cancelled'
-        )),
-
-    priority TEXT NOT NULL DEFAULT 'normal'
-        CHECK (priority IN (
-            'low',
-            'normal',
-            'high',
-            'urgent'
-        )),
-
-    opened_at TEXT,
-    closed_at TEXT,
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (company_id)
-        REFERENCES company_profiles(id)
-        ON DELETE SET NULL
-);
-
-CREATE INDEX idx_position_openings_company
-ON position_openings(company_id);
-
-CREATE INDEX idx_position_openings_status
-ON position_openings(status);
-
-CREATE INDEX idx_position_openings_city
-ON position_openings(city);
-
-CREATE INDEX idx_position_openings_title
-ON position_openings(title);
-```
-
-即使第一、二阶段 Company 页面还没完成，也保留：
-
-```text
-company_id NULL
-```
-
-第三阶段直接关联，不需要迁移核心职位结构。
-
----
-
-## 11.2 position_requirements
-
-通用结构化职位要求。
-
-```sql
-CREATE TABLE position_requirements (
-    position_id INTEGER PRIMARY KEY,
-
-    min_age INTEGER,
-    max_age INTEGER,
-
-    min_work_years REAL,
-    max_work_years REAL,
-
-    min_degree_rank INTEGER,
-
-    target_city TEXT NOT NULL DEFAULT '',
-    target_industry TEXT NOT NULL DEFAULT '',
-
-    gender_requirement TEXT NOT NULL DEFAULT '',
-
-    must_have_text TEXT NOT NULL DEFAULT '',
-    nice_to_have_text TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (position_id)
-        REFERENCES position_openings(id)
-        ON DELETE CASCADE
-);
-```
-
-技术上允许保存公司原始要求。
-
-自动评分时哪些条件允许实际作为筛选规则，应由业务规则配置，不把所有公司描述无条件当硬过滤。
-
----
-
-## 11.3 position_skill_requirements
-
-```sql
-CREATE TABLE position_skill_requirements (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    position_id INTEGER NOT NULL,
-
-    skill_name TEXT NOT NULL,
-    normalized_name TEXT NOT NULL DEFAULT '',
-
-    required INTEGER NOT NULL DEFAULT 0,
-
-    weight REAL NOT NULL DEFAULT 1,
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (position_id)
-        REFERENCES position_openings(id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX idx_position_skill_position
-ON position_skill_requirements(position_id);
-
-CREATE INDEX idx_position_skill_name
-ON position_skill_requirements(normalized_name);
-```
-
----
-
-## 11.4 position_language_requirements
-
-```sql
-CREATE TABLE position_language_requirements (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    position_id INTEGER NOT NULL,
-
-    language_name TEXT NOT NULL,
-    language_level TEXT NOT NULL DEFAULT '',
-
-    required INTEGER NOT NULL DEFAULT 0,
-
-    weight REAL NOT NULL DEFAULT 1,
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (position_id)
-        REFERENCES position_openings(id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX idx_position_language_position
-ON position_language_requirements(position_id);
-```
-
----
-
-## 11.5 position_keywords
-
-专门提供自动匹配召回关键词。
-
-```sql
-CREATE TABLE position_keywords (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    position_id INTEGER NOT NULL,
-
-    keyword TEXT NOT NULL,
-
-    weight REAL NOT NULL DEFAULT 1,
-
-    required INTEGER NOT NULL DEFAULT 0,
-
-    source_type TEXT NOT NULL DEFAULT 'manual'
-        CHECK (source_type IN (
-            'manual',
-            'system'
-        )),
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (position_id)
-        REFERENCES position_openings(id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX idx_position_keywords_position
-ON position_keywords(position_id);
-```
-
----
-
-# 12. PositionCandidate 核心关系
-
-## 12.1 position_candidate_matches
-
-这是整个招聘流程核心表。
-
-```sql
-CREATE TABLE position_candidate_matches (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    position_id INTEGER NOT NULL,
-    candidate_id INTEGER NOT NULL,
-
-    match_source TEXT NOT NULL DEFAULT 'system'
-        CHECK (match_source IN (
-            'system',
-            'manual',
-            'import'
-        )),
-
-    match_score REAL NOT NULL DEFAULT 0,
-
-    keyword_score REAL NOT NULL DEFAULT 0,
-    skill_score REAL NOT NULL DEFAULT 0,
-    experience_score REAL NOT NULL DEFAULT 0,
-    education_score REAL NOT NULL DEFAULT 0,
-    language_score REAL NOT NULL DEFAULT 0,
-    industry_score REAL NOT NULL DEFAULT 0,
-    location_score REAL NOT NULL DEFAULT 0,
-
-    match_reason_json TEXT NOT NULL DEFAULT '{}',
-
-    algorithm_version TEXT NOT NULL DEFAULT '',
-
-    decision TEXT NOT NULL DEFAULT 'suggested'
-        CHECK (decision IN (
-            'suggested',
-            'accepted',
-            'dismissed'
-        )),
-
-    pipeline_stage TEXT NOT NULL DEFAULT 'matched'
-        CHECK (pipeline_stage IN (
-            'matched',
-            'contacting',
-            'interested',
-            'submitted',
-            'interviewing',
-            'offer',
-            'hired',
-            'candidate_rejected',
-            'client_rejected',
-            'withdrawn'
-        )),
-
-    dismissed_reason TEXT NOT NULL DEFAULT '',
-    manual_note TEXT NOT NULL DEFAULT '',
-
-    first_matched_at TEXT NOT NULL,
-    last_scored_at TEXT NOT NULL,
-    stage_changed_at TEXT NOT NULL,
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (position_id)
-        REFERENCES position_openings(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (candidate_id)
-        REFERENCES candidate_profiles(id)
-        ON DELETE CASCADE,
-
-    UNIQUE(position_id, candidate_id)
-);
-
-CREATE INDEX idx_position_candidate_matches_position
-ON position_candidate_matches(position_id);
-
-CREATE INDEX idx_position_candidate_matches_candidate
-ON position_candidate_matches(candidate_id);
-
-CREATE INDEX idx_position_candidate_matches_decision
-ON position_candidate_matches(decision);
-
-CREATE INDEX idx_position_candidate_matches_stage
-ON position_candidate_matches(pipeline_stage);
-
-CREATE INDEX idx_position_candidate_matches_score
-ON position_candidate_matches(match_score);
-```
-
----
-
-# 13. decision 与 pipeline_stage 必须分离
-
-## 13.1 decision
-
-表示人工对系统推荐的判断：
-
-```text
-suggested  系统推荐，尚未人工处理
-accepted   人工确认可继续
-dismissed  人工确认不匹配
-```
-
-用户点击“不匹配”：
-
-```text
-decision = dismissed
-```
-
-**不能 DELETE。**
-
-以后算法重新运行：
-
-```text
-match_score 80 → 94
-```
-
-仍然：
-
-```text
-decision = dismissed
-```
-
-默认页面不再展示。
-
-除非用户执行“恢复匹配”。
-
----
-
-## 13.2 pipeline_stage
-
-表示业务进展：
-
-```text
-matched
-    ↓
-contacting
-    ↓
-interested
-    ↓
-submitted
-    ↓
-interviewing
-    ↓
-offer
-    ↓
-hired
-```
-
-终止阶段：
-
-```text
-candidate_rejected
-client_rejected
-withdrawn
-```
-
----
-
-## 13.3 自动匹配不得覆盖人工状态
-
-MatchEngine 重跑时可以修改：
-
-```text
-match_score
-keyword_score
-skill_score
-experience_score
-education_score
-language_score
-industry_score
-location_score
-match_reason_json
-algorithm_version
-last_scored_at
-```
-
-**不得自动修改：**
-
-```text
-decision
-pipeline_stage
-manual_note
-dismissed_reason
-```
-
-尤其不得：
-
-```text
-dismissed → suggested
-```
-
-也不得：
-
-```text
-interviewing → matched
-```
-
----
-
-# 14. 招聘流程历史
-
-## 14.1 position_candidate_stage_history
-
-```sql
-CREATE TABLE position_candidate_stage_history (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    position_candidate_match_id INTEGER NOT NULL,
-
-    from_stage TEXT NOT NULL DEFAULT '',
-    to_stage TEXT NOT NULL,
-
-    reason TEXT NOT NULL DEFAULT '',
-    note TEXT NOT NULL DEFAULT '',
-
-    operator_name TEXT NOT NULL DEFAULT '',
-
-    changed_at TEXT NOT NULL,
-
-    FOREIGN KEY (position_candidate_match_id)
-        REFERENCES position_candidate_matches(id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX idx_position_stage_history_match
-ON position_candidate_stage_history(position_candidate_match_id);
-
-CREATE INDEX idx_position_stage_history_time
-ON position_candidate_stage_history(changed_at);
-```
-
-所有阶段变化必须写历史。
-
----
-
-## 14.2 position_candidate_events
-
-业务审计事件。
-
-```sql
-CREATE TABLE position_candidate_events (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    position_candidate_match_id INTEGER NOT NULL,
-
-    event_type TEXT NOT NULL,
-    event_data_json TEXT NOT NULL DEFAULT '{}',
-
-    created_at TEXT NOT NULL,
-
-    FOREIGN KEY (position_candidate_match_id)
-        REFERENCES position_candidate_matches(id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX idx_position_candidate_events_match
-ON position_candidate_events(position_candidate_match_id);
-```
-
-event_type 建议：
-
-```text
-auto_matched
-manual_added
-accepted
-dismissed
-restored
-score_changed
-stage_changed
-communication_added
-candidate_updated
-position_updated
-```
-
----
-
-# 15. Company 公司模块
-
-## 15.1 company_profiles
-
-```sql
-CREATE TABLE company_profiles (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    company_uuid TEXT NOT NULL UNIQUE,
-
-    company_name TEXT NOT NULL,
-    short_name TEXT NOT NULL DEFAULT '',
-
-    industry TEXT NOT NULL DEFAULT '',
-    company_size TEXT NOT NULL DEFAULT '',
-
-    country TEXT NOT NULL DEFAULT '',
-    province TEXT NOT NULL DEFAULT '',
-    city TEXT NOT NULL DEFAULT '',
-    address TEXT NOT NULL DEFAULT '',
-
-    website TEXT NOT NULL DEFAULT '',
-
-    description TEXT NOT NULL DEFAULT '',
-
-    status TEXT NOT NULL DEFAULT 'active'
-        CHECK (status IN (
-            'active',
-            'inactive',
-            'blacklisted'
-        )),
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL
-);
-
-CREATE INDEX idx_company_profiles_name
-ON company_profiles(company_name);
-
-CREATE INDEX idx_company_profiles_status
-ON company_profiles(status);
-```
-
----
-
-## 15.2 company_contacts
-
-```sql
-CREATE TABLE company_contacts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    company_id INTEGER NOT NULL,
-
-    name TEXT NOT NULL,
-    title TEXT NOT NULL DEFAULT '',
-    department TEXT NOT NULL DEFAULT '',
-
-    phone TEXT NOT NULL DEFAULT '',
-    email TEXT NOT NULL DEFAULT '',
-    wechat TEXT NOT NULL DEFAULT '',
-
-    is_primary INTEGER NOT NULL DEFAULT 0,
-
-    note TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (company_id)
-        REFERENCES company_profiles(id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX idx_company_contacts_company
-ON company_contacts(company_id);
-```
-
----
-
-## 15.3 company_notes
-
-```sql
-CREATE TABLE company_notes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    company_id INTEGER NOT NULL,
-
-    note_time TEXT NOT NULL,
-    note_type TEXT NOT NULL DEFAULT 'note',
-    content TEXT NOT NULL,
-
-    operator_name TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-
-    FOREIGN KEY (company_id)
-        REFERENCES company_profiles(id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX idx_company_notes_company
-ON company_notes(company_id);
-```
-
----
-
-# 16. Company → Position
-
-核心关系：
-
-```text
-company_profiles.id
-        ↓
-position_openings.company_id
-```
-
-因此公司详情页：
-
-```text
-ABC 科技有限公司
-
-职位
-├── 高级前端工程师   招聘中
-├── Java Architect   招聘中
-├── 产品经理          暂停
-└── DevOps           已关闭
-```
-
-不需要额外公司职位中间表。
-
----
-
-# 17. System 基础表
-
-## 17.1 system_schema_migrations
-
-```sql
-CREATE TABLE system_schema_migrations (
-    version INTEGER PRIMARY KEY,
-    name TEXT NOT NULL,
-    applied_at TEXT NOT NULL
-);
-```
-
----
-
-## 17.2 system_settings
-
-```sql
-CREATE TABLE system_settings (
-    setting_key TEXT PRIMARY KEY,
-    setting_value TEXT NOT NULL,
-    updated_at TEXT NOT NULL
-);
-```
-
-建议设置项：
-
-```text
-match.algorithm_version
-match.minimum_score
-match.recall_limit
-search.document_version
-database.backup_enabled
-```
-
----
-
-## 17.3 system_jobs
-
-用于后台任务。
-
-```sql
-CREATE TABLE system_jobs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    job_type TEXT NOT NULL,
-
-    entity_type TEXT NOT NULL DEFAULT '',
-    entity_id INTEGER,
-
-    payload_json TEXT NOT NULL DEFAULT '{}',
-
-    status TEXT NOT NULL DEFAULT 'queued'
-        CHECK (status IN (
-            'queued',
-            'running',
-            'completed',
-            'failed',
-            'cancelled'
-        )),
-
-    progress_current INTEGER NOT NULL DEFAULT 0,
-    progress_total INTEGER NOT NULL DEFAULT 0,
-
-    error_message TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL,
-    started_at TEXT,
-    finished_at TEXT
-);
-
-CREATE INDEX idx_system_jobs_status
-ON system_jobs(status);
-
-CREATE INDEX idx_system_jobs_type
-ON system_jobs(job_type);
-```
-
-job_type：
-
-```text
-import_candidates
-rebuild_candidate_raw_text
-match_candidate
-match_position
-rebuild_all_fts
-database_backup
-```
-
----
-
-## 17.4 system_audit_logs
-
-```sql
-CREATE TABLE system_audit_logs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    entity_type TEXT NOT NULL,
-    entity_id INTEGER,
-
-    action TEXT NOT NULL,
-
-    before_json TEXT,
-    after_json TEXT,
-
-    operator_name TEXT NOT NULL DEFAULT '',
-
-    created_at TEXT NOT NULL
-);
-
-CREATE INDEX idx_system_audit_entity
-ON system_audit_logs(entity_type, entity_id);
-```
-
----
-
-# 18. 首次候选人 JSON 入库流程
-
-历史候选人已经完成合并。
-
-因此 Phase 1 Importer 不执行身份匹配。
-
-## 18.1 流程
-
-```text
-扫描最终 JSON
-    ↓
-Schema 基本验证
-    ↓
-检查 record_id 是否已经导入
-    ↓
-BEGIN TRANSACTION
-    ↓
-candidate_profiles
-    ↓
-candidate_import_records
-    ↓
-candidate_resume_variants
-    ↓
-candidate_contacts
-    ↓
-candidate_expectations
-    ↓
-candidate_work_experiences
-    ↓
-candidate_educations
-    ↓
-candidate_projects
-    ↓
-candidate_trainings
-    ↓
-candidate_languages
-    ↓
-candidate_certificates
-    ↓
-candidate_skills
-    ↓
-candidate_communications
-    ↓
-candidate_search_documents ← 直接使用 JSON.raw_text
-    ↓
-COMMIT
-```
-
-FTS Trigger 自动建立索引。
-
----
-
-## 18.2 Importer 幂等
-
-使用：
-
-```text
-candidate_import_records.record_id UNIQUE
-```
-
-防止同一 JSON 重复导入。
-
-再次扫描已经入库的 record_id：
-
-```text
-skip
-```
-
-不重复创建 Candidate。
-
----
-
-## 18.3 导入统计
-
-每次导入至少返回：
-
-```text
-scanned
-validated
-inserted
-skipped
-failed
-communications
-work_experiences
-educations
-projects
-raw_text_indexed
-```
-
-失败记录必须保留错误信息，不允许静默跳过。
-
----
-
-# 19. Candidate Mutation 核心实现
-
-所有 Candidate 修改必须经过：
-
-```text
-CandidateService
-```
-
-禁止 Repository 被 Renderer 直接调用。
-
-建议统一：
-
-```js
-mutateCandidate(candidateId, mutation)
-```
-
-伪代码：
-
-```js
-mutateCandidate(candidateId, mutation) {
-  const result = this.db.transaction(() => {
-    const value = mutation();
-
-    const snapshot =
-      this.candidateRepository.getFullSnapshot(candidateId);
-
-    const rawText =
-      this.rawTextBuilder.build(snapshot);
-
-    this.searchRepository.upsertDocument(
-      candidateId,
-      rawText,
-      'rebuilt_from_db'
-    );
-
-    return value;
-  })();
-
-  this.jobService.enqueueMatchCandidate(candidateId);
-
-  return result;
-}
-```
-
----
-
-## 19.1 RawText hash
-
-建议：
-
-```text
-SHA-256(raw_text)
-```
-
-每次都必须重新 build。
-
-build 后可以比较 hash：
-
-```text
-new_hash == old_hash
-```
-
-如果完全相同：
-
-- 可以跳过 FTS UPDATE；
-- 但仍视为已经执行全量重建检查。
-
----
-
-# 20. 自动匹配总体设计
-
-自动匹配只使用一个引擎：
-
-```text
-MatchEngine
-```
-
-不要分别写：
-
-```text
-PositionToCandidateMatcher
-CandidateToPositionMatcher
-```
-
-两套算法。
-
-两者只是调用方向不同。
-
----
-
-# 21. 新增职位后的匹配
-
-```text
-保存职位
-    ↓
-status = open
-    ↓
-enqueue match_position
-    ↓
-Worker
-    ↓
-生成召回关键词
-    ↓
-candidate_search_fts 查询 raw_text
-    ↓
-召回候选人 Candidate IDs
-    ↓
-结构化筛选
-    ↓
-MatchEngine 精细评分
-    ↓
-UPSERT position_candidate_matches
-```
-
----
-
-# 22. 新增 / 更新候选人后的匹配
-
-```text
-Candidate 保存
-    ↓
-重建 raw_text
-    ↓
-FTS 更新
-    ↓
-enqueue match_candidate
-    ↓
-读取所有 status = open 的职位
-    ↓
-MatchEngine
-    ↓
-UPSERT position_candidate_matches
-```
-
----
-
-# 23. Position 更新后的匹配
-
-以下字段变化必须触发重新匹配：
-
-- title
-- city
-- work_location
-- requirements
-- skills
-- languages
-- experience
-- education
-- industry
-- salary
-- keywords
-
-如果职位：
-
-```text
-status != open
-```
-
-默认不自动产生新系统推荐。
-
----
-
-# 24. 职位状态
-
-```text
-draft      草稿
-open       正在招聘
-paused     暂停招聘
-filled     已招满
-closed     已关闭
-cancelled  已取消
-```
-
-关闭职位：
-
-- 不删除历史匹配；
-- 不删除沟通；
-- 不删除 pipeline；
-- 不删除 stage history；
-- 停止自动产生新推荐。
-
-重新开启：
-
-```text
-status = open
-```
-
-后可重新运行匹配。
-
----
-
-# 25. MatchEngine 第一版评分框架
-
-第一版使用规则评分，不要直接从 AI 模型开始。
-
-推荐总分：
-
-```text
-关键词 / 全文相关度  25
-技能                 20
-工作经验             15
-行业 / 职能          10
-语言                 10
-学历                  5
-地点                  5
-职位层级              5
-其他                  5
-------------------------
-总计                100
-```
-
-所有权重放配置。
-
-不要硬编码到 UI。
-
----
-
-## 25.1 MatchEngine 输出
-
-```js
-// MatchResult 数据结构
-{
-  score: 85.5,             // 综合匹配得分
-
-  keywordScore: 90,        // 关键词得分
-  skillScore: 80,          // 技能得分
-  experienceScore: 85,     // 经验得分
-  educationScore: 90,      // 学历得分
-  languageScore: 80,       // 语言得分
-  industryScore: 85,       // 行业得分
-  locationScore: 100,      // 工作地点得分
-
-  reasons: [],             // MatchReason[] 匹配原因明细
-
-  algorithmVersion: '1.0'  // 算法版本号
-}
-```
-
-`match_reason_json` 保存：
-
-```json
-{
-  "matched": [
-    "德语",
-    "国际物流",
-    "采购",
-    "仓储管理"
-  ],
-  "partial": [
-    "职位层级略低"
-  ],
-  "missing": [
-    "SAP经验未发现"
-  ]
-}
-```
-
----
-
-# 26. FTS 只负责召回，不直接决定录用匹配
-
-重要：
-
-```text
-raw_text FTS 命中
-≠
-最终匹配
-```
-
-例如沟通记录中：
-
-```text
-不考虑汽车行业
-```
-
-仍可能命中：
-
-```text
-汽车
-```
-
-因此：
-
-```text
-FTS
-↓
-召回
-↓
-结构化 MatchEngine
-↓
-最终评分
-```
-
-FTS 只是候选人召回入口。
-
----
-
-# 27. “不匹配”规则
-
-用户点击：
-
-```text
-不匹配
-```
-
-执行：
-
-```text
-decision = dismissed
-```
-
-并保存：
-
-```text
-dismissed_reason
-```
-
-页面默认：
-
-```text
-WHERE decision != 'dismissed'
-```
-
-以后职位或候选人数据更新重新评分：
-
-```text
-dismissed
-```
-
-仍然保持。
-
-只有人工：
-
-```text
-恢复匹配
-```
-
-才：
-
-```text
-decision = suggested
-```
-
-或：
-
-```text
-accepted
-```
-
----
-
-# 28. 候选人加入职位流程
-
-系统推荐：
-
-```text
-decision = suggested
-pipeline_stage = matched
-```
-
-人工认可：
-
-```text
-decision = accepted
-```
-
-开始沟通：
-
-```text
-pipeline_stage = contacting
-```
-
-候选人有兴趣：
-
-```text
-pipeline_stage = interested
-```
-
-推送给公司：
-
-```text
-pipeline_stage = submitted
-```
-
-公司面试：
-
-```text
-pipeline_stage = interviewing
-```
-
-Offer：
-
-```text
-pipeline_stage = offer
-```
-
-入职：
-
-```text
-pipeline_stage = hired
-```
-
-每次变化：
-
-```text
-position_candidate_stage_history INSERT
-```
-
----
-
-# 29. 沟通记录与 PositionCandidate
-
-针对某职位沟通时：
-
-```text
-candidate_communications.position_candidate_match_id
-```
-
-写对应 match ID。
-
-于是 Candidate Detail 可以显示：
-
-```text
-2026-08-15
-ABC 公司 / 欧洲物流经理
-电话沟通
-候选人有兴趣，期望年薪……
-```
-
-同时 Position Candidate Detail 也可以显示同一记录。
-
-**不要复制成两份沟通数据。**
-
----
-
-# 30. 前端页面规划
-
-## 30.1 主导航
-
-```text
-Dashboard
-候选人
-职位
-公司
-后台任务
-设置
-```
-
-Phase 1 只开放：
-
-```text
-候选人
-后台任务
-设置
-```
-
----
-
-# 31. Candidate 页面
-
-## 31.1 Candidate List
-
-展示：
-
-```text
-姓名
-城市
-当前公司
-当前职位
-最高学历
-工作年限
-手机号
-更新时间
-```
-
-支持：
-
-- 全文搜索；
-- 城市筛选；
-- 学历筛选；
-- 工作年限；
-- 当前公司；
-- 当前职位；
-- 语言；
-- 候选人状态。
-
----
-
-## 31.2 Candidate Detail
-
-建议 Tabs：
-
-```text
-概览
-工作经历
-教育经历
-项目经历
-语言 / 技能
-培训 / 证书
-简历版本
-沟通记录
-关联职位
-```
-
-关联职位 Tab：
-
-```text
-公司
-职位
-职位状态
-匹配分
-decision
-pipeline_stage
-最后更新时间
-```
-
----
-
-## 31.3 Candidate Edit
-
-任何保存操作：
-
-```text
-CandidateService mutation
-↓
-全量 rebuild raw_text
-↓
-FTS
-↓
-match_candidate job
-```
-
-前端不自己拼 raw_text。
-
----
-
-# 32. Position 页面
-
-## 32.1 Position List
-
-展示：
-
-```text
-公司
-职位
-城市
-人数
-优先级
-状态
-系统推荐数
-沟通中
-已推送
-面试
-Offer
-入职
-```
-
----
-
-## 32.2 Position Detail
-
-Tabs：
-
-```text
-职位信息
-要求
-系统推荐
-招聘流程
-沟通记录
-匹配设置
-```
-
----
-
-## 32.3 Position Candidate Kanban
-
-```text
-系统推荐
-    ↓
-沟通中
-    ↓
-有意向
-    ↓
-已推送
-    ↓
-面试
-    ↓
-Offer
-    ↓
-入职
-```
-
-卡片：
-
-```text
-姓名
-城市
-当前公司
-当前职位
-匹配分
-核心匹配理由
-```
-
-操作：
-
-```text
-查看候选人
-确认匹配
-不匹配
-开始沟通
-推送公司
-进入面试
-Offer
-入职
-```
-
----
-
-# 33. Company 页面
-
-## 33.1 Company List
-
-```text
-公司名
-行业
-城市
-联系人
-招聘中职位数
-历史职位数
-状态
-```
-
----
-
-## 33.2 Company Detail
-
-Tabs：
-
-```text
-公司信息
-联系人
-职位
-公司记录
-```
-
-职位：
-
-```text
-职位名称
-状态
-候选人数
-推送人数
-面试人数
-Offer
-入职
-```
-
----
-
-# 34. Electron 项目目录
-
-建议：
-
-```text
-src/
-│
-├── main/
-│   ├── index.js
-│   │
-│   ├── database/
-│   │   ├── Database.js
-│   │   ├── MigrationRunner.js
-│   │   ├── migrations/
-│   │   │   ├── 001_initial.sql
-│   │   │   ├── 002_candidate_search_fts.sql
-│   │   │   └── ...
-│   │   │
-│   │   └── repositories/
-│   │       ├── CandidateRepository.js
-│   │       ├── CandidateSearchRepository.js
-│   │       ├── CandidateCommunicationRepository.js
-│   │       ├── PositionRepository.js
-│   │       ├── PositionCandidateRepository.js
-│   │       ├── CompanyRepository.js
-│   │       ├── JobRepository.js
-│   │       └── SettingsRepository.js
-│   │
-│   ├── services/
-│   │   ├── CandidateService.js
-│   │   ├── CandidateImportService.js
-│   │   ├── CandidateSearchService.js
-│   │   ├── CandidateCommunicationService.js
-│   │   ├── PositionService.js
-│   │   ├── PositionCandidateService.js
-│   │   ├── CompanyService.js
-│   │   ├── MatchService.js
-│   │   ├── JobService.js
-│   │   └── BackupService.js
-│   │
-│   ├── candidate/
-│   │   └── search/
-│   │       ├── CandidateRawTextBuilder.js
-│   │       └── CandidateRawTextNormalizer.js
-│   │
-│   ├── matching/
-│   │   ├── MatchEngine.js
-│   │   ├── MatchContext.js
-│   │   ├── CandidateRecallService.js
-│   │   ├── scorers/
-│   │   │   ├── KeywordScorer.js
-│   │   │   ├── SkillScorer.js
-│   │   │   ├── ExperienceScorer.js
-│   │   │   ├── EducationScorer.js
-│   │   │   ├── LanguageScorer.js
-│   │   │   ├── IndustryScorer.js
-│   │   │   └── LocationScorer.js
-│   │   └── rules/
-│   │
-│   ├── workers/
-│   │   ├── worker.js
-│   │   ├── MatchCandidateWorker.js
-│   │   └── MatchPositionWorker.js
-│   │
-│   └── ipc/
-│       ├── candidate.ipc.js
-│       ├── candidateSearch.ipc.js
-│       ├── communication.ipc.js
-│       ├── position.ipc.js
-│       ├── match.ipc.js
-│       ├── company.ipc.js
-│       ├── job.ipc.js
-│       └── system.ipc.js
-│
-├── preload/
-│   ├── index.js
-│   └── api/
-│       ├── candidate.js
-│       ├── position.js
-│       ├── company.js
-│       └── system.js
-│
-├── renderer/
-│   └── src/
-│       ├── App.vue
-│       ├── router/
-│       ├── stores/
-│       ├── components/
-│       │
-│       └── modules/
-│           ├── dashboard/
-│           ├── candidate/
-│           │   ├── pages/
-│           │   ├── components/
-│           │   └── stores/
-│           │
-│           ├── position/
-│           │   ├── pages/
-│           │   ├── components/
-│           │   └── stores/
-│           │
-│           ├── company/
-│           │   ├── pages/
-│           │   ├── components/
-│           │   └── stores/
-│           │
-│           └── system/
-│
-└── shared/
-    ├── types/
-    ├── dto/
-    ├── enums/
-    ├── constants/
-    └── validation/
-```
-
----
-
-# 35. Repository 规则
-
-Repository 只负责数据库读写。
-
-示例：
-
-```js
-class CandidateRepository {
-  getById(id) {}
-  getFullSnapshot(id) {}
-  insertProfile(input) {}
-  updateProfile(id, input) {}
-}
-```
-
-Repository：
-
-**不负责：**
-
-- raw_text 重建；
-- 自动匹配；
-- IPC；
-- UI；
-- 流程状态判断。
-
----
-
-# 36. Service 规则
-
-Service 负责业务。
-
-例如：
-
-```text
-CandidateService
-```
-
-负责：
-
-- 创建 Candidate；
-- 修改 Candidate；
-- 调用 Repository；
-- 重建 raw_text；
-- 写审计；
-- 创建 Match Job。
-
----
-
-# 37. IPC 规则
-
-建议命名：
-
-```text
-candidate:list
-candidate:get
-candidate:create
-candidate:update
-candidate:delete
-candidate:search
-
-candidate:communication:list
-candidate:communication:add
-candidate:communication:update
-candidate:communication:delete
-
-position:list
-position:get
-position:create
-position:update
-position:set-status
-
-position:candidates:list
-position:candidates:dismiss
-position:candidates:restore
-position:candidates:set-stage
-
-company:list
-company:get
-company:create
-company:update
-
-system:jobs:list
-system:jobs:get
-```
-
-IPC Handler 不直接写 SQL。
-
----
-
-# 38. Preload API
-
-Renderer 使用：
-
-```js
-window.electronApi.candidate.candidatesSearch(...)
-window.electronApi.candidate.candidateGet(...)
-window.electronApi.candidate.candidateUpdate(...)
-
-window.electronApi.position.positionCreate(...)
-window.electronApi.position.positionCandidatesList(...)
-
-window.electronApi.company.companyCreate(...)
-```
-
-不要暴露：
-
-```js
-ipcRenderer
-fs
-path
-child_process
-Database
-```
-
-给 Renderer。
-
----
-
-# 39. 后台 Worker
-
-职位匹配可能需要处理：
-
-```text
-数万 Candidate
-```
-
-因此禁止在 Main Event Loop 直接长时间循环计算。
-
-使用：
-
-```text
-Worker Thread
-```
-
-流程：
-
-```text
-Main
-↓
-system_jobs
-↓
-Worker
-↓
-MatchEngine
-↓
-SQLite
-↓
-progress
-↓
-Renderer
-```
-
----
-
-# 40. Job 去重
-
-例如 Candidate 在 3 秒内连续保存 5 次。
-
-不要产生：
-
-```text
-5 个 match_candidate
-```
-
-建议：
-
-```text
-queued 状态下：
-job_type + entity_id 唯一逻辑去重
-```
-
-只保留最后一次。
-
-Position 同理。
-
----
-
-# 41. 数据库事务边界
-
-候选人修改：
-
-```text
-BEGIN
-  update candidate_*
-  rebuild raw_text
-  update candidate_search_documents
-  audit
-COMMIT
-
-enqueue match job
-```
-
-职位修改：
-
-```text
-BEGIN
-  update position_openings
-  update requirements
-  update skills
-  update languages
-  update keywords
-  audit
-COMMIT
-
-enqueue match_position
-```
-
-MatchEngine 不能参与 Candidate 编辑事务。
-
----
-
-# 42. 搜索 API
-
-建议 DTO：
-
-```js
-// CandidateSearchInput
-{
-  keyword: '',
-  city: [],
-  minDegreeRank: 0,
-  minWorkYears: 0,
-  maxWorkYears: 0,
-  currentCompany: '',
-  currentPosition: '',
-  languages: [],
-  candidateStatus: [],
-  page: 1,
-  pageSize: 20,
-  sortBy: 'relevance', // 'relevance' | 'updatedAt' | 'name'
-  sortDirection: 'desc'
-}
-```
-
-结果：
-
-```js
-// CandidateSearchResult
-{
-  total: 0,
-  page: 1,
-  pageSize: 20,
-  items: []
-}
-```
-
----
-
-# 43. 搜索执行
-
-有 keyword：
-
-```text
-keyword
-↓
-CandidateSearchService
-↓
-QueryParser
-↓
-FTS / LIKE fallback
-↓
-candidate IDs
-↓
-structured filters
-↓
-pagination
-```
-
-没有 keyword：
-
-```text
-candidate_profiles
-↓
-structured filters
-↓
-pagination
-```
-
----
-
-# 44. Candidate Detail API
-
-一次返回：
-
-```js
-// CandidateDetail 数据结构
-{
-  profile: {},
-  contacts: [],
-  expectations: [],
-  workExperiences: [],
-  educations: [],
-  projects: [],
-  trainings: [],
-  languages: [],
-  certificates: [],
-  skills: [],
-  resumeVariants: [],
-  communications: [],
-  positionRelations: []
-}
-```
-
-不要让前端为了一个 Candidate Detail 发 15 次 IPC。
-
----
-
-# 45. Position Detail API
-
-```js
-// PositionDetail 数据结构
-{
-  position: {},
-  requirements: {},
-  skills: [],
-  languages: [],
-  keywords: []
-}
-
-  stageCounts: Record<PipelineStage, number>;
-}
-```
-
----
-
-# 46. Position Candidate Query
-
-支持：
-
-```text
-decision
-pipeline_stage
-minimum_score
-keyword
-page
-pageSize
-```
-
-默认系统推荐页：
-
-```text
-decision != dismissed
-```
-
----
-
-# 47. 数据删除策略
-
-第一版业务数据优先软状态，不轻易 DELETE。
-
-## Candidate
-
-建议：
-
-```text
-candidate_status = archived
-```
-
-而不是删 Candidate。
-
-## Position
-
-```text
-status = closed / cancelled
-```
-
-而不是删除。
-
-## Company
-
-```text
-status = inactive
-```
-
-真正 DELETE 仅用于：
-
-- 开发测试；
-- 明确数据纠错；
-- 用户确认永久删除。
-
----
-
-# 48. 审计
-
-以下操作建议写：
-
-```text
-system_audit_logs
-```
-
-- Candidate 修改；
-- Candidate 删除 / archived；
-- 沟通记录删除；
-- Position 修改；
-- Position 状态变化；
-- Match dismiss / restore；
-- Pipeline stage 变化；
-- Company 修改。
-
----
-
-# 49. 备份
-
-SQLite 本地应用必须从第一版就设计备份。
-
-建议：
-
-```text
-每天首次启动
-或
-每次应用关闭前
-```
-
-创建安全备份。
-
-目录：
-
-```text
-<应用根目录>/
-└── backups/
-    ├── recruitment-2026-08-09.db
-    ├── recruitment-2026-08-10.db
-    └── ...
-```
-
-保留最近 N 份。
-
-不要直接在 WAL 正在写入时使用普通文件复制作为唯一备份方案。
-
-BackupService 应使用 SQLite 支持的安全备份方式。
-
----
-
-# 50. 开发阶段规划
-
----
-
-## Phase 0：项目骨架
-
-目标：
-
-```text
-Electron 能启动
-Vue 能显示
-SQLite 能连接
-Migration 能执行
-IPC 能工作
-```
-
-任务：
-
-- 初始化 Electron + Vue + JavaScript；
-- 建立 Main / Preload / Renderer；
-- 接入 better-sqlite3；
-- 建立 MigrationRunner；
-- 创建数据库目录；
-- 建立基础 IPC；
-- 开启 Electron 安全配置；
-- 添加测试框架。
-
-验收：
-
-```text
-应用启动自动创建 DB
-001 migration 自动执行
-Renderer 能通过 preload 调用 system:get-version
-```
-
----
-
-## Phase 1：候选人系统
-
-### 1A. Database
-
-完成：
-
-```text
-candidate_*
-candidate_search_documents
-candidate_search_fts
-candidate_communications
-system_jobs
-```
-
-### 1B. Importer
-
-完成：
-
-```text
-最终 JSON → SQLite
-```
-
-要求：
-
-- 幂等；
-- 事务；
-- 错误报告；
-- 保留 original_json；
-- 首次 raw_text 直接导入；
-- FTS 可查询。
-
-### 1C. Candidate UI
-
-完成：
-
-- Candidate List；
-- Candidate Search；
-- Candidate Detail；
-- Resume Variant；
-- Candidate Edit；
-- Communication CRUD。
-
-### 1D. RawText Rebuild
-
-完成：
-
-```text
-修改 Candidate
-↓
-完整 snapshot
-↓
-raw_text full rebuild
-↓
-FTS update
-```
-
-### Phase 1 验收
-
-必须做到：
-
-1. 所有现有候选人可以入库；
-2. 导入数量与 JSON 数量一致；
-3. 重跑 Import 不重复；
-4. 可以用 `raw_text` 搜候选人；
-5. 中文 / 英文 / 日文 / 德文文本可以搜；
-6. Candidate Detail 可以看到完整经历；
-7. 可以增加一条沟通；
-8. 新沟通保存后 raw_text 重新生成；
-9. 删除一条工作经历后，相关文本从新 raw_text 中消失；
-10. FTS 索引与 raw_text 一致。
-
----
-
-## Phase 2：职位与匹配
-
-### 2A. Position CRUD
-
-完成：
-
-- Position List；
-- Position Create；
-- Position Edit；
-- Position Status；
-- Position Requirements；
-- Skills；
-- Languages；
-- Keywords。
-
-### 2B. MatchEngine
-
-完成：
-
-- Position → Candidate；
-- Candidate → Open Positions；
-- Worker；
-- Job progress；
-- Match scores；
-- Match reason。
-
-### 2C. ATS Pipeline
-
-完成：
-
-- System Recommended；
-- Accepted；
-- Dismissed；
-- Contacting；
-- Interested；
-- Submitted；
-- Interviewing；
-- Offer；
-- Hired；
-- Rejected。
-
-### 2D. Candidate 反向 Position
-
-Candidate Detail：
-
-```text
-关联职位
-```
-
-完整显示。
-
-### Phase 2 验收
-
-1. 新建 open Position 后自动出现 Candidate 推荐；
-2. Candidate 新增后自动匹配 open Positions；
-3. Candidate 修改后自动重新评分；
-4. Position 修改后自动重新评分；
-5. dismissed 候选人重跑算法后仍不出现；
-6. interviewing / offer 等人工阶段不会被算法重置；
-7. Candidate Detail 能看到所有关联 Position；
-8. Position Detail 能看到完整 Candidate Pipeline；
-9. Stage History 完整。
-
----
-
-## Phase 3：公司管理
-
-完成：
-
-- Company CRUD；
-- Company Contacts；
-- Company Notes；
-- Company Detail；
-- Company → Position；
-- Company Position Statistics。
-
-### Phase 3 验收
-
-1. 创建公司；
-2. 公司下创建多个职位；
-3. 公司详情显示全部职位；
-4. 职位显示招聘状态；
-5. 公司可以看到每个职位 Pipeline 统计；
-6. Position → Candidate 全链路完整。
-
----
-
-# 51. 后续 Phase 4 可扩展
-
-不属于第一版强制范围：
-
-- Dashboard KPI；
-- 顾问工作台；
-- 导出 Candidate Profile；
-- 邮件模板；
-- 公司推荐报告；
-- 自动提醒；
-- AI Job Description 解析；
-- AI Match Explanation；
-- Embedding / Vector Search；
-- 多用户；
-- 权限系统；
-- 云同步；
-- PostgreSQL 服务端版本。
-
-数据库设计应允许以后扩展，但当前禁止提前把这些做复杂。
-
----
-
-# 52. 测试要求
-
-## 52.1 Repository Test
-
-测试：
-
-- insert；
-- update；
-- delete；
-- transaction rollback；
-- foreign key；
-- indexes。
-
----
-
-## 52.2 RawTextBuilder Test
-
-至少覆盖：
-
-```text
-修改姓名
-删除工作
-增加语言
-增加证书
-增加沟通
-修改沟通
-删除项目
-多语言 resume
-空字段
-重复字段
-```
-
-断言：
-
-```text
-raw_text === expected
-```
-
----
-
-## 52.3 FTS Test
-
-测试：
-
-- 英文；
-- 中文；
-- 德文；
-- 日文；
-- 3字关键词；
-- 2字中文 fallback；
-- 删除字段后不能继续命中旧词。
-
----
-
-## 52.4 Match Test
-
-测试：
-
-```text
-新 Position → 推荐
-新 Candidate → 推荐
-Candidate 更新 → score 更新
-Position 更新 → score 更新
-dismissed 不恢复
-interviewing 不回退
-closed position 不产生新推荐
-reopen position 可重新匹配
-```
-
----
-
-# 53. 数据一致性不变量
-
-以下条件任何时候必须成立。
-
-### Candidate
-
-```text
-candidate_profiles.id
-```
-
-是所有候选人域数据关联主键。
-
-### Search
-
-每个 active Candidate：
-
-```text
-candidate_profiles.id
-```
-
-应存在：
-
-```text
-candidate_search_documents.candidate_id
-```
-
-### Match
-
-同一个：
-
-```text
-position_id + candidate_id
-```
-
-最多只有一条：
-
-```text
-position_candidate_matches
-```
-
-### Company
-
-一个 Position：
-
-```text
-最多属于一个 company
-```
-
-一个 Company：
-
-```text
-可以拥有多个 Position
-```
-
-### raw_text
-
-任何 Candidate mutation 后：
-
-```text
-raw_text
-```
-
-必须由当前完整 Candidate 数据重新生成。
-
----
-
-# 54. Codex 开发纪律
-
-Codex 开发时必须遵守：
-
-1. 不重新解析历史 Word / PDF。
-2. 不修改已经完成的历史 JSON。
-3. 首次入库直接使用现有 `raw_text`。
-4. 以后 Candidate 修改必须 full rebuild `raw_text`。
-5. 不允许增量 append raw_text。
-6. 不允许 Renderer 直接访问 SQLite。
-7. SQL 集中在 Repository / Migration。
-8. 业务逻辑集中在 Service。
-9. MatchEngine 不直接操作 UI。
-10. 所有后台大计算使用 Worker。
-11. dismissed 不得因算法重跑自动恢复。
-12. pipeline 不得因算法重跑自动回退。
-13. Position 关闭不删除历史匹配。
-14. Candidate / Position / Company 业务删除优先使用状态。
-15. 每次数据库结构修改必须新增 migration。
-16. 不允许手工修改已发布 migration。
-17. 所有关键状态变化保存历史。
-18. 所有重要操作可审计。
-19. 原始导入 JSON 永久保留用于追溯。
-20. 不为未来多人云端场景过度设计第一版。
-
----
-
-# 55. 第一批建议创建的文件
-
-Codex 第一轮先创建：
-
-```text
-src/main/database/Database.js
-src/main/database/MigrationRunner.js
-
-src/main/database/migrations/001_initial.sql
-src/main/database/migrations/002_candidate_fts.sql
-
-src/main/database/repositories/CandidateRepository.js
-src/main/database/repositories/CandidateSearchRepository.js
-
-src/main/services/CandidateImportService.js
-src/main/services/CandidateService.js
-src/main/services/CandidateSearchService.js
-
-src/main/candidate/search/CandidateRawTextBuilder.js
-
-src/main/ipc/candidate.ipc.js
-src/main/ipc/candidateSearch.ipc.js
-
-src/preload/index.js
-
-src/shared/types/candidate.js
-src/shared/dto/candidate.js
-```
-
-第一轮不要直接写 Position UI。
-
----
-
-# 56. Codex 第一阶段具体实施顺序
-
-```text
-Step 1
-Electron / Vue / JS 项目骨架
-
-Step 2
-Database + Migration
-
-Step 3
-Candidate tables
-
-Step 4
-FTS
-
-Step 5
-Candidate JSON Importer
-
-Step 6
-核对候选人入库数量
-
-Step 7
-Candidate Search API
-
-Step 8
-Candidate List UI
-
-Step 9
-Candidate Detail API + UI
-
-Step 10
-Candidate Edit
-
-Step 11
-RawTextBuilder
-
-Step 12
-Candidate Communication
-
-Step 13
-Candidate 修改 → RawText 重建回归测试
-
-Step 14
-完成 Phase 1
-```
-
-Phase 1 完成后再进入 Position。
-
----
-
-# 57. Codex 首次执行前的检查清单
-
-开始写代码前确认：
-
-- [x] 当前最终 JSON 目录路径由用户提供或配置；
-- [x] 不把路径硬编码进业务代码；
-- [x] SQLite 文件路径使用开发/打包统一的“程序同根 `data/`”规则；
-- [x] `candidate_` / `position_` / `company_` 前缀确定；
-- [x] `position` 拼写正确；
-- [x] MigrationRunner 已有；
-- [x] foreign_keys 已开启；
-- [x] WAL 已开启；
-- [x] better-sqlite3 Electron 原生模块已通过 `npm run test:electron` 验证；
-- [x] preload / context isolation 已启用；
-- [x] Renderer 无 Node 权限；
-- [x] 数据导入使用临时新库，质量检查通过后再原子替换；
-- [x] Importer 首次直接使用最终 JSON 的历史 raw_text。
-
----
-
-# 58. 最终架构图
-
-```text
-┌──────────────────────────────────────────────────────────┐
-│                     Vue Renderer                         │
-│ Candidate / Position / Company / Dashboard             │
-└───────────────────────────┬──────────────────────────────┘
-                            │
-                         Preload
-                            │
-                            ▼
-┌──────────────────────────────────────────────────────────┐
-│                    Electron Main                         │
-│                                                          │
-│  IPC                                                     │
-│   ↓                                                      │
-│  Services                                                │
-│   ├── CandidateService                                   │
-│   ├── PositionService                                    │
-│   ├── CompanyService                                    │
-│   ├── MatchService                                       │
-│   └── JobService                                         │
-│   ↓                                                      │
-│  Repositories                                            │
-│   ↓                                                      │
-│  SQLite                                                  │
-└───────────────────────────┬──────────────────────────────┘
-                            │
-        ┌───────────────────┼───────────────────┐
-        ▼                   ▼                   ▼
-   candidate_*          position_*          company_*
-        │                   │                   │
-        │              position_candidate      │
-        │                   │                   │
-        └───────────────────┴───────────────────┘
-                            │
-                            ▼
-                    Candidate raw_text
-                            │
-                            ▼
-                      SQLite FTS5
-                            │
-                            ▼
-                       MatchEngine
-```
-
----
-
-# 59. 最终业务原则总结
-
-这个系统有四个真正的核心对象。
-
-## Candidate
-
-回答：
-
-> 这个人是谁？
-
-保存：
-
-- 基础信息；
-- 经历；
-- 教育；
-- 项目；
-- 技能；
-- 语言；
-- 证书；
-- 简历版本；
-- 沟通；
-- raw_text。
-
----
-
-## Position
-
-回答：
-
-> 这个职位需要什么人？
-
-保存：
-
-- JD；
-- 地点；
-- 薪资；
-- 工作年限；
-- 学历；
-- 技能；
-- 语言；
-- 行业；
-- 状态；
-- 匹配关键词。
-
----
-
-## Company
-
-回答：
-
-> 谁在招聘？
-
-保存：
-
-- 公司；
-- 联系人；
-- 公司信息；
-- 该公司拥有的所有职位。
-
----
-
-## PositionCandidateMatch
-
-回答：
-
-> 这个候选人针对这个职位，现在发生了什么？
-
-保存：
-
-- 系统匹配；
-- 分数；
-- 原因；
-- 人工是否认可；
-- 是否不匹配；
-- 当前 Pipeline；
-- 历史 Pipeline；
-- 事件；
-- 沟通关联。
-
----
-
-# 60. 最终必须长期保持的核心规则
-
-```text
-Candidate structured data = 当前业务真值
-
-Candidate raw_text = 当前候选人的全文搜索派生文档
-
-首次历史导入：
-    从已入库的主资料、全部语言简历 List 和沟通记录完整构建 raw_text
-
-以后 Candidate 任意更新：
-    重新读取 Candidate 全部信息
-    → FULL REBUILD raw_text
-    → 更新 FTS
-
-全文搜索：
-    只搜索 raw_text
-
-精确条件：
-    搜索结构化字段
-
-Position 创建 / 修改：
-    自动匹配 Candidate
-
-Candidate 创建 / 修改：
-    自动匹配 Open Positions
-
-人工“不匹配”：
-    永久保留 dismissed 状态
-    算法重跑不得恢复
-
-招聘流程：
-    独立于算法评分
-    算法不得重置人工 Pipeline
-
-Company：
-    一个公司拥有多个 Position
-
-所有历史：
-    不通过覆盖丢失
-```
-
----
-
-# 61. 开发开始点
-
-Codex 接到本文件后，第一项实际开发任务是：
-
-```text
-建立 Electron + Vue + JavaScript 项目骨架
-        ↓
-实现 SQLite Database / MigrationRunner
-        ↓
-创建 001_initial.sql
-        ↓
-创建 002_candidate_fts.sql
-        ↓
-实现 Candidate JSON Importer
-```
-
-在 Candidate Phase 1 验收完成前：
-
-**不要提前进入 Position UI 和 Company UI。**
-
-但是数据库第一版 Schema 可以一次包含 Candidate / Position / Company / Match 骨架，以避免后续大规模重构。
-
----
-
-# 62. 2026-08-10 Candidate 列表字段落地验收
-
-- 已全量扫描 9860 个源 JSON、11637 份多语言简历，并直接标准化源文件中的历史别名字段。
-- 求职意向明细统一使用 `resumes[i].expected_list`；顶层 `structured_data.expected_info` 仅为对象快照。
-- 九类列表的 JSON 字段、SQLite 业务列、Electron Repository 与前端表格/表单字段已逐项对齐。
-- 沟通记录只保留候选人级 `candidate_communications`，业务字段为 `communicate_time`、`communicate_content`。
-- 正式开发数据库已由标准化 JSON 全量重建：9860 candidates、11637 resumes，导入失败 0、外键错误 0、`integrity_check=ok`。
-- 审计命令：`cd electron && npm run audit:candidate-lists -- E:\resume-system\codex-complete-jsons\complete E:\resume-system\code\data\recruitment.db`。
-- JSON 标准化命令：`cd electron && npm run normalize:candidate-json-lists -- E:\resume-system\codex-complete-jsons\complete`。
-
----
 
-**END OF DOCUMENT**
+-- 候选人统计：推荐=到达 submitted；成功=到达 hired；沟通=非 imported_resume 的沟通条数
+-- Candidate statistics: recommended = reached submitted; successful = reached hired; communications = count of communications that are not imported_resume
+-- 候補者の統計：推薦＝submitted に到達、成功＝hired に到達、コミュニケーション＝imported_resume 以外の件数
+CREATE VIEW v_candidate_stats AS
+SELECT
+    c.id AS candidate_id,
+    (SELECT COUNT(DISTINCT h.match_id) FROM position_candidate_history h
+        JOIN position_candidate_matches m ON m.id = h.match_id
+        WHERE m.candidate_id = c.id AND h.change_type = 'stage' AND h.to_value = 'submitted') AS recommend_count,
+    (SELECT COUNT(DISTINCT h.match_id) FROM position_candidate_history h
+        JOIN position_candidate_matches m ON m.id = h.match_id
+        WHERE m.candidate_id = c.id AND h.change_type = 'stage' AND h.to_value = 'hired') AS success_count,
+    (SELECT COUNT(*) FROM candidate_communications cc
+        WHERE cc.candidate_id = c.id AND cc.source_type <> 'imported_resume') AS communication_count
+FROM candidate_profiles c;
+
+CREATE VIEW v_position_pipeline_counts AS
+SELECT
+    p.id AS position_id,
+    COUNT(CASE WHEN m.decision = 'suggested' THEN 1 END) AS suggested_count,
+    COUNT(CASE WHEN m.decision = 'accepted'  THEN 1 END) AS accepted_count,
+    COUNT(CASE WHEN m.decision = 'dismissed' THEN 1 END) AS dismissed_count,
+    COUNT(CASE WHEN m.stage = 'submitted' THEN 1 END) AS submitted_now,
+    COUNT(CASE WHEN m.stage = 'interviewing' THEN 1 END) AS interviewing_now,
+    COUNT(CASE WHEN m.stage = 'offer' THEN 1 END) AS offer_now,
+    COUNT(CASE WHEN m.stage IN ('hired','guarantee_passed') THEN 1 END) AS hired_count
+FROM position_openings p
+LEFT JOIN position_candidate_matches m ON m.position_id = p.id
+GROUP BY p.id;
+
+CREATE VIEW v_company_position_counts AS
+SELECT
+    co.id AS company_id,
+    COUNT(p.id) AS position_total,
+    COUNT(CASE WHEN p.status = 'open' THEN 1 END) AS position_open
+FROM company_profiles co
+LEFT JOIN position_openings p ON p.company_id = co.id
+GROUP BY co.id;
+```
+
+---
+
+## 5. 后端服务与 IPC 接口规范
+
+整个系统遵循面向对象的领域服务设计，统一错误码与异常处理：
+
+### 5.1 统一异常码与错误规约 (`AppError`)
+- `VALIDATION` (400)：请求参数未通过校验（如企业名称为空、对接人未填姓名）；
+- `NOT_FOUND` (404)：请求实体不存在（如指定 ID 的企业或联系人不存在）；
+- `DUPLICATE` (409)：实体冲突或唯一性约束违规（如企业名称已存在）；
+- `IN_USE` (422)：实体正在被其他业务引用，无法删除（如对接人正在负责有效职位）；
+- `INTERNAL_ERROR` (500)：系统未知内部错误或环境不支持。
+
+### 5.2 核心服务与 API 映射
+1. **`CompanyService`**：
+   - `companiesSearch(params)`：多条件搜索与分页；
+   - `companyGet(companyId)`：详情、联系人列表与跟进备忘；
+   - `companyCreate(fields)` / `companyUpdate(companyId, fields)`；
+   - `companyDelete(companyId)`：存在职位自动降级软删除，无职位物理删除；
+   - `companyContactsList(companyId)` / `companyContactAdd(companyId, fields)` / `companyContactUpdate(contactId, fields)` / `companyContactDelete(contactId)`；
+   - `companyNoteAdd(companyId, fields)` / `companyNoteDelete(noteId)`。
+2. **`CandidateImportService`**：
+   - `candidateImportPickFiles()` / `candidateImportPickDirectory()`：唤起原生选择器；
+   - `candidateImportRun(selectedPaths, options)`：执行导入（支持严格模式）；
+   - `candidateImportBatchesList()`：获取历史导入批次；
+   - `candidateImportIssuesList(importBatchId)`：排查批次告警与错误明细。
+3. **`SystemService`**：
+   - `getVersion()`：获取系统客户端运行版本；
+   - `getDatabasePath()`：获取当前生效的 SQLite 数据物理路径。
+
+---
+
+## 6. 前端多语言路由架构 (i18n 分包按需加载)
+
+1. **路由守卫拦截分包**：
+   ```javascript
+   router.beforeEach(async to => {
+     await ensureModulePacksLoaded(to.meta.i18nPacks || []);
+   });
+   ```
+2. **语言包组织**：
+   - `core.json`：全局菜单、通用按钮、通用状态标签（启动时立即载入）；
+   - `company.json`：企业客户 CRM、联系人弹窗、备忘录专用字典（访问 `/company` 动态载入）；
+   - `candidateImport.json`：简历导入工作台、批次表格、错误排查专用字典（访问 `/candidate/import` 动态载入）。
+3. **Element Plus 同步**：
+   - 切换系统语言为 `zh-cn`、`en-us` 或 `ja-jp` 时，Element Plus 全局 Locale 与自定义字典 100% 同步切换。
+
+---
+
+## 7. 自动化测试套件规范 (24/24 Pass)
+
+后端测试套件位于 `electron/test/backend.test.js`，包含 24 个精细化单元与集成测试用例，全量通过：
+
+1. `candidateImportBatchesList returns batches ordered by id desc`：批次倒序查询验证；
+2. `candidateImportIssuesList returns warnings of a batch`：批次告警明细查询验证；
+3. `candidateImportRun rejects empty selection`：空选择参数校验拦截；
+4. `candidateImportRun: a single file, then re-import is skipped by content hash`：单文件哈希秒级跳过去重；
+5. `candidateImportRun: a folder imports all json files; invalid input is rejected`：目录全量递归导入；
+6. `candidateImportPickFiles / PickDirectory use the injected dialog`：原生文件对话框模拟注入测试；
+7. `strict mode: a file with a contact conflict is rejected and not written; a clean file is imported`：**严格模式冲突全量阻断与回滚防护**；
+8. `companyCreate / companyGet / companiesSearch / companyUpdate`：企业 CRM 基础 CRUD 全链路闭环；
+9. `companyCreate rejects empty and duplicate names with business error codes`：企业重名与空名业务异常校验；
+10. `first contact becomes primary; a new primary replaces the old one`：**主对接人自动选定与替换降级状态机**；
+11. `companyDelete: physical delete without positions, soft delete with positions; contact in use cannot be deleted`：**级联删除防护与智能软删除切换**；
+12. `migrations create schema + system user`：全量 5 个迁移脚本与系统默认用户自动创建；
+13. `normalize`：字段清洗去噪与标准化函数测试；
+14. `import samples, idempotent re-run`：全量样本数据幂等导入；
+15. `primary phone/email unique constraints`：候选人主联系方式全局唯一索引校验；
+16. `multilingual: zh primary + jp, lists aligned`：多语言中日简历正确对齐与合并；
+17. `misaligned multilingual lists produce a warning`：多语言列表项数不一致时告警诊断捕获；
+18. `FTS: >=3 chars via trigram, raw_text built from fields`：**FTS5 trigram 全文搜索与毫秒级匹配检索**；
+19. `shared/conflicting contact: first come wins, second becomes shared + warning`：非主联系方式共享与警告留痕；
+20. `re-import changed content updates in place, no duplicates`：简历内容变更后就地更新，无孤儿数据；
+21. `imported_resume communications excluded from communication_count`：统计视图自动过滤导入产生的虚假沟通记录；
+22. `company/position/match flow constraints + stats views`：**三大实时聚合视图与外键触发器强校验**；
+23. `landline shared by many candidates: no conflict; one-sided empty date is not misaligned`：固话/座机多候选人共享无冲突校验；
+24. `small date drift between language versions is tolerated, large drift warns`：跨语言日期微小漂移容错与大偏差告警诊断。
+
+---
+
+## 8. 打包与交付工程规范
+
+系统内置完整的 `electron-builder` 本地打包发布能力：
+
+1. **前端生产编译**：
+   ```bash
+   cd frontend && npm run build
+   ```
+2. **绿色解包目录打包 (Win Unpacked)**：
+   ```bash
+   cd electron && npm run dist:dir
+   ```
+3. **原生冒烟自检测试**：
+   ```bash
+   .\release\win-unpacked\RecruitmentSystemV2.exe --smoke-test
+   ```
+4. **单文件便携版 (Portable) 与安装包 (NSIS)**：
+   ```bash
+   cd electron && npm run dist
+   ```
+
+---
+
+> **项目协作与技术致谢**  
+> 架构设计与全量代码重构由 **Google DeepMind Antigravity**、**OpenAI Codex** 与 **Anthropic Claude** 联合深度开发支持。
+
+---
+**V2 完整功能设计与规划规范结束**

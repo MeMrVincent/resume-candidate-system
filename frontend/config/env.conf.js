@@ -3,10 +3,10 @@ const envConfig = {
     host: '0.0.0.0',
     port: 9000,
     filename: 'index.html',
-    title: 'Recruitment CRM / ATS - Frontend',
+    title: '猎头招聘管理系统 V2',
     sysApp: 'src',
     sysName: 'frontend',
-    appVersion: '1.0.0',
+    appVersion: '2.0.0',
     dev: {
       staticURL: './',
       apiURL: 'http://localhost:9000',

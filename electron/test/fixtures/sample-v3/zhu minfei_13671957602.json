@@ -1,0 +1,324 @@
+{
+  "schema_version": "resume-merge-v3.0",
+  "record_id": "merge-v3-eeadc90c88dad258",
+  "source": {
+    "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\老婆资料\\e盘简历\\2015年2月份简历\\智联招聘_zhuminfei_中文_20150924_63281821.doc",
+    "html_path": "",
+    "source_count": 2,
+    "source_files": [
+      {
+        "index": 0,
+        "version": "v2",
+        "json_path": "E:\\resume-system\\complete-v2-temp\\zhuminfei_13671957602.json",
+        "sha256": "5b83006e24943f63d429c07149313dfadd4a1ba58a212ec17b5e20d869c9a0c2",
+        "duplicate_paths": [
+          "E:\\resume-system\\complete-v1\\zhuminfei_13671957602.json"
+        ],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\老婆资料\\e盘简历\\2015年2月份简历\\智联招聘_zhuminfei_中文_20150924_63281821.doc",
+        "html_path": "",
+        "resume_updated_date": "2015-09-24 15:42:55",
+        "languages": [
+          "zh"
+        ]
+      },
+      {
+        "index": 1,
+        "version": "v2",
+        "json_path": "E:\\resume-system\\complete-v2-temp\\zhuminfei_13671957602_2.json",
+        "sha256": "f6babe316b591ac649c4d65fd2dc7f5b51f660eb2d9b54ed8a6d27240e777928",
+        "duplicate_paths": [],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\老婆资料\\e盘简历\\2015年2月份简历\\智联招聘_zhuminfei_中文_20150924_33607527.doc",
+        "html_path": "E:\\resume-system\\_resume_qa\\global_chinese_regen\\passed\\智联招聘_zhuminfei_中文_20150924_33607527_6994d25a1cd0.html",
+        "resume_updated_date": "2015-09-02 00:00:00",
+        "languages": [
+          "zh"
+        ]
+      }
+    ]
+  },
+  "dates": {
+    "resume_updated_date": "2015-09-24 15:42:55",
+    "resume_download_date": "2015-09-02 00:00:00",
+    "resume_updated_date_source": "",
+    "resume_download_date_source": "",
+    "sys_created_date": "2026-08-01T10:16:57+09:00",
+    "sys_updated_date": "2026-10-12T00:00:00+09:00"
+  },
+  "extraction": {
+    "merger": "claude_merge.v3.py",
+    "rule_version": "merge-v3.0-contact-key"
+  },
+  "classification": {
+    "document_type": "resume",
+    "reason": "按手机号/邮箱合并的候选人"
+  },
+  "structured_data": {
+    "base_info": {
+      "full_name": "zhu minfei",
+      "gender": "女",
+      "age": "26",
+      "birth_date": "1989年03月01日",
+      "birth_year": "1989",
+      "marital_status": "未婚",
+      "children_status": "",
+      "political_status": "无党派人士",
+      "height_cm": "",
+      "weight_kg": "",
+      "household_registration": "上海",
+      "address": "上海",
+      "postal_code": "",
+      "platform_from": "智联招聘",
+      "platform_resume_id": "",
+      "phone": "13671957602",
+      "email": "maki0307@126.com",
+      "city": "上海市",
+      "nationality": "中国",
+      "pr": "性格开朗、稳重、幽默,有活力,待人热情、真诚。\n工作认真负责,积极主动,能吃苦耐劳,自信、乐观。\n有较高的专业素养和技能,英语口语流利,能用日语进行日常沟通。\n有较强的沟通能力和团体协作精神,能迅速的适应各种环境并融入其中。"
+    },
+    "expected_info": {
+      "expected_city": "上海",
+      "expected_position": "市场调研与分析、咨询项目管理、情报信息分析、英语翻译、日语翻译",
+      "expected_salary": "8001-10000元/月",
+      "expected_annual_salary_min": "",
+      "expected_annual_salary_max": "",
+      "expected_industry": "互联网/电子商务、基金/证券/期货/投资",
+      "expected_employment_type": "全职",
+      "expected_start_date": "我目前在职,正考虑换个新环境(如有合适的工作机会,到岗时间一个月左右)"
+    },
+    "current_info": {
+      "company_name": "",
+      "company_employees": "",
+      "company_industry": "",
+      "position": "",
+      "position_type": "",
+      "position_salary": "",
+      "position_dept": "",
+      "position_report_to": "",
+      "position_subordinate": "",
+      "employment_type": "全职",
+      "annual_salary_min": "",
+      "annual_salary_max": "",
+      "status": "",
+      "position_start": "",
+      "position_resigned": ""
+    },
+    "education_info": {
+      "school_name": "上海外国语大学",
+      "school_major_name": "英语",
+      "school_degree_type": "本科",
+      "school_degree_rank": "4",
+      "school_education_type": "",
+      "school_start_ym": "2007年06月01日",
+      "school_end_ym": "2011年06月01日"
+    },
+    "resumes": [
+      {
+        "resume_languge": "zh",
+        "base_info": {
+          "full_name": "zhu minfei",
+          "gender": "女",
+          "age": "26",
+          "birth_date": "1989年03月01日",
+          "birth_year": "1989",
+          "marital_status": "未婚",
+          "children_status": "",
+          "political_status": "无党派人士",
+          "height_cm": "",
+          "weight_kg": "",
+          "household_registration": "上海",
+          "address": "上海",
+          "postal_code": "",
+          "platform_from": "智联招聘",
+          "platform_resume_id": "",
+          "phone": "13671957602",
+          "email": "maki0307@126.com",
+          "city": "上海市",
+          "nationality": "中国",
+          "pr": "性格开朗、稳重、幽默,有活力,待人热情、真诚。\n工作认真负责,积极主动,能吃苦耐劳,自信、乐观。\n有较高的专业素养和技能,英语口语流利,能用日语进行日常沟通。\n有较强的沟通能力和团体协作精神,能迅速的适应各种环境并融入其中。"
+        },
+        "expected_list": [
+          {
+            "expected_city": "上海",
+            "expected_position": "市场调研与分析、咨询项目管理、情报信息分析、英语翻译、日语翻译",
+            "expected_salary": "8001-10000元/月",
+            "expected_annual_salary_min": "",
+            "expected_annual_salary_max": "",
+            "expected_industry": "互联网/电子商务、基金/证券/期货/投资",
+            "expected_employment_type": "全职",
+            "expected_start_date": "我目前在职,正考虑换个新环境(如有合适的工作机会,到岗时间一个月左右)"
+          }
+        ],
+        "work_experiences": [],
+        "education_list": [
+          {
+            "school_name": "上海外国语大学",
+            "school_major_name": "英语",
+            "school_degree_type": "本科",
+            "school_degree_rank": "4",
+            "school_education_type": "",
+            "school_start_ym": "2007年06月01日",
+            "school_end_ym": "2011年06月01日"
+          }
+        ],
+        "certificate_list": [
+          {
+            "certificate_name": "中级口译证书",
+            "certificate_type": "",
+            "certificate_time": "2010年06月01日"
+          },
+          {
+            "certificate_name": "英语专业四级",
+            "certificate_type": "",
+            "certificate_time": "2009年04月01日"
+          },
+          {
+            "certificate_name": "日语二级证书",
+            "certificate_type": "",
+            "certificate_time": "2010年06月01日"
+          },
+          {
+            "certificate_name": "高级口译证书",
+            "certificate_type": "",
+            "certificate_time": "2011年03月01日"
+          },
+          {
+            "certificate_name": "英语专业八级",
+            "certificate_type": "",
+            "certificate_time": "2011年03月01日"
+          }
+        ],
+        "language_list": [
+          {
+            "language_name": "英语",
+            "language_level": "读写能力精通 | 听说能力精通",
+            "language_certificate": "",
+            "language_certificate_time": ""
+          },
+          {
+            "language_name": "日语",
+            "language_level": "读写能力一般 | 听说能力良好",
+            "language_certificate": "",
+            "language_certificate_time": ""
+          }
+        ],
+        "skills_list": [
+          {
+            "skill_name": "一级",
+            "skill_level": "良好 | 12个月"
+          }
+        ],
+        "training_list": [],
+        "project_list": [
+          {
+            "sequence_no": 1,
+            "fingerprint": "",
+            "project_name": "2015亚洲钢铁论坛 韩国济州召开",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2015年09月01日",
+            "end_ym": "2015年10月01日",
+            "description": "",
+            "responsibilities": "中方总协调,三方活动正在筹备中",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 2,
+            "fingerprint": "",
+            "project_name": "印尼雅加达商务考察",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2015年05月01日",
+            "end_ym": "2015年06月01日",
+            "description": "",
+            "responsibilities": "商务陪同",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 3,
+            "fingerprint": "",
+            "project_name": "中日韩亚洲钢铁论坛",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2014年08月01日",
+            "end_ym": "2014年11月01日",
+            "description": "项目联系,会议日程策划。\n期间包括:和高级演讲嘉宾进行联系,会议topic制定,发送大使馆签证邀请函,嘉宾到后亲自接机,会展Booth状况进展跟进,邀请会议同传等。",
+            "responsibilities": "和日韩合作方联系会展会议业务,成功举办中日韩亚洲钢铁论坛,担任总策划一职。",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 4,
+            "fingerprint": "",
+            "project_name": "上海钢联电子商务股份有限公司 海外部",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2011年04月01日",
+            "end_ym": "",
+            "description": "",
+            "responsibilities": "英日翻译分析\n具有英语专业八级、高级口译(口试、笔试)、日语2级证书,英语口语纯正、流利。\n1. 中译英:采编翻译国内大宗商品行业新闻、下游产业新闻、宏观财经新闻。\n2. 日译中:收集日本行业报告翻译成中文,并结合中国行业情况撰写分析报告。\n3. 彭博社、路透社等海外媒体来公司进行行业调研、访问,担任公司首席专业翻译;是海外客户开展行业调研的随同翻译。\n市场专员\n1.通过电话、邮件等方式挖掘海外潜在客户的需求(全英语、日语交流),使其成为公司的付费会员;负责回答网站客户的问题,包括数据信息、宏观走势预判等。 此外还包含媒体合作,Facebook推广,撮合交易等。\n2、涉外会展策划\n负责公司涉外会议、论坛的策划与联络,主要是中日韩钢铁行业高层论坛的筹划联络,包括咨询服务、商务服务、交通服务、广告服务、进场服务等。",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 5,
+            "fingerprint": "",
+            "project_name": "百思买(中国)总部",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2010年07月01日",
+            "end_ym": "",
+            "description": "",
+            "responsibilities": "1、百思买新店开张手册的翻译:负责手册主要部份的翻译及相关部门递交翻译稿的审核及统稿;与外籍主管积极沟通,熟悉公司新店开张总体方案设计,了解其流程及要求。\n2、会议记录:参加公司领导层会议记录(英语环境),速度及准确性得到主管肯定。\n3、各种文件、资料的中英文翻译。\n4、运用办公软件对资料进行整理、制作图表及PPT(英文)。\n5、下门店调研:对百思买在上海的所有门店进行调研,了解相关项目进展情况,提出整改意见供领导参考。",
+            "achievements": "",
+            "keywords": ""
+          }
+        ],
+        "communication_list": []
+      }
+    ]
+  },
+  "raw_text": "简历名称：\n英语精通（高口+专八），口语流利，日语熟练\n智联招聘\n期望从事职业：\n市场调研与分析、咨询项目管理、情报信息分析、英语翻译、日语翻...\n简历更新时间：\n2015.09.02\nID\n：\nJR298742639R90250000000\nzhu minfei\n手机：\n13671957602\n女    26岁(1989年3月)    本科    未婚\n现居住地：上海 | 户口：上海 | 无党派人士\n身份证：310110198903072046\n手机：13671957602\nE-mail：\nMaki0307@126.com\n求职意向\n期望工作地区：\n上海\n期望月薪：\n8001-10000元/月\n目前状况：\n我目前在职，正考虑换个新环境（如有合适的工作机会，到岗时间一个月左右）\n期望工作性质：\n全职\n期望从事职业：\n市场调研与分析、咨询项目管理、情报信息分析、英语翻译、日语翻译\n期望从事行业：\n互联网/电子商务、基金/证券/期货/投资\n自我评价\n性格开朗、稳重、幽默，有活力，待人热情、真诚。\n工作认真负责，积极主动，能吃苦耐劳，自信、乐观。\n有较高的专业素养和技能，英语口语流利，能用日语进行日常沟通。\n有较强的沟通能力和团体协作精神，能迅速的适应各种环境并融入其中。\n项目经历\n2015.09 - 2015.10  2015亚洲钢铁论坛 韩国济州召开\n责任描述：\n中方总协调，三方活动正在筹备中\n2015.05 - 2015.06  印尼雅加达商务考察\n责任描述：\n商务陪同\n2014.08 - 2014.11  中日韩亚洲钢铁论坛\n责任描述：\n和日韩合作方联系会展会议业务，成功举办中日韩亚洲钢铁论坛，担任总策划一职。\n项目描述：\n项目联系，会议日程策划。\n期间包括：和高级演讲嘉宾进行联系，会议topic制定，发送大使馆签证邀请函，嘉宾到后亲自接机，会展Booth状况进展跟进，邀请会议同传等。\n2011.04 - 至今  上海钢联电子商务股份有限公司 海外部\n责任描述：\n英日翻译分析\n具有英语专业八级、高级口译（口试、笔试）、日语2级证书，英语口语纯正、流利。\n1. 中译英：采编翻译国内大宗商品行业新闻、下游产业新闻、宏观财经新闻。\n2. 日译中：收集日本行业报告翻译成中文，并结合中国行业情况撰写分析报告。\n3. 彭博社、路透社等海外媒体来公司进行行业调研、访问，担任公司首席专业翻译；是海外客户开展行业调研的随同翻译。\n市场专员\n1.通过电话、邮件等方式挖掘海外潜在客户的需求（全英语、日语交流），使其成为公司的付费会员；负责回答网站客户的问题，包括数据信息、宏观走势预判等。 此外还包含媒体合作，Facebook推广，撮合交易等。\n2、涉外会展策划\n负责公司涉外会议、论坛的策划与联络，主要是中日韩钢铁行业高层论坛的筹划联络，包括咨询服务、商务服务、交通服务、广告服务、进场服务等。\n2010.07 - 至今  百思买（中国）总部\n责任描述：\n1、百思买新店开张手册的翻译：负责手册主要部份的翻译及相关部门递交翻译稿的审核及统稿；与外籍主管积极沟通，熟悉公司新店开张总体方案设计，了解其流程及要求。\n2、会议记录：参加公司领导层会议记录（英语环境），速度及准确性得到主管肯定。\n3、各种文件、资料的中英文翻译。\n4、运用办公软件对资料进行整理、制作图表及PPT（英文）。\n5、下门店调研：对百思买在上海的所有门店进行调研，了解相关项目进展情况，提出整改意见供领导参考。\n教育经历\n2007.06 - 2011.06  上海外国语大学  英语  本科\n证书\n2010.06  中级口译证书\n2009.04  英语专业四级\n2010.06  日语二级证书\n2011.03  高级口译证书\n证书说明：\n笔试通过\n2011.03  英语专业八级\n2011.10  高级口译证书\n证书说明：\n笔试与口试通过\n语言能力\n英语：读写能力精通 | 听说能力精通\n日语：读写能力一般 | 听说能力良好\n专业技能\n一级：良好 | 12个月",
+  "quality": {
+    "full_name": "zhu minfei",
+    "has_work": false,
+    "work_count": 0,
+    "has_education": true,
+    "education_count": 1,
+    "languages": [
+      "zh"
+    ],
+    "raw_text_length": 1676
+  },
+  "merge_info": {
+    "group_id": "eeadc90c88dad258",
+    "rule_version": "merge-v3.0-contact-key",
+    "output_filename": "zhu minfei_13671957602.json",
+    "name_status": "valid",
+    "canonical_name": "zhu minfei",
+    "english_name": "zhu minfei",
+    "primary_phone": "13671957602",
+    "primary_email": "maki0307@126.com",
+    "other_phones": [],
+    "other_emails": [],
+    "landlines": [],
+    "shared_contacts_ignored": [],
+    "needs_translation": false,
+    "v2_count": 2,
+    "v1_count": 0,
+    "language_sources": {
+      "zh": [
+        0,
+        1
+      ]
+    },
+    "translated_from": "",
+    "name_note": "",
+    "conflict_count": 1,
+    "field_issue_count": 3,
+    "name_linked_sources": [],
+    "output_category": "formal",
+    "high_issue_count": 0
+  }
+}

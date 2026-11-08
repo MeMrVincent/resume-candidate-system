@@ -1,0 +1,275 @@
+{
+  "schema_version": "resume-merge-v3.0",
+  "record_id": "merge-v3-118919fd24e780b6",
+  "source": {
+    "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\孙晓丹\\sxd\\2018 08简历\\厦门\\0410\\艾福强.docx",
+    "html_path": "",
+    "source_count": 1,
+    "source_files": [
+      {
+        "index": 0,
+        "version": "v2",
+        "json_path": "E:\\resume-system\\complete-v2-temp\\艾福强_18965858154.json",
+        "sha256": "0ad4e46cb9120562a8761dc0721a56e950743da1c8538e855a1ad35f8a80d04e",
+        "duplicate_paths": [
+          "E:\\resume-system\\complete-v1\\艾福强_18965858154.json"
+        ],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\孙晓丹\\sxd\\2018 08简历\\厦门\\0410\\艾福强.docx",
+        "html_path": "",
+        "resume_updated_date": "2019-04-10 15:24:59",
+        "languages": [
+          "zh"
+        ]
+      }
+    ]
+  },
+  "dates": {
+    "resume_updated_date": "2019-04-10 15:24:59",
+    "resume_download_date": "2019-04-10 15:24:59",
+    "resume_updated_date_source": "",
+    "resume_download_date_source": "",
+    "sys_created_date": "2026-08-02T21:39:57+09:00",
+    "sys_updated_date": "2026-10-12T00:00:00+09:00"
+  },
+  "extraction": {
+    "merger": "claude_merge.v3.py",
+    "rule_version": "merge-v3.0-contact-key"
+  },
+  "classification": {
+    "document_type": "resume",
+    "reason": "按手机号/邮箱合并的候选人"
+  },
+  "structured_data": {
+    "base_info": {
+      "full_name": "艾福强",
+      "gender": "男",
+      "age": "26",
+      "birth_date": "1992年05月29日",
+      "birth_year": "1992",
+      "marital_status": "未婚",
+      "children_status": "",
+      "political_status": "",
+      "height_cm": "",
+      "weight_kg": "",
+      "household_registration": "泉州",
+      "address": "厦门",
+      "postal_code": "",
+      "platform_from": "前程无忧(51job)",
+      "platform_resume_id": "611618177",
+      "phone": "18965858154",
+      "email": "944617146@qq.com",
+      "city": "厦门市",
+      "nationality": "中国",
+      "pr": "性格乐观,积极进取,善于沟通,爱岗敬业,服从领导,工作条理清晰,具备良好的沟通和组织协调能力,较强的分析和解决问题的能力,责任心强,谨慎仔细,积极主动,抗压性强。学习能力强,有团队精神,能承受工作压力,适应出差和加班。"
+    },
+    "expected_info": {
+      "expected_city": "厦门",
+      "expected_position": "贸易/外贸专员/助理 采购员 采购",
+      "expected_salary": "8000-9999元/月",
+      "expected_annual_salary_min": "",
+      "expected_annual_salary_max": "",
+      "expected_industry": "贸易/进出口 电子技术/半导体/集成电路 汽车及零配件 电气/电力/水利",
+      "expected_employment_type": "全职",
+      "expected_start_date": "1个月内"
+    },
+    "current_info": {
+      "company_name": "山洋电气贸易深圳有限公司",
+      "company_employees": "50-150人",
+      "company_industry": "仪器仪表/工业自动化",
+      "position": "外贸采购员",
+      "position_type": "",
+      "position_salary": "",
+      "position_dept": "国际调达部",
+      "position_report_to": "",
+      "position_subordinate": "",
+      "employment_type": "全职",
+      "annual_salary_min": "",
+      "annual_salary_max": "",
+      "status": "离职",
+      "position_start": "2017年04月01日",
+      "position_resigned": "2019年01月01日"
+    },
+    "education_info": {
+      "school_name": "厦门大学嘉庚学院",
+      "school_major_name": "日语",
+      "school_degree_type": "本科",
+      "school_degree_rank": "4",
+      "school_education_type": "",
+      "school_start_ym": "2011年09月01日",
+      "school_end_ym": "2015年07月01日"
+    },
+    "resumes": [
+      {
+        "resume_languge": "zh",
+        "base_info": {
+          "full_name": "艾福强",
+          "gender": "男",
+          "age": "26",
+          "birth_date": "1992年05月29日",
+          "birth_year": "1992",
+          "marital_status": "未婚",
+          "children_status": "",
+          "political_status": "",
+          "height_cm": "",
+          "weight_kg": "",
+          "household_registration": "泉州",
+          "address": "厦门",
+          "postal_code": "",
+          "platform_from": "前程无忧(51job)",
+          "platform_resume_id": "611618177",
+          "phone": "18965858154",
+          "email": "944617146@qq.com",
+          "city": "厦门市",
+          "nationality": "中国",
+          "pr": "性格乐观,积极进取,善于沟通,爱岗敬业,服从领导,工作条理清晰,具备良好的沟通和组织协调能力,较强的分析和解决问题的能力,责任心强,谨慎仔细,积极主动,抗压性强。学习能力强,有团队精神,能承受工作压力,适应出差和加班。"
+        },
+        "expected_list": [
+          {
+            "expected_city": "厦门",
+            "expected_position": "贸易/外贸专员/助理 采购员 采购",
+            "expected_salary": "8000-9999元/月",
+            "expected_annual_salary_min": "",
+            "expected_annual_salary_max": "",
+            "expected_industry": "贸易/进出口 电子技术/半导体/集成电路 汽车及零配件 电气/电力/水利",
+            "expected_employment_type": "全职",
+            "expected_start_date": "1个月内"
+          }
+        ],
+        "work_experiences": [
+          {
+            "company_name": "山洋电气贸易深圳有限公司",
+            "company_employees": "50-150人",
+            "company_industry": "仪器仪表/工业自动化",
+            "position": "外贸采购员",
+            "position_type": "",
+            "position_salary": "",
+            "position_dept": "国际调达部",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2017年04月01日",
+            "position_resigned": "2019年01月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "1)报价单的作成\n2)样品的手配以及跟进\n3)报价中的案件以及样品评价到量产案件的跟进\n4)及时向客户请求样品以及量产出货的应收款项\n5)根据订单情况定期预测营业额业绩和预算\n6)定期了解客户的订单状况和FC\n7)定期访问现行供应商,实时掌握工厂的4M1E状况\n8) 根据需要开发新供应商,进行多家采购,降低采购风险和成本\n9)协助品管处理投诉和退货问题\n10)对应短纳期产品先行手配材料等",
+            "position_achievements": ""
+          },
+          {
+            "company_name": "深圳市爱依雅商贸有限公司",
+            "company_employees": "少于50人",
+            "company_industry": "贸易/进出口",
+            "position": "采购员",
+            "position_type": "",
+            "position_salary": "",
+            "position_dept": "采购",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2016年02月01日",
+            "position_resigned": "2017年04月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "1,通过网络平台以及工厂拜访,开发新供应商和采购新产品。\n2,对既有的供应商进行管理,交货期跟进,产品检查\n3,熟悉外贸业务操作流程\n4,熟练操作OFFICE办公软件\n5,与日本本部进行业务对应\n6,跟踪订单情况,对订单运作流程出现异常,及时与相关人员沟通,寻找解决方案\n7,生产文件以及日本亚马逊乐天雅虎产品翻译",
+            "position_achievements": ""
+          },
+          {
+            "company_name": "白井电子商贸深圳有限公司",
+            "company_employees": "50-150人",
+            "company_industry": "电子技术/半导体/集成电路",
+            "position": "质量管理/测试工程师(QA/QC工程师)",
+            "position_type": "",
+            "position_salary": "",
+            "position_dept": "品质部",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2015年02月01日",
+            "position_resigned": "2016年02月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "1)客户来社监察对应(现场翻译,品质问题应答,现场指摘事项改善应对等)\n2)信息反馈,实物确认,选别联络,不良报告书作成,参加品质会议等\n3)生产技术资料翻译,协助上司作成资料等\n4)特采申请等(※重大投诉的情况需要现场再现实验指导)",
+            "position_achievements": ""
+          }
+        ],
+        "education_list": [
+          {
+            "school_name": "厦门大学嘉庚学院",
+            "school_major_name": "日语",
+            "school_degree_type": "本科",
+            "school_degree_rank": "4",
+            "school_education_type": "",
+            "school_start_ym": "2011年09月01日",
+            "school_end_ym": "2015年07月01日"
+          }
+        ],
+        "certificate_list": [],
+        "language_list": [],
+        "skills_list": [],
+        "training_list": [],
+        "project_list": [
+          {
+            "sequence_no": 1,
+            "fingerprint": "",
+            "project_name": "日语系学生会宣传部干事",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2011年11月01日",
+            "end_ym": "2013年11月01日",
+            "description": "职务描述:\t1,负责系活动的电子海报制作\n2,其他等\n技能特长 (包括IT技能、语言能力、证书、成绩、培训经历)\n技能/语言 MS Excel\t熟练\t英语\t良好 MS Powerpoint\t熟练\tMS WORD\t熟练 韩语/朝鲜语\t良好\t日语\t熟练\n证书 2014/11\t驾驶执照 (90)  2014/1\t日语一级证书 (104)  2012/12\t大学英语四级 (435)\n附加信息 其他 主题:\t兴趣爱好 主题描述:\t玩实况足球,数码爱好者",
+            "responsibilities": "",
+            "achievements": "",
+            "keywords": "在校实践"
+          }
+        ],
+        "communication_list": []
+      }
+    ]
+  },
+  "raw_text": "ID:611618177\tID:611618177 艾福强ID:1568475108目前正在找工作18965858154 944617146@qq.com\t下载简历   目前正在找工作\t********8154\t********@qq.com\t剩余下载数：50  男|26岁（1992年5月29日 ） |现居住 厦门|4年工作经验\n最近工作 （1年 9个月 ）  职　位：\t外贸采购员 公　司：\t山洋电气贸易深圳有限公司 行　业：\t仪器仪表/工业自动化\t最高学历/学位  专　业：\t日语 学　校：\t厦门大学嘉庚学院 学历/学位：\t本科\n个人信息 户口/国籍：\t泉州 婚姻状况：\t未婚 求职意向 关键字：\t供应商管理 外贸跟单 采购跟单 期望薪资：\t8000-9999元/月\t地点：\t厦门 职能/职位：\t贸易/外贸专员/助理  采购员   采购\t行业：\t贸易/进出口 电子技术/半导体/集成电路 汽车及零配件 电气/电力/水利 到岗时间：\t1个月内\t工作类型：\t全职 自我评价：\t性格乐观，积极进取，善于沟通，爱岗敬业，服从领导，工作条理清晰，具备良好的沟通和组织协调能力，较强的分析和解决问题的能力，责任心强，谨慎仔细，积极主动，抗压性强。学习能力强，有团队精神，能承受工作压力，适应出差和加班。 工作经验 2017/4-2019/1\t山洋电气贸易深圳有限公司 (1年 9个月 )  \t仪器仪表/工业自动化|50-150人|外资(非欧美) 国际调达部\t外贸采购员 工作描述：\t1）报价单的作成\n2）样品的手配以及跟进\n3）报价中的案件以及样品评价到量产案件的跟进\n4）及时向客户请求样品以及量产出货的应收款项\n5）根据订单情况定期预测营业额业绩和预算\n6）定期了解客户的订单状况和FC\n7）定期访问现行供应商,实时掌握工厂的4M1E状况\n8) 根据需要开发新供应商，进行多家采购，降低采购风险和成本\n9）协助品管处理投诉和退货问题\n10）对应短纳期产品先行手配材料等 2016/2-2017/4\t深圳市爱依雅商贸有限公司 (1年 2个月 )  \t贸易/进出口|少于50人|外资(非欧美) 采购\t采购员 工作描述：\t1，通过网络平台以及工厂拜访，开发新供应商和采购新产品。\n2，对既有的供应商进行管理，交货期跟进，产品检查\n3，熟悉外贸业务操作流程\n4，熟练操作OFFICE办公软件\n5，与日本本部进行业务对应\n6，跟踪订单情况，对订单运作流程出现异常，及时与相关人员沟通，寻找解决方案\n7，生产文件以及日本亚马逊乐天雅虎产品翻译 2015/2-2016/2\t白井电子商贸深圳有限公司 (1年 )  \t电子技术/半导体/集成电路|50-150人|外资(非欧美) 品质部\t质量管理/测试工程师(QA/QC工程师) 工作描述：\t1）客户来社监察对应（现场翻译，品质问题应答，现场指摘事项改善应对等）\n2）信息反馈，实物确认，选别联络，不良报告书作成，参加品质会议等\n3）生产技术资料翻译，协助上司作成资料等\n4）特采申请等（※重大投诉的情况需要现场再现实验指导） 教育经历 2011/9-2015/7\t厦门大学嘉庚学院 本科|日语 专业描述：\t主修课程：高级日语，大学英语，韩国语，数据库应用，HTML语言，C语言 在校情况 校内荣誉 2012/7\t厦门大学嘉庚学院日语配音一等奖（团体） （院校级）  2012/4\t厦门大学嘉庚学院优秀学生奖学金二等奖学金 （院校级）  校内职务 2011/11-2013/11\t日语系学生会宣传部干事 职务描述：\t1，负责系活动的电子海报制作\n2，其他等 技能特长 （包括IT技能、语言能力、证书、成绩、培训经历） 技能/语言 MS Excel\t熟练\t英语\t良好 MS Powerpoint\t熟练\tMS WORD\t熟练 韩语/朝鲜语\t良好\t日语\t熟练 证书 2014/11\t驾驶执照 （90）  2014/1\t日语一级证书 （104）  2012/12\t大学英语四级 （435）  附加信息 其他 主题：\t兴趣爱好 主题描述：\t玩实况足球，数码爱好者",
+  "quality": {
+    "full_name": "艾福强",
+    "has_work": true,
+    "work_count": 3,
+    "has_education": true,
+    "education_count": 1,
+    "languages": [
+      "zh"
+    ],
+    "raw_text_length": 1691
+  },
+  "merge_info": {
+    "group_id": "118919fd24e780b6",
+    "rule_version": "merge-v3.0-contact-key",
+    "output_filename": "艾福强_18965858154.json",
+    "name_status": "valid",
+    "canonical_name": "艾福强",
+    "english_name": "",
+    "primary_phone": "18965858154",
+    "primary_email": "944617146@qq.com",
+    "other_phones": [],
+    "other_emails": [],
+    "landlines": [],
+    "shared_contacts_ignored": [],
+    "needs_translation": false,
+    "v2_count": 1,
+    "v1_count": 0,
+    "language_sources": {
+      "zh": [
+        0
+      ]
+    },
+    "translated_from": "",
+    "name_note": "",
+    "conflict_count": 0,
+    "field_issue_count": 0,
+    "name_linked_sources": [],
+    "output_category": "formal",
+    "high_issue_count": 0
+  }
+}

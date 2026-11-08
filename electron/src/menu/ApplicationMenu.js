@@ -1,65 +1,58 @@
 const { Menu, app } = require('electron');
 
-/**
- * 桌面客户端系统菜单配置（文件、编辑、视图、窗口、帮助）。
- *
- * EN: Desktop application menu template (File, Edit, View, Window, Help).
- *
- * JA: デスクトップアプリのシステムメニュー設定（ファイル、編集、表示、ウィンドウ、ヘルプ）。
- */
 function createApplicationMenu() {
   const template = [
     {
-      label: 'File',
+      label: '文件',
       submenu: [
-        { label: 'Exit', role: 'quit', accelerator: 'Alt+F4' },
+        { label: '退出', role: 'quit', accelerator: 'Alt+F4' },
       ],
     },
     {
-      label: 'Edit',
+      label: '编辑',
       submenu: [
-        { label: 'Undo', role: 'undo' },
-        { label: 'Redo', role: 'redo' },
+        { label: '撤销', role: 'undo' },
+        { label: '重做', role: 'redo' },
         { type: 'separator' },
-        { label: 'Cut', role: 'cut' },
-        { label: 'Copy', role: 'copy' },
-        { label: 'Paste', role: 'paste' },
-        { label: 'Delete', role: 'delete' },
+        { label: '剪切', role: 'cut' },
+        { label: '复制', role: 'copy' },
+        { label: '粘贴', role: 'paste' },
+        { label: '删除', role: 'delete' },
         { type: 'separator' },
-        { label: 'Select All', role: 'selectAll' },
+        { label: '全选', role: 'selectAll' },
       ],
     },
     {
-      label: 'View',
+      label: '视图',
       submenu: [
-        { label: 'Reload', role: 'reload' },
-        { label: 'Force Reload', role: 'forceReload' },
-        { label: 'Toggle Developer Tools', role: 'toggleDevTools' },
+        { label: '重新加载', role: 'reload' },
+        { label: '强制重新加载', role: 'forceReload' },
+        { label: '开发者工具', role: 'toggleDevTools' },
         { type: 'separator' },
-        { label: 'Actual Size', role: 'resetZoom' },
-        { label: 'Zoom In', role: 'zoomIn' },
-        { label: 'Zoom Out', role: 'zoomOut' },
+        { label: '恢复默认缩放', role: 'resetZoom' },
+        { label: '放大', role: 'zoomIn' },
+        { label: '缩小', role: 'zoomOut' },
         { type: 'separator' },
-        { label: 'Toggle Full Screen', role: 'togglefullscreen' },
+        { label: '切换全屏', role: 'togglefullscreen' },
       ],
     },
     {
-      label: 'Window',
+      label: '窗口',
       submenu: [
-        { label: 'Minimize', role: 'minimize' },
-        { label: 'Close', role: 'close' },
+        { label: '最小化', role: 'minimize' },
+        { label: '关闭窗口', role: 'close' },
       ],
     },
     {
-      label: 'Help',
+      label: '帮助',
       submenu: [
         {
-          label: 'About Recruitment System',
+          label: '关于猎头招聘管理系统',
           click: () => {
             app.setAboutPanelOptions({
-              applicationName: 'Recruitment CRM / ATS',
+              applicationName: '猎头招聘管理系统',
               applicationVersion: app.getVersion(),
-              copyright: 'Local Candidate CRM / ATS',
+              copyright: '本地候选人 CRM / ATS',
             });
             app.showAboutPanel();
           },

@@ -1,7 +1,7 @@
 {
-  "name": "recruitment-system-frontend",
-  "version": "1.0.0",
-  "description": "猎头招聘管理系统 - Frontend (Vue 3 + Webpack 5 + JavaScript)",
+  "name": "recruitment-system-v2-frontend",
+  "version": "2.0.0",
+  "description": "猎头招聘管理系统 V2 - Frontend (Vue 3 + Element Plus + Webpack 5 + JavaScript)",
   "author": "Vincent",
   "license": "MIT",
   "scripts": {
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
+    "ajv": "^8.20.0",
     "element-plus": "^2.14.4",
     "vue": "^3.5.41",
     "vue-i18n": "^11.4.8",

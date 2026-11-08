@@ -1,0 +1,28 @@
+{
+  "candidateImport": {
+    "title": "候选人导入",
+    "hint": "选择 JSON 文件或存放 JSON 的文件夹（结构与批量导入的 v3 简历 JSON 相同）。已导入过的相同内容会自动跳过。",
+    "pickFiles": "选择文件",
+    "pickDirectory": "选择文件夹",
+    "startImport": "开始导入",
+    "noSelection": "尚未选择文件或文件夹",
+    "resultSummary": "新增 {created}，更新 {updated}，跳过 {skipped}，失败 {failed}，警告 {warnings}",
+    "importDone": "导入完成",
+    "history": "导入历史",
+    "batchNo": "批次",
+    "source": "来源",
+    "totalFiles": "文件数",
+    "created": "新增",
+    "updated": "更新",
+    "skipped": "跳过",
+    "failed": "失败",
+    "warnings": "警告",
+    "startedAt": "开始时间",
+    "viewIssues": "查看警告",
+    "issueTitle": "批次 #{batchId} 警告/错误",
+    "fileName": "文件名",
+    "severity": "级别",
+    "issueCode": "类型",
+    "message": "说明"
+  }
+}

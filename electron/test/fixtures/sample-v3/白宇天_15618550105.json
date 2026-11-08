@@ -1,0 +1,596 @@
+{
+  "schema_version": "resume-merge-v3.0",
+  "record_id": "merge-v3-dafa7dd31e2a0c78",
+  "source": {
+    "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\胖子\\智联\\白宇天 N1 上海人 2014应届\\智联招聘_白宇天_中文_20141203_32161144.doc",
+    "html_path": "",
+    "source_count": 2,
+    "source_files": [
+      {
+        "index": 0,
+        "version": "v2",
+        "json_path": "E:\\resume-system\\complete-v2-temp\\白宇天_15618550105.json",
+        "sha256": "ee21e3018e6eb42ba9887db1b1fb51e82d46a31ae88ece377101e3f13e79515c",
+        "duplicate_paths": [
+          "E:\\resume-system\\complete-v1\\白宇天_15618550105.json"
+        ],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\胖子\\智联\\白宇天 N1 上海人 2014应届\\智联招聘_白宇天_中文_20141203_32161144.doc",
+        "html_path": "",
+        "resume_updated_date": "2014-12-03 11:46:10",
+        "languages": [
+          "zh",
+          "jp"
+        ]
+      },
+      {
+        "index": 1,
+        "version": "v2",
+        "json_path": "E:\\resume-system\\complete-v2-temp\\白宇天_15618550105_2.json",
+        "sha256": "98074c5f149daffd62175404ef1c724d3ccc0908c95e7b966249992879663c56",
+        "duplicate_paths": [],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\老婆资料\\e盘简历\\智联\\白宇天\\智联招聘_白宇天_中文_20141203_32161144.doc",
+        "html_path": "E:\\resume-system\\_resume_qa\\chinese_japanese_parser_final185_html\\智联招聘_白宇天_中文_20141203_32161144_5f0e440c82e5.html",
+        "resume_updated_date": "2014-12-02 00:00:00",
+        "languages": [
+          "zh"
+        ]
+      }
+    ]
+  },
+  "dates": {
+    "resume_updated_date": "2014-12-03 11:46:10",
+    "resume_download_date": "2014-12-02 00:00:00",
+    "resume_updated_date_source": "",
+    "resume_download_date_source": "",
+    "sys_created_date": "2026-08-01T10:19:00+09:00",
+    "sys_updated_date": "2026-10-12T00:00:00+09:00"
+  },
+  "extraction": {
+    "merger": "claude_merge.v3.py",
+    "rule_version": "merge-v3.0-contact-key"
+  },
+  "classification": {
+    "document_type": "resume",
+    "reason": "按手机号/邮箱合并的候选人"
+  },
+  "structured_data": {
+    "base_info": {
+      "full_name": "白宇天",
+      "gender": "男",
+      "age": "22",
+      "birth_date": "1992年08月01日",
+      "birth_year": "1992",
+      "marital_status": "未婚",
+      "children_status": "",
+      "political_status": "群众",
+      "height_cm": "",
+      "weight_kg": "",
+      "household_registration": "上海",
+      "address": "上海 徐汇区",
+      "postal_code": "",
+      "platform_from": "智联招聘",
+      "platform_resume_id": "20141203",
+      "phone": "15618550105",
+      "email": "fardott@gmail.com",
+      "city": "上海市",
+      "nationality": "中国",
+      "pr": "本人参与日本动画字幕无偿制作、日本游戏汉化的工作,长年接触日本游戏以及日本网络文化,对日语以及日本游戏有深刻的理解。本人相信有能力为贵公司在国内的游戏本地化工作献出一份力量。 另外,本人在亦接受了Adobe Photoshop、Adobe Illustrator等多媒体编辑方面的培训,平日中也经常运用,且接受过美术及设计方面的课程,相信同时能够为贵公司的美工方面提供一份力量。"
+    },
+    "expected_info": {
+      "expected_city": "上海、苏州",
+      "expected_position": "日语翻译",
+      "expected_salary": "4001-6000元/月",
+      "expected_annual_salary_min": "",
+      "expected_annual_salary_max": "",
+      "expected_industry": "零售/批发、贸易/进出口、快速消费品(食品/饮料/烟酒/日化)、耐用消费品(服饰/纺织/皮革/家具/家电)、网络游戏、计算机软件、互联网/电子商务、礼品/玩具/工艺美术/收藏品/奢侈品、政府/公共事业/非盈利机构、环保、教育/培训/院校",
+      "expected_employment_type": "全职",
+      "expected_start_date": "我目前处于离职状态,可立即上岗"
+    },
+    "current_info": {
+      "company_name": "意艺居(上海)软件技术有限公司",
+      "company_employees": "",
+      "company_industry": "计算机软件",
+      "position": "日语翻译",
+      "position_type": "",
+      "position_salary": "2001-4000元/月",
+      "position_dept": "",
+      "position_report_to": "",
+      "position_subordinate": "",
+      "employment_type": "全职",
+      "annual_salary_min": "",
+      "annual_salary_max": "",
+      "status": "离职",
+      "position_start": "2014年06月01日",
+      "position_resigned": "2014年09月01日"
+    },
+    "education_info": {
+      "school_name": "上海新侨职业技术学院",
+      "school_major_name": "珠宝首饰工艺及鉴定",
+      "school_degree_type": "大专",
+      "school_degree_rank": "3",
+      "school_education_type": "",
+      "school_start_ym": "2010年09月01日",
+      "school_end_ym": "2014年06月01日"
+    },
+    "resumes": [
+      {
+        "resume_languge": "zh",
+        "base_info": {
+          "full_name": "白宇天",
+          "gender": "男",
+          "age": "22",
+          "birth_date": "1992年08月01日",
+          "birth_year": "1992",
+          "marital_status": "未婚",
+          "children_status": "",
+          "political_status": "群众",
+          "height_cm": "",
+          "weight_kg": "",
+          "household_registration": "上海",
+          "address": "上海 徐汇区",
+          "postal_code": "",
+          "platform_from": "智联招聘",
+          "platform_resume_id": "20141203",
+          "phone": "15618550105",
+          "email": "fardott@gmail.com",
+          "city": "上海市",
+          "nationality": "中国",
+          "pr": "本人参与日本动画字幕无偿制作、日本游戏汉化的工作,长年接触日本游戏以及日本网络文化,对日语以及日本游戏有深刻的理解。本人相信有能力为贵公司在国内的游戏本地化工作献出一份力量。 另外,本人在亦接受了Adobe Photoshop、Adobe Illustrator等多媒体编辑方面的培训,平日中也经常运用,且接受过美术及设计方面的课程,相信同时能够为贵公司的美工方面提供一份力量。"
+        },
+        "expected_list": [
+          {
+            "expected_city": "上海、苏州",
+            "expected_position": "日语翻译",
+            "expected_salary": "4001-6000元/月",
+            "expected_annual_salary_min": "",
+            "expected_annual_salary_max": "",
+            "expected_industry": "零售/批发、贸易/进出口、快速消费品(食品/饮料/烟酒/日化)、耐用消费品(服饰/纺织/皮革/家具/家电)、网络游戏、计算机软件、互联网/电子商务、礼品/玩具/工艺美术/收藏品/奢侈品、政府/公共事业/非盈利机构、环保、教育/培训/院校",
+            "expected_employment_type": "全职",
+            "expected_start_date": "我目前处于离职状态,可立即上岗"
+          }
+        ],
+        "work_experiences": [
+          {
+            "company_name": "意艺居(上海)软件技术有限公司",
+            "company_employees": "",
+            "company_industry": "计算机软件",
+            "position": "日语翻译",
+            "position_type": "",
+            "position_salary": "2001-4000元/月",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2014年06月01日",
+            "position_resigned": "2014年09月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "日语项目助理",
+            "position_achievements": ""
+          },
+          {
+            "company_name": "上海荣颖安防技术设备有限公司",
+            "company_employees": "",
+            "company_industry": "电子技术/半导体/集成电路",
+            "position": "实习生",
+            "position_type": "",
+            "position_salary": "1000-2000元/月",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2013年12月01日",
+            "position_resigned": "2014年03月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "电脑工程师",
+            "position_achievements": ""
+          }
+        ],
+        "education_list": [
+          {
+            "school_name": "上海新侨职业技术学院",
+            "school_major_name": "珠宝首饰工艺及鉴定",
+            "school_degree_type": "大专",
+            "school_degree_rank": "3",
+            "school_education_type": "",
+            "school_start_ym": "2010年09月01日",
+            "school_end_ym": "2014年06月01日"
+          }
+        ],
+        "certificate_list": [
+          {
+            "certificate_name": "日语一级证书",
+            "certificate_type": "",
+            "certificate_time": "2012年01月01日"
+          },
+          {
+            "certificate_name": "大学英语四级",
+            "certificate_type": "",
+            "certificate_time": "2011年06月01日"
+          },
+          {
+            "certificate_name": "多媒体作品制作员中级/四级",
+            "certificate_type": "",
+            "certificate_time": "2009年07月01日"
+          },
+          {
+            "certificate_name": "办公自动化",
+            "certificate_type": "",
+            "certificate_time": "2009年01月01日"
+          },
+          {
+            "certificate_name": "全国计算机等级一级",
+            "certificate_type": "",
+            "certificate_time": "2012年01月01日"
+          }
+        ],
+        "language_list": [
+          {
+            "language_name": "日语",
+            "language_level": "读写能力精通 | 听说能力精通",
+            "language_certificate": "",
+            "language_certificate_time": ""
+          },
+          {
+            "language_name": "英语",
+            "language_level": "读写能力良好 | 听说能力一般",
+            "language_certificate": "",
+            "language_certificate_time": ""
+          }
+        ],
+        "skills_list": [
+          {
+            "skill_name": "Adobe Photoshop",
+            "skill_level": "熟练 | 60个月"
+          },
+          {
+            "skill_name": "EDGE",
+            "skill_level": "精通 | 36个月"
+          },
+          {
+            "skill_name": "Adobe Flash",
+            "skill_level": "熟练 | 72个月"
+          },
+          {
+            "skill_name": "PaintTool SAI",
+            "skill_level": "精通 | 48个月"
+          },
+          {
+            "skill_name": "GoldWave",
+            "skill_level": "良好 | 48个月"
+          },
+          {
+            "skill_name": "Adobe Illustrator",
+            "skill_level": "良好 | 36个月"
+          },
+          {
+            "skill_name": "JCAD",
+            "skill_level": "熟练 | 48个月"
+          },
+          {
+            "skill_name": "Microsoft Word",
+            "skill_level": "熟练 | 120个月"
+          },
+          {
+            "skill_name": "Microsoft Excel",
+            "skill_level": "熟练 | 120个月"
+          },
+          {
+            "skill_name": "Giam",
+            "skill_level": "精通 | 48个月"
+          },
+          {
+            "skill_name": "Microsoft Paint",
+            "skill_level": "精通 | 120个月"
+          },
+          {
+            "skill_name": "Adobe Fireworks",
+            "skill_level": "精通 | 72个月"
+          },
+          {
+            "skill_name": "1bitpaint",
+            "skill_level": "精通 | 12个月"
+          },
+          {
+            "skill_name": "CLIP STUDIO PAINT",
+            "skill_level": "良好 | 12个月"
+          },
+          {
+            "skill_name": "GraphicsGale",
+            "skill_level": "熟练 | 24个月"
+          },
+          {
+            "skill_name": "PictBear",
+            "skill_level": "熟练 | 24个月"
+          },
+          {
+            "skill_name": "GIMP",
+            "skill_level": "熟练 | 36个月"
+          },
+          {
+            "skill_name": "Stirling",
+            "skill_level": "精通 | 48个月"
+          },
+          {
+            "skill_name": "IconEditor LittleCanvas",
+            "skill_level": "精通 | 24个月"
+          },
+          {
+            "skill_name": "アニメーションカーソルエディッタ",
+            "skill_level": "精通 | 24个月"
+          }
+        ],
+        "training_list": [],
+        "project_list": [],
+        "communication_list": []
+      },
+      {
+        "resume_languge": "jp",
+        "base_info": {
+          "full_name": "白宇天",
+          "gender": "男",
+          "age": "22",
+          "birth_date": "1992年08月01日",
+          "birth_year": "1992",
+          "marital_status": "未婚",
+          "children_status": "",
+          "political_status": "群众",
+          "height_cm": "",
+          "weight_kg": "",
+          "household_registration": "上海",
+          "address": "上海 徐匯区",
+          "postal_code": "",
+          "platform_from": "前程无忧(51job)",
+          "platform_resume_id": "20141203",
+          "phone": "15618550105",
+          "email": "fardott@gmail.com",
+          "city": "上海市",
+          "nationality": "中国",
+          "pr": "田は日本アニメ字幕の無料制作,日本ゲーム汉化,長年の日本ゲームと日本のネット文化との接触,日本語と日本のゲームについて深い理解を深めています. 太は国内でのゲームローカル化に力を入れられる能力があると信じています. また,多媒体編集のトレーニングを受けた Adobe Photoshop, Adobe Illustratorなど,平日でも頻繁に使用され,美術とデザインのコースを受け,同時に,美的な仕事にも力を入れることができると考えています."
+        },
+        "expected_list": [
+          {
+            "expected_city": "",
+            "expected_position": "日语翻译",
+            "expected_salary": "",
+            "expected_annual_salary_min": "",
+            "expected_annual_salary_max": "",
+            "expected_industry": "",
+            "expected_employment_type": "全职",
+            "expected_start_date": "即时"
+          }
+        ],
+        "work_experiences": [
+          {
+            "company_name": "意艺居（上海）软件技术有限公司",
+            "company_employees": "",
+            "company_industry": "",
+            "position": "日语项目助理",
+            "position_type": "",
+            "position_salary": "",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2014年06月01日",
+            "position_resigned": "2014年09月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "日语项目助理",
+            "position_achievements": ""
+          },
+          {
+            "company_name": "上海荣颖安防技术设备有限公司",
+            "company_employees": "",
+            "company_industry": "",
+            "position": "实习生",
+            "position_type": "",
+            "position_salary": "",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2013年12月01日",
+            "position_resigned": "2014年03月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "电脑工程师",
+            "position_achievements": ""
+          }
+        ],
+        "education_list": [
+          {
+            "school_name": "上海新僑職業技術学院",
+            "school_major_name": "宝飾品工芸及び鑑定",
+            "school_degree_type": "短大",
+            "school_degree_rank": "3",
+            "school_education_type": "",
+            "school_start_ym": "2010年09月01日",
+            "school_end_ym": "2014年06月01日"
+          }
+        ],
+        "certificate_list": [
+          {
+            "certificate_name": "日本語1級証書",
+            "certificate_type": "",
+            "certificate_time": "2012年01月01日"
+          },
+          {
+            "certificate_name": "大学英語4級",
+            "certificate_type": "",
+            "certificate_time": "2011/06"
+          },
+          {
+            "certificate_name": "マルチメディア作品制作員中級/4級",
+            "certificate_type": "",
+            "certificate_time": "2009年07月01日"
+          },
+          {
+            "certificate_name": "办公自动化",
+            "certificate_type": "证书",
+            "certificate_time": ""
+          },
+          {
+            "certificate_name": "全国计算机等级一级",
+            "certificate_type": "证书",
+            "certificate_time": ""
+          }
+        ],
+        "language_list": [
+          {
+            "language_name": "日语",
+            "language_level": "N1",
+            "language_certificate": "有",
+            "language_certificate_time": ""
+          },
+          {
+            "language_name": "英语",
+            "language_level": "CET-4",
+            "language_certificate": "有",
+            "language_certificate_time": ""
+          }
+        ],
+        "skills_list": [
+          {
+            "skill_name": "Adobe Photoshop",
+            "skill_level": "熟練 | 60か月"
+          },
+          {
+            "skill_name": "EDGE",
+            "skill_level": "精通 | 36か月"
+          },
+          {
+            "skill_name": "Adobe Flash",
+            "skill_level": "熟練 | 72か月"
+          },
+          {
+            "skill_name": "PaintTool SAI",
+            "skill_level": "精通 | 48か月"
+          },
+          {
+            "skill_name": "GoldWave",
+            "skill_level": "良好 | 48か月"
+          },
+          {
+            "skill_name": "Adobe Illustrator",
+            "skill_level": "良好 | 36か月"
+          },
+          {
+            "skill_name": "JCAD",
+            "skill_level": "熟練 | 48か月"
+          },
+          {
+            "skill_name": "Microsoft Word",
+            "skill_level": "熟練 | 120か月"
+          },
+          {
+            "skill_name": "Microsoft Excel",
+            "skill_level": "熟練 | 120か月"
+          },
+          {
+            "skill_name": "Giam",
+            "skill_level": "精通 | 48か月"
+          },
+          {
+            "skill_name": "Microsoft Paint",
+            "skill_level": "精通 | 120か月"
+          },
+          {
+            "skill_name": "Adobe Fireworks",
+            "skill_level": "精通 | 72か月"
+          },
+          {
+            "skill_name": "1bitpaint",
+            "skill_level": "精通 | 12か月"
+          },
+          {
+            "skill_name": "CLIP STUDIO PAINT",
+            "skill_level": "良好 | 12か月"
+          },
+          {
+            "skill_name": "GraphicsGale",
+            "skill_level": "熟練 | 24か月"
+          },
+          {
+            "skill_name": "PictBear",
+            "skill_level": "熟練 | 24か月"
+          },
+          {
+            "skill_name": "GIMP",
+            "skill_level": "熟練 | 36か月"
+          },
+          {
+            "skill_name": "Stirling",
+            "skill_level": "精通 | 48か月"
+          },
+          {
+            "skill_name": "IconEditor LittleCanvas",
+            "skill_level": "精通 | 24か月"
+          },
+          {
+            "skill_name": "アニメーションカーソルエディッタ",
+            "skill_level": "精通 | 24か月"
+          }
+        ],
+        "training_list": [],
+        "project_list": [],
+        "communication_list": []
+      }
+    ]
+  },
+  "raw_text": "白宇天\n男\n22\n1992年08月01日\n1992\n未婚\n群众\n上海\n上海 徐汇区\n智联招聘\n20141203\n15618550105\nfardott@gmail.com\n上海市\n中国\n本人参与日本动画字幕无偿制作、日本游戏汉化的工作,长年接触日本游戏以及日本网络文化,对日语以及日本游戏有深刻的理解。本人相信有能力为贵公司在国内的游戏本地化工作献出一份力量。 另外,本人在亦接受了Adobe Photoshop、Adobe Illustrator等多媒体编辑方面的培训,平日中也经常运用,且接受过美术及设计方面的课程,相信同时能够为贵公司的美工方面提供一份力量。\n上海、苏州\n日语翻译\n4001-6000元/月\n零售/批发、贸易/进出口、快速消费品(食品/饮料/烟酒/日化)、耐用消费品(服饰/纺织/皮革/家具/家电)、网络游戏、计算机软件、互联网/电子商务、礼品/玩具/工艺美术/收藏品/奢侈品、政府/公共事业/非盈利机构、环保、教育/培训/院校\n全职\n我目前处于离职状态,可立即上岗\n意艺居(上海)软件技术有限公司\n计算机软件\n日语翻译\n2001-4000元/月\n全职\n离职\n2014年06月01日\n2014年09月01日\n日语项目助理\n上海荣颖安防技术设备有限公司\n电子技术/半导体/集成电路\n实习生\n1000-2000元/月\n全职\n离职\n2013年12月01日\n2014年03月01日\n电脑工程师\n上海新侨职业技术学院\n珠宝首饰工艺及鉴定\n大专\n3\n2010年09月01日\n2014年06月01日\n日语一级证书\n2012年01月01日\n大学英语四级\n2011年06月01日\n多媒体作品制作员中级/四级\n2009年07月01日\n办公自动化\n2009年01月01日\n全国计算机等级一级\n2012年01月01日\n日语\n读写能力精通 | 听说能力精通\n英语\n读写能力良好 | 听说能力一般\nAdobe Photoshop\n熟练 | 60个月\nEDGE\n精通 | 36个月\nAdobe Flash\n熟练 | 72个月\nPaintTool SAI\n精通 | 48个月\nGoldWave\n良好 | 48个月\nAdobe Illustrator\n良好 | 36个月\nJCAD\n熟练 | 48个月\nMicrosoft Word\n熟练 | 120个月\nMicrosoft Excel\n熟练 | 120个月\nGiam\n精通 | 48个月\nMicrosoft Paint\n精通 | 120个月\nAdobe Fireworks\n精通 | 72个月\n1bitpaint\n精通 | 12个月\nCLIP STUDIO PAINT\n良好 | 12个月\nGraphicsGale\n熟练 | 24个月\nPictBear\n熟练 | 24个月\nGIMP\n熟练 | 36个月\nStirling\n精通 | 48个月\nIconEditor LittleCanvas\n精通 | 24个月\nアニメーションカーソルエディッタ\n精通 | 24个月\n白宇天\n男\n22\n1992年08月01日\n1992\n未婚\n群众\n上海\n上海 徐匯区\n前程无忧(51job)\n20141203\n15618550105\nfardott@gmail.com\n上海市\n中国\n田は日本アニメ字幕の無料制作,日本ゲーム汉化,長年の日本ゲームと日本のネット文化との接触,日本語と日本のゲームについて深い理解を深めています. 太は国内でのゲームローカル化に力を入れられる能力があると信じています. また,多媒体編集のトレーニングを受けた Adobe Photoshop, Adobe Illustratorなど,平日でも頻繁に使用され,美術とデザインのコースを受け,同時に,美的な仕事にも力を入れることができると考えています.\n日语翻译\n全职\n即时\n意艺居（上海）软件技术有限公司\n日语项目助理\n全职\n离职\n2014年06月01日\n2014年09月01日\n日语项目助理\n上海荣颖安防技术设备有限公司\n实习生\n全职\n离职\n2013年12月01日\n2014年03月01日\n电脑工程师\n上海新僑職業技術学院\n宝飾品工芸及び鑑定\n短大\n3\n2010年09月01日\n2014年06月01日\n日本語1級証書\n2012年01月01日\n大学英語4級\n2011/06\nマルチメディア作品制作員中級/4級\n2009年07月01日\n办公自动化\n证书\n全国计算机等级一级\n证书\n日语\nN1\n有\n英语\nCET-4\n有\nAdobe Photoshop\n熟練 | 60か月\nEDGE\n精通 | 36か月\nAdobe Flash\n熟練 | 72か月\nPaintTool SAI\n精通 | 48か月\nGoldWave\n良好 | 48か月\nAdobe Illustrator\n良好 | 36か月\nJCAD\n熟練 | 48か月\nMicrosoft Word\n熟練 | 120か月\nMicrosoft Excel\n熟練 | 120か月\nGiam\n精通 | 48か月\nMicrosoft Paint\n精通 | 120か月\nAdobe Fireworks\n精通 | 72か月\n1bitpaint\n精通 | 12か月\nCLIP STUDIO PAINT\n良好 | 12か月\nGraphicsGale\n熟練 | 24か月\nPictBear\n熟練 | 24か月\nGIMP\n熟練 | 36か月\nStirling\n精通 | 48か月\nIconEditor LittleCanvas\n精通 | 24か月\nアニメーションカーソルエディッタ\n精通 | 24か月",
+  "quality": {
+    "full_name": "白宇天",
+    "has_work": true,
+    "work_count": 2,
+    "has_education": true,
+    "education_count": 1,
+    "languages": [
+      "zh",
+      "jp"
+    ],
+    "raw_text_length": 2310
+  },
+  "merge_info": {
+    "group_id": "dafa7dd31e2a0c78",
+    "rule_version": "merge-v3.0-contact-key",
+    "output_filename": "白宇天_15618550105.json",
+    "name_status": "valid",
+    "canonical_name": "白宇天",
+    "english_name": "",
+    "primary_phone": "15618550105",
+    "primary_email": "fardott@gmail.com",
+    "other_phones": [],
+    "other_emails": [],
+    "landlines": [],
+    "shared_contacts_ignored": [],
+    "needs_translation": false,
+    "v2_count": 2,
+    "v1_count": 0,
+    "language_sources": {
+      "zh": [
+        0,
+        1
+      ],
+      "jp": [
+        0
+      ]
+    },
+    "translated_from": "",
+    "name_note": "",
+    "conflict_count": 0,
+    "field_issue_count": 6,
+    "name_linked_sources": [],
+    "output_category": "formal",
+    "high_issue_count": 0
+  }
+}

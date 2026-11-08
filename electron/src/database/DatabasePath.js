@@ -2,19 +2,12 @@ const path = require('path');
 const fs = require('fs');
 
 /**
- * 将可写数据库放置于已打包程序同级目录，便于将整个应用目录复制迁移到其他磁盘。
- * 开发环境目录：code/data/recruitment.db
- * 打包生产目录：<可执行文件所在目录>/data/recruitment.db
+ * 把可写的数据库放在应用旁边，这样整个 RecruitmentSystem 目录可以整体拷贝到别的磁盘。
+ * Keep the writable database beside the application so the whole RecruitmentSystem directory can be copied to another disk.
+ * 書き込み可能なデータベースをアプリの隣に置くことで、RecruitmentSystem ディレクトリごと別のディスクへコピーできるようにする。
  *
- * EN: Keep the writable database beside the packaged application so that the
- * whole RecruitmentSystem directory can be copied to another disk.
- * Development layout: code/data/recruitment.db
- * Packaged layout: <directory containing the exe>/data/recruitment.db
- *
- * JA: アプリケーションディレクトリ全体を他のディスクへコピー・移行できるように、
- * 書き込み可能なデータベースをパッケージ化アプリと同階層に保持します。
- * 開発環境の配置：code/data/recruitment.db
- * パッケージ後の配置：<exe が存在するディレクトリ>/data/recruitment.db
+ * 开发时 / Development / 開発時:  <代码根目录>/data/recruitment.db
+ * 打包后 / Packaged / パッケージ後: <exe 所在目录>/data/recruitment.db
  */
 function getApplicationRoot(app, electronDirectory) {
   if (app && app.isPackaged) {
@@ -28,13 +21,9 @@ function getApplicationRoot(app, electronDirectory) {
 }
 
 /**
- * 打包的种子数据库在 resources 下为只读。首次启动时会复制到可执行文件同级目录；后续启动仅打开该可读写副本。
- *
- * EN: The packaged seed is read-only under resources. On first launch it is copied
- * beside the executable; every later launch opens only that writable copy.
- *
- * JA: パッケージ内のシード DB は resources 配下で読み取り専用です。初回起動時に実行ファイルと同階層へ
- * コピーされ、以後の起動ではその書き込み可能なコピーのみを開きます。
+ * 打包内置的种子库在 resources 下是只读的：首次启动时复制到 exe 旁边，之后只打开这份可写副本。
+ * The packaged seed under resources is read-only: on first launch it is copied beside the executable, and only that writable copy is opened afterwards.
+ * パッケージに同梱したシードは resources 配下で読み取り専用。初回起動時に exe の隣へコピーし、以後はその書き込み可能なコピーだけを開く。
  */
 function ensurePackagedDatabase(app, databasePath, resourcesPath = process.resourcesPath) {
   if (!app?.isPackaged || fs.existsSync(databasePath)) return databasePath;

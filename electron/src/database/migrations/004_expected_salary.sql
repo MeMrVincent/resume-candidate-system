@@ -1,2 +1,0 @@
-ALTER TABLE candidate_resume_expectations
-RENAME COLUMN expected_salary_text TO expected_salary;

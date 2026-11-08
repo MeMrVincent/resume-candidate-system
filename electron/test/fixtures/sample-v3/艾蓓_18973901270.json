@@ -1,0 +1,379 @@
+{
+  "schema_version": "resume-merge-v3.0",
+  "record_id": "merge-v3-482462630dd4cae8",
+  "source": {
+    "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\胖子\\简历\\51job_导出简历_20151023(7)\\51job_艾蓓(86536913).doc",
+    "html_path": "",
+    "source_count": 1,
+    "source_files": [
+      {
+        "index": 0,
+        "version": "v2",
+        "json_path": "E:\\resume-system\\complete-v2-temp\\艾蓓_18973901270.json",
+        "sha256": "87639031889fc6eb619136df51a2ec16f84525abe42d83d1a7a9a32c68699003",
+        "duplicate_paths": [
+          "E:\\resume-system\\complete-v1\\艾蓓_18973901270.json"
+        ],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\胖子\\简历\\51job_导出简历_20151023(7)\\51job_艾蓓(86536913).doc",
+        "html_path": "",
+        "resume_updated_date": "2015-10-23 14:28:44",
+        "languages": [
+          "zh"
+        ]
+      }
+    ]
+  },
+  "dates": {
+    "resume_updated_date": "2015-10-23 14:28:44",
+    "resume_download_date": "2015-08-05 00:00:00",
+    "resume_updated_date_source": "",
+    "resume_download_date_source": "",
+    "sys_created_date": "2026-08-01T16:08:30+09:00",
+    "sys_updated_date": "2026-10-12T00:00:00+09:00"
+  },
+  "extraction": {
+    "merger": "claude_merge.v3.py",
+    "rule_version": "merge-v3.0-contact-key"
+  },
+  "classification": {
+    "document_type": "resume",
+    "reason": "按手机号/邮箱合并的候选人"
+  },
+  "structured_data": {
+    "base_info": {
+      "full_name": "艾蓓",
+      "gender": "女",
+      "age": "21",
+      "birth_date": "1994年06月01日",
+      "birth_year": "1994",
+      "marital_status": "",
+      "children_status": "",
+      "political_status": "",
+      "height_cm": "",
+      "weight_kg": "",
+      "household_registration": "",
+      "address": "",
+      "postal_code": "",
+      "platform_from": "前程无忧(51job)",
+      "platform_resume_id": "86536913",
+      "phone": "18973901270",
+      "email": "1337841146@qq.com",
+      "city": "上海市",
+      "nationality": "",
+      "pr": "A：本人具有良好的语言表达能力，工作认真负责细心个性活泼、有良好的团队合作精神，敬业负责，较强的耐心。\nB：在学习中，我注重理论与实践的结合，己具备了相当的实践操作能力。真诚的希望您能够为我提供一个施展才华的平台，更希望我能为贵公司带来卓越的价值。"
+    },
+    "expected_info": {
+      "expected_city": "",
+      "expected_position": "视觉设计师，网页设计/制作/美工",
+      "expected_salary": "",
+      "expected_annual_salary_min": "",
+      "expected_annual_salary_max": "",
+      "expected_industry": "互联网/电子商务",
+      "expected_employment_type": "全职",
+      "expected_start_date": "即时"
+    },
+    "current_info": {
+      "company_name": "民泰贵金属",
+      "company_employees": "500-1000人",
+      "company_industry": "",
+      "position": "UI设计",
+      "position_type": "",
+      "position_salary": "",
+      "position_dept": "设计部",
+      "position_report_to": "",
+      "position_subordinate": "",
+      "employment_type": "全职",
+      "annual_salary_min": "",
+      "annual_salary_max": "",
+      "status": "在职",
+      "position_start": "2015年04月01日",
+      "position_resigned": ""
+    },
+    "education_info": {
+      "school_name": "邵阳学院",
+      "school_major_name": "电子信息科学与技术",
+      "school_degree_type": "中专",
+      "school_degree_rank": "2",
+      "school_education_type": "全日制高中",
+      "school_start_ym": "2010年06月01日",
+      "school_end_ym": "2012年04月01日"
+    },
+    "resumes": [
+      {
+        "resume_languge": "zh",
+        "base_info": {
+          "full_name": "艾蓓",
+          "gender": "女",
+          "age": "21",
+          "birth_date": "1994年06月01日",
+          "birth_year": "1994",
+          "marital_status": "",
+          "children_status": "",
+          "political_status": "",
+          "height_cm": "",
+          "weight_kg": "",
+          "household_registration": "",
+          "address": "",
+          "postal_code": "",
+          "platform_from": "前程无忧(51job)",
+          "platform_resume_id": "86536913",
+          "phone": "18973901270",
+          "email": "1337841146@qq.com",
+          "city": "上海市",
+          "nationality": "",
+          "pr": "A：本人具有良好的语言表达能力，工作认真负责细心个性活泼、有良好的团队合作精神，敬业负责，较强的耐心。\nB：在学习中，我注重理论与实践的结合，己具备了相当的实践操作能力。真诚的希望您能够为我提供一个施展才华的平台，更希望我能为贵公司带来卓越的价值。"
+        },
+        "expected_list": [
+          {
+            "expected_city": "",
+            "expected_position": "视觉设计师，网页设计/制作/美工",
+            "expected_salary": "",
+            "expected_annual_salary_min": "",
+            "expected_annual_salary_max": "",
+            "expected_industry": "互联网/电子商务",
+            "expected_employment_type": "全职",
+            "expected_start_date": "即时"
+          }
+        ],
+        "work_experiences": [
+          {
+            "company_name": "民泰贵金属",
+            "company_employees": "500-1000人",
+            "company_industry": "",
+            "position": "UI设计",
+            "position_type": "",
+            "position_salary": "",
+            "position_dept": "设计部",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "在职",
+            "position_start": "2015年04月01日",
+            "position_resigned": "",
+            "resigned_reason": "",
+            "position_responsibilities": "负责app客户端，手机wep端，以及PC端页面设计。",
+            "position_achievements": ""
+          },
+          {
+            "company_name": "上海奕杨文化有限公司",
+            "company_employees": "50-150人",
+            "company_industry": "互联网/电子商务",
+            "position": "网页设计师",
+            "position_type": "",
+            "position_salary": "",
+            "position_dept": "设计部",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2014年04月01日",
+            "position_resigned": "2015年03月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "主要负责阳澄湖大闸蟹官网页面的设计，活动专题页、banner、海报、以及公司外包项目的整体的美术设计和创意工作。",
+            "position_achievements": ""
+          },
+          {
+            "company_name": "北京部落邦有限公司",
+            "company_employees": "50-150人",
+            "company_industry": "互联网/电子商务",
+            "position": "用户体验设计师",
+            "position_type": "",
+            "position_salary": "",
+            "position_dept": "设计部",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2012年04月01日",
+            "position_resigned": "2014年02月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "主要负责部落邦官网页面，宣传册、海报、banner、微博推广设计，参与公司研发的app手机软件设计；以及把握web设计流行趋势，提出崭新的创意策略。",
+            "position_achievements": ""
+          }
+        ],
+        "education_list": [
+          {
+            "school_name": "邵阳学院",
+            "school_major_name": "电子信息科学与技术",
+            "school_degree_type": "中专",
+            "school_degree_rank": "2",
+            "school_education_type": "全日制高中",
+            "school_start_ym": "2010年06月01日",
+            "school_end_ym": "2012年04月01日"
+          }
+        ],
+        "certificate_list": [
+          {
+            "certificate_name": "网页设计资格证书",
+            "certificate_type": "证书",
+            "certificate_time": "2012年04月01日"
+          }
+        ],
+        "language_list": [
+          {
+            "language_name": "普通话",
+            "language_level": "良好，听说（良好），读写（良好）",
+            "language_certificate": "",
+            "language_certificate_time": ""
+          }
+        ],
+        "skills_list": [],
+        "training_list": [],
+        "project_list": [
+          {
+            "sequence_no": 1,
+            "fingerprint": "",
+            "project_name": "起承旅游网",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2014年08月01日",
+            "end_ym": "2014年08月01日",
+            "description": "开发工具：ps；项目描述：起承旅游网是属于北京的一家国外旅游签证公司",
+            "responsibilities": "负责整站页面的设计与规划",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 2,
+            "fingerprint": "",
+            "project_name": "星翔拓展",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2014年07月01日",
+            "end_ym": "2014年07月01日",
+            "description": "开发工具：ps；项目描述：星翔主要是以团队拓展培训为主",
+            "responsibilities": "负责整站的页面设计与规划",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 3,
+            "fingerprint": "",
+            "project_name": "钢云互联",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2014年06月01日",
+            "end_ym": "2014年07月01日",
+            "description": "开发工具：ps；项目描述：钢云互联网站分为两部分 一个是电商 一个是投资贷款项目",
+            "responsibilities": "负责整站的设计与规划",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 4,
+            "fingerprint": "",
+            "project_name": "联通后台页面",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2014年03月01日",
+            "end_ym": "2014年03月01日",
+            "description": "开发工具：ps；项目描述：联通项目这个是后台界面设计",
+            "responsibilities": "负责页面界面的设计与规划",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 5,
+            "fingerprint": "",
+            "project_name": "人大网",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2013年11月01日",
+            "end_ym": "2013年12月01日",
+            "description": "开发工具：ps；项目描述：人大网是政府网站 属于新闻门户型",
+            "responsibilities": "负责整站页面的设计",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 6,
+            "fingerprint": "",
+            "project_name": "深圳新闻网",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2013年06月01日",
+            "end_ym": "2013年07月01日",
+            "description": "开发工具：ps；项目描述：深圳新闻网是属于深圳的一个大型门户网站",
+            "responsibilities": "负责设计整站页面的设计",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 7,
+            "fingerprint": "",
+            "project_name": "中粮",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2013年06月01日",
+            "end_ym": "2013年06月01日",
+            "description": "开发工具：ps；项目描述：中粮集团电商 商家购物平台",
+            "responsibilities": "负责中粮商家整站页面设计",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 8,
+            "fingerprint": "",
+            "project_name": "央视海外版",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2013年05月01日",
+            "end_ym": "2013年05月01日",
+            "description": "开发工具：ps；项目描述：cctv的 海外版整站",
+            "responsibilities": "cctv的 海外版页面设计",
+            "achievements": "",
+            "keywords": ""
+          }
+        ],
+        "communication_list": []
+      }
+    ]
+  },
+  "raw_text": "更新时间：\n2015-08-05\n艾蓓\n3-4年工作经验 | 女\n|   21岁（1994年6月1日）\n(ID:86536913)\n居住地：\n上海-普陀区\n户　口：\n邵阳\n电　话：\n18973901270（手机）\nE-mail：\n1337841146@qq.com\n最近工作\n[ 6个月]\n公　司：\n民泰贵金属\n行　业：\n职　位：\nUI设计\n学历\n学　历：\n中专\n专　业：\n电子信息科学与技术\n学　校：\n邵阳学院\n自我评价\nA：本人具有良好的语言表达能力，工作认真负责细心个性活泼、有良好的团队合作精神，敬业负责，较强的耐心。\nB：在学习中，我注重理论与实践的结合，己具备了相当的实践操作能力。真诚的希望您能够为我提供一个施展才华的平台，更希望我能为贵公司带来卓越的价值。\n求职意向\n到岗时间：\n一周以内\n工作性质：\n全职\n希望行业：\n互联网/电子商务\n目标地点：\n上海\n期望薪资：\n月薪\n8000-9999\n目标职能：\n视觉设计师，网页设计/制作/美工\n求职状态：\n目前正在找工作\n工作经验\n2015\n/4--至今：民泰贵金属(500-1000人)\n[ 6个月]\n设计部\nUI设计\n负责app客户端，手机wep端，以及PC端页面设计。\n2014\n/4--2015\n/3：上海奕杨文化有限公司(50-150人)\n[ 11个月]\n所属行业：\n互联网/电子商务\n设计部\n网页设计师\n主要负责阳澄湖大闸蟹官网页面的设计，活动专题页、banner、海报、以及公司外包项目的整体的美术设计和创意工作。\n2012\n/4--2014\n/2：北京部落邦有限公司(50-150人)\n[ 1 年10个月]\n所属行业：\n互联网/电子商务\n设计部\n用户体验设计师\n主要负责部落邦官网页面，宣传册、海报、banner、微博推广设计，参与公司研发的app手机软件设计；以及把握web设计流行趋势，提出崭新的创意策略。\n项目经验\n2014\n/8--2014\n/8：起承旅游网\n开发工具：\nps\n项目描述：\n起承旅游网是属于北京的一家国外旅游签证公司\n责任描述：\n负责整站页面的设计与规划\n2014\n/7--2014\n/7：星翔拓展\n开发工具：\nps\n项目描述：\n星翔主要是以团队拓展培训为主\n责任描述：\n负责整站的页面设计与规划\n2014\n/6--2014\n/7：钢云互联\n开发工具：\nps\n项目描述：\n钢云互联网站分为两部分  一个是电商  一个是投资贷款项目\n责任描述：\n负责整站的设计与规划\n2014\n/3--2014\n/3：联通后台页面\n开发工具：\nps\n项目描述：\n联通项目这个是后台界面设计\n责任描述：\n负责页面界面的设计与规划\n2013\n/11--2013\n/12：人大网\n开发工具：\nps\n项目描述：\n人大网是政府网站 属于新闻门户型\n责任描述：\n负责整站页面的设计\n2013\n/6--2013\n/7：深圳新闻网\n开发工具：\nps\n项目描述：\n深圳新闻网是属于深圳的一个大型门户网站\n责任描述：\n负责设计整站页面的设计\n2013\n/6--2013\n/6：中粮\n开发工具：\nps\n项目描述：\n中粮集团电商 商家购物平台\n责任描述：\n负责中粮商家整站页面设计\n2013\n/5--2013\n/5：央视海外版\n开发工具：\nps\n项目描述：\ncctv的 海外版整站\n责任描述：\ncctv的 海外版页面设计\n教育经历\n2010\n/6--2012\n/4\n邵阳学院\n电子信息科学与技术\n中专\n主修网页设计专业，毕业后获得网页设计师资格证书\n证\n书\n2012\n/4\n网页设计资格证书\n语言能力\n普通话（良好）：\n听说（良好），读写（良好）\n其他信息\n特长：\n部分作品连接：http://5700818.lofter.com/",
+  "quality": {
+    "full_name": "艾蓓",
+    "has_work": true,
+    "work_count": 3,
+    "has_education": true,
+    "education_count": 1,
+    "languages": [
+      "zh"
+    ],
+    "raw_text_length": 1546
+  },
+  "merge_info": {
+    "group_id": "482462630dd4cae8",
+    "rule_version": "merge-v3.0-contact-key",
+    "output_filename": "艾蓓_18973901270.json",
+    "name_status": "valid",
+    "canonical_name": "艾蓓",
+    "english_name": "",
+    "primary_phone": "18973901270",
+    "primary_email": "1337841146@qq.com",
+    "other_phones": [],
+    "other_emails": [],
+    "landlines": [],
+    "shared_contacts_ignored": [],
+    "needs_translation": false,
+    "v2_count": 1,
+    "v1_count": 0,
+    "language_sources": {
+      "zh": [
+        0
+      ]
+    },
+    "translated_from": "",
+    "name_note": "",
+    "conflict_count": 0,
+    "field_issue_count": 1,
+    "name_linked_sources": [],
+    "output_category": "formal",
+    "high_issue_count": 0
+  }
+}

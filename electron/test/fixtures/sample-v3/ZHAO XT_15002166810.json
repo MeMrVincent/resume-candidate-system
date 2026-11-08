@@ -1,0 +1,390 @@
+{
+  "schema_version": "resume-merge-v3.0",
+  "record_id": "merge-v3-a3fa15ad12a1266f",
+  "source": {
+    "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\孙晓丹\\sxd\\2018 08简历\\生物科技\\0211\\智联招聘_Z女士_中文_20190210_1549780779162.htm",
+    "html_path": "E:\\resume-system\\codex-transfered-htmls\\web\\input\\0888_智联招聘_Z女士_中文_20190210_1549780779162_e8cc211469.htm",
+    "source_count": 3,
+    "source_files": [
+      {
+        "index": 0,
+        "version": "v2",
+        "json_path": "E:\\resume-system\\complete-v2-temp\\Z女士_15002166810.json",
+        "sha256": "5a18c5452bcbfb5f1ddfcfc7f87d59c1ef58d3db1822b111a8c61608669dd172",
+        "duplicate_paths": [],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\孙晓丹\\sxd\\2018 08简历\\生物科技\\0211\\智联招聘_Z女士_中文_20190210_1549780779162.htm",
+        "html_path": "E:\\resume-system\\codex-transfered-htmls\\web\\input\\0888_智联招聘_Z女士_中文_20190210_1549780779162_e8cc211469.htm",
+        "resume_updated_date": "2019-01-28 00:00:00",
+        "languages": [
+          "zh",
+          "zh"
+        ]
+      },
+      {
+        "index": 1,
+        "version": "v1",
+        "json_path": "E:\\resume-system\\complete-v1\\女士_15002166810.json",
+        "sha256": "d5ef5c114c7921d1d40e43a605338e2753c56ab1666a9f768281da2cb27b4812",
+        "duplicate_paths": [],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\孙晓丹\\sxd\\2018 08简历\\生物科技\\0211\\智联招聘_Z女士_中文_20190210_1549780779162.htm",
+        "html_path": "",
+        "resume_updated_date": "2019-02-11 16:12:15",
+        "languages": [
+          "zh"
+        ]
+      },
+      {
+        "index": 2,
+        "version": "v1",
+        "json_path": "E:\\resume-system\\complete-v1\\Z女士_15002166810.json",
+        "sha256": "4f641610caa1d3bd6f4eacb11509ebf3b980e124c023f3364889d9e9b02639f9",
+        "duplicate_paths": [],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\孙晓丹\\sxd\\2018 08简历\\生物科技\\0211\\智联招聘_Z女士_中文_20190210_1549780779162.htm",
+        "html_path": "",
+        "resume_updated_date": "2019-02-11 16:12:15",
+        "languages": [
+          "zh"
+        ]
+      }
+    ]
+  },
+  "dates": {
+    "resume_updated_date": "2019-02-11 16:12:15",
+    "resume_download_date": "2019-01-28 00:00:00",
+    "resume_updated_date_source": "",
+    "resume_download_date_source": "",
+    "sys_created_date": "2026-08-05T01:02:05+09:00",
+    "sys_updated_date": "2026-10-12T00:00:00+09:00"
+  },
+  "extraction": {
+    "merger": "claude_merge.v3.py",
+    "rule_version": "merge-v3.0-contact-key"
+  },
+  "classification": {
+    "document_type": "resume",
+    "reason": "按手机号/邮箱合并的候选人"
+  },
+  "structured_data": {
+    "base_info": {
+      "full_name": "ZHAO XT",
+      "gender": "女",
+      "age": "32",
+      "birth_date": "1987年02月01日",
+      "birth_year": "1987",
+      "marital_status": "",
+      "children_status": "",
+      "political_status": "",
+      "height_cm": "",
+      "weight_kg": "",
+      "household_registration": "上海",
+      "address": "上海",
+      "postal_code": "",
+      "platform_from": "智联招聘",
+      "platform_resume_id": "20190210",
+      "phone": "15002166810",
+      "email": "happyapple_zxt@163.com",
+      "city": "上海市",
+      "nationality": "中国",
+      "pr": ""
+    },
+    "expected_info": {
+      "expected_city": "上海",
+      "expected_position": "生物/制药/医疗器械",
+      "expected_salary": "25000-35000元/月",
+      "expected_annual_salary_min": "",
+      "expected_annual_salary_max": "",
+      "expected_industry": "医药/生物工程、学术/科研",
+      "expected_employment_type": "全职",
+      "expected_start_date": "我目前在职,正考虑换个新环境"
+    },
+    "current_info": {
+      "company_name": "Projects on Immunity Platform",
+      "company_employees": "",
+      "company_industry": "",
+      "position": "责任描述：",
+      "position_type": "",
+      "position_salary": "",
+      "position_dept": "",
+      "position_report_to": "",
+      "position_subordinate": "0人",
+      "employment_type": "全职",
+      "annual_salary_min": "",
+      "annual_salary_max": "",
+      "status": "在职",
+      "position_start": "2018年09月01日",
+      "position_resigned": ""
+    },
+    "education_info": {
+      "school_name": "中国科学院",
+      "school_major_name": "生物化学与分子生物学",
+      "school_degree_type": "博士",
+      "school_degree_rank": "6",
+      "school_education_type": "全日制研究生",
+      "school_start_ym": "2009年09月01日",
+      "school_end_ym": "2014年07月01日"
+    },
+    "resumes": [
+      {
+        "resume_languge": "zh",
+        "base_info": {
+          "full_name": "ZHAO XT",
+          "gender": "女",
+          "age": "32",
+          "birth_date": "1987年02月01日",
+          "birth_year": "1987",
+          "marital_status": "",
+          "children_status": "",
+          "political_status": "",
+          "height_cm": "",
+          "weight_kg": "",
+          "household_registration": "上海",
+          "address": "上海",
+          "postal_code": "",
+          "platform_from": "智联招聘",
+          "platform_resume_id": "20190210",
+          "phone": "15002166810",
+          "email": "happyapple_zxt@163.com",
+          "city": "上海市",
+          "nationality": "中国",
+          "pr": ""
+        },
+        "expected_list": [
+          {
+            "expected_city": "上海",
+            "expected_position": "生物/制药/医疗器械",
+            "expected_salary": "25000-35000元/月",
+            "expected_annual_salary_min": "",
+            "expected_annual_salary_max": "",
+            "expected_industry": "医药/生物工程、学术/科研",
+            "expected_employment_type": "全职",
+            "expected_start_date": "我目前在职,正考虑换个新环境"
+          },
+          {
+            "expected_city": "上海",
+            "expected_position": "生物",
+            "expected_salary": "25000-35000",
+            "expected_annual_salary_min": "",
+            "expected_annual_salary_max": "",
+            "expected_industry": "医药",
+            "expected_employment_type": "全职",
+            "expected_start_date": "在职，到岗时间需协商"
+          }
+        ],
+        "work_experiences": [
+          {
+            "company_name": "Projects on Immunity Platform",
+            "company_employees": "",
+            "company_industry": "",
+            "position": "责任描述：",
+            "position_type": "",
+            "position_salary": "",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "0人",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "在职",
+            "position_start": "2018年09月01日",
+            "position_resigned": "",
+            "resigned_reason": "",
+            "position_responsibilities": "",
+            "position_achievements": ""
+          },
+          {
+            "company_name": "Projects on Mass Spectrum Platform",
+            "company_employees": "",
+            "company_industry": "",
+            "position": "责任描述：",
+            "position_type": "",
+            "position_salary": "",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "0人",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2017年08月01日",
+            "position_resigned": "2018年11月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "",
+            "position_achievements": ""
+          },
+          {
+            "company_name": "药明康德",
+            "company_employees": "",
+            "company_industry": "医药/生物工程",
+            "position": "高级研究员 II ,组长 II",
+            "position_type": "",
+            "position_salary": "15000-25000元/月",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "0人",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2014年08月01日",
+            "position_resigned": "2017年07月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "·\n参与部门\nNGS\n平台、\nLC-MS/MS\n平台、流式细胞平台的建设;\n·\n带领团队参与\nIVD\n或者\nLDT\n产品开发,平台为分子平台( NGS\n,\nqPCR\n,\nSanger Sequencing\n等)、质谱平台( LC-MS/MS)以及免疫平台( ELISA\n,流式);\n·\n带领团队完成上述平台的部分转化项目。",
+            "position_achievements": ""
+          }
+        ],
+        "education_list": [
+          {
+            "school_name": "中国科学院",
+            "school_major_name": "生物化学与分子生物学",
+            "school_degree_type": "博士",
+            "school_degree_rank": "6",
+            "school_education_type": "全日制研究生",
+            "school_start_ym": "2009年09月01日",
+            "school_end_ym": "2014年07月01日"
+          }
+        ],
+        "certificate_list": [],
+        "language_list": [],
+        "skills_list": [],
+        "training_list": [],
+        "project_list": [
+          {
+            "sequence_no": 1,
+            "fingerprint": "",
+            "project_name": "Projects on Immunity",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2018年09月01日",
+            "end_ym": "",
+            "description": "Participates in\ntech-transfer projects based on ELISA and flow cytometry;\n2017.08 - 2018.11 Projects on Mass Spectrum Platform\nDevelop IVD\nproducts using LC-MS/MS;",
+            "responsibilities": "·\nWork\nas a group leader, lead a group of three people, finish five tech-transfer\nprojects in one month;\n·\nIn\ncharge of flow cytometry platform in our department.\n·\nHelp\nmy director to build up our capacity on LC-MS/MS platform;\n·\nWork\nas a group leader, lead a group of seven people, finish the design,\noptimization and analysis study of six projects.",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 2,
+            "fingerprint": "",
+            "project_name": "Projects on Immunity Platform",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2018年09月01日",
+            "end_ym": "",
+            "description": "",
+            "responsibilities": "",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 3,
+            "fingerprint": "",
+            "project_name": "免疫平台项目",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2018年09月01日",
+            "end_ym": "",
+            "description": "",
+            "responsibilities": "",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 4,
+            "fingerprint": "",
+            "project_name": "Projects on Mass Spectrum Platform",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2017年08月01日",
+            "end_ym": "2018年11月01日",
+            "description": "",
+            "responsibilities": "",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 5,
+            "fingerprint": "",
+            "project_name": "2017-08 - 2018-11 关于大众频谱平台的项目",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2017年08月01日",
+            "end_ym": "2018年11月01日",
+            "description": "",
+            "responsibilities": "",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 6,
+            "fingerprint": "",
+            "project_name": "Projects on Molecular Platform",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2014年08月01日",
+            "end_ym": "2017年07月01日",
+            "description": "·\nDesign\ndiagnostic panels based on NGS platform (mainly focus on detecting mutations\nin cancer, both somatic and hereditary cancer);\n·\nEvaluate\ncommercial panels based on NGS platform (mainly focus on detecting mutations\nin cancer);\n·\nEstablish\nand maintain drug database (mainly focus on targeted drugs for cancer);\n·\nDevelop\nLDT products based on Sanger Sequencing;\n·\nParticipate\nin tech-transfer projects based on qPCR.",
+            "responsibilities": "·\nWork\nas a group leader, lead a group of two to eight people, finish the appointed\nprojects;\n·\nHelp\nto build up the NGS platform (Thermo) in our department;\n·\nLead\na group of four, finish the design of five panels, two of which have been\nvalidated;\n·\nParticipate\nin the\n‘\nNational PT for\ncancer diagnosis and treatment using high throughput sequencing method, 2015\n’\n; Responsible for tests\ndetecting somatic mutations. Pass the PT with full mark;\n·\nLead\na team of eight, finish the pilot study for the collaboration with a famous\nclinic;\n·\nLead\na group of two, finish the design and validation of six Sanger Sequencing LDT\ntests in four months.",
+            "achievements": "",
+            "keywords": ""
+          },
+          {
+            "sequence_no": 7,
+            "fingerprint": "",
+            "project_name": "2014-08 - 2017-07 分子平台项目",
+            "company_or_client": "",
+            "role_name": "",
+            "start_ym": "2014年08月01日",
+            "end_ym": "2017年07月01日",
+            "description": "",
+            "responsibilities": "",
+            "achievements": "",
+            "keywords": ""
+          }
+        ],
+        "communication_list": []
+      }
+    ]
+  },
+  "raw_text": "期望从事职业：\n生物\n/\n制药\n/\n医疗器械\n简历更新时间：\n2019.01.28\nID\n：\ngRAaGXnP2Xyet(bHcv0TOw\nZ\n女士\n女\n32\n岁\n(1987\n年\n2\n月\n)\n5\n年工作经验\n博士\n现居住地：上海\n浦东新区\n|\n户口：上海\nZHAO XT\n15002166810\nhappyapple_zxt@163.com\n求职意向\n期望工作地区：\n上海\n期望月薪：\n25000-35000\n元\n/\n月\n目前状况：\n我目前在职，正考虑换个新环境\n期望工作性质：\n全职\n期望从事职业：\n生物\n/\n制药\n/\n医疗器械\n期望从事行业：\n医药\n/\n生物工程、学术\n/\n科研\n工作经历\n2014.08 -\n至今\n药明康德\n(4\n年\n7\n个月\n)\n高级研究员\nII\n，组长\nII | 15000-25000\n元\n/\n月\n医药\n/\n生物工程\n工作描述：\n·\n参与部门\nNGS\n平台、\nLC-MS/MS\n平台、流式细胞平台的建设；\n·\n带领团队参与\nIVD\n或者\nLDT\n产品开发，平台为分子平台（\nNGS\n，\nqPCR\n，\nSanger Sequencing\n等）、质谱平台（\nLC-MS/MS\n）以及免疫平台（\nELISA\n，流式）；\n·\n带领团队完成上述平台的部分转化项目。\n项目经历\n2018.09 -\n至今\nProjects on Immunity\nPlatform\n责任描述：\n·\nWork\nas a group leader, lead a group of three people, finish five tech-transfer\nprojects in one month;\n·\nIn\ncharge of flow cytometry platform in our department.\n项目描述：\nParticipates in\ntech-transfer projects based on ELISA and flow cytometry;\n2017.08 -\n2018.11 Projects on Mass Spectrum Platform\n责任描述：\n·\nHelp\nmy director to build up our capacity on LC-MS/MS platform;\n·\nWork\nas a group leader, lead a group of seven people, finish the design,\noptimization and analysis study of six projects.\n项目描述：\nDevelop IVD\nproducts using LC-MS/MS;\n2014.08 -\n2017.07 Projects on Molecular Platform\n责任描述：\n·\nWork\nas a group leader, lead a group of two to eight people, finish the appointed\nprojects;\n·\nHelp\nto build up the NGS platform (Thermo) in our department;\n·\nLead\na group of four, finish the design of five panels, two of which have been\nvalidated;\n·\nParticipate\nin the\n‘\nNational PT for\ncancer diagnosis and treatment using high throughput sequencing method, 2015\n’\n; Responsible for tests\ndetecting somatic mutations. Pass the PT with full mark;\n·\nLead\na team of eight, finish the pilot study for the collaboration with a famous\nclinic;\n·\nLead\na group of two, finish the design and validation of six Sanger Sequencing LDT\ntests in four months.\n项目描述：\n·\nDesign\ndiagnostic panels based on NGS platform (mainly focus on detecting mutations\nin cancer, both somatic and hereditary cancer);\n·\nEvaluate\ncommercial panels based on NGS platform (mainly focus on detecting mutations\nin cancer);\n·\nEstablish\nand maintain drug database (mainly focus on targeted drugs for cancer);\n·\nDevelop\nLDT products based on Sanger Sequencing;\n·\nParticipate\nin tech-transfer projects based on qPCR.\n教育经历\n2009.09\n- 2014.07\n中国科学院上海生科院生物化学与细胞生物学研究所\n生物化学与分子生物学\n博士",
+  "quality": {
+    "full_name": "ZHAO XT",
+    "has_work": true,
+    "work_count": 3,
+    "has_education": true,
+    "education_count": 1,
+    "languages": [
+      "zh"
+    ],
+    "raw_text_length": 2323
+  },
+  "merge_info": {
+    "group_id": "a3fa15ad12a1266f",
+    "rule_version": "merge-v3.0-contact-key",
+    "output_filename": "ZHAO XT_15002166810.json",
+    "name_status": "valid",
+    "canonical_name": "ZHAO XT",
+    "english_name": "ZHAO XT",
+    "primary_phone": "15002166810",
+    "primary_email": "happyapple_zxt@163.com",
+    "other_phones": [],
+    "other_emails": [],
+    "landlines": [],
+    "shared_contacts_ignored": [],
+    "needs_translation": false,
+    "v2_count": 1,
+    "v1_count": 2,
+    "language_sources": {
+      "zh": [
+        0,
+        1,
+        2
+      ]
+    },
+    "translated_from": "",
+    "name_note": "",
+    "conflict_count": 14,
+    "field_issue_count": 1,
+    "name_linked_sources": [],
+    "output_category": "formal",
+    "high_issue_count": 0
+  }
+}

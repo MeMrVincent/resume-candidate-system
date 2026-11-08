@@ -1,0 +1,248 @@
+{
+  "schema_version": "resume-merge-v3.0",
+  "record_id": "merge-v3-19d07b6ff73b8f67",
+  "source": {
+    "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\胖子\\孙晓丹人才\\财务\\不会日语的\\智联招聘_艾华_中文_20130218_14647453.doc",
+    "html_path": "",
+    "source_count": 1,
+    "source_files": [
+      {
+        "index": 0,
+        "version": "v2",
+        "json_path": "E:\\resume-system\\complete-v2-temp\\艾华_13917035118.json",
+        "sha256": "621a319c8734af33aee07910874dbdfadbc75df446ba4cbbb9a193f885182fd3",
+        "duplicate_paths": [
+          "E:\\resume-system\\complete-v1\\艾华_13917035118.json"
+        ],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\胖子\\孙晓丹人才\\财务\\不会日语的\\智联招聘_艾华_中文_20130218_14647453.doc",
+        "html_path": "",
+        "resume_updated_date": "2013-02-18 11:35:06",
+        "languages": [
+          "zh"
+        ]
+      }
+    ]
+  },
+  "dates": {
+    "resume_updated_date": "2013-02-18 11:35:06",
+    "resume_download_date": "2013-02-17 00:00:00",
+    "resume_updated_date_source": "",
+    "resume_download_date_source": "",
+    "sys_created_date": "2026-08-01T10:19:10+09:00",
+    "sys_updated_date": "2026-10-12T00:00:00+09:00"
+  },
+  "extraction": {
+    "merger": "claude_merge.v3.py",
+    "rule_version": "merge-v3.0-contact-key"
+  },
+  "classification": {
+    "document_type": "resume",
+    "reason": "按手机号/邮箱合并的候选人"
+  },
+  "structured_data": {
+    "base_info": {
+      "full_name": "艾华",
+      "gender": "女",
+      "age": "31",
+      "birth_date": "1982年06月01日",
+      "birth_year": "1982",
+      "marital_status": "已婚",
+      "children_status": "",
+      "political_status": "",
+      "height_cm": "",
+      "weight_kg": "",
+      "household_registration": "上海",
+      "address": "上海",
+      "postal_code": "",
+      "platform_from": "智联招聘",
+      "platform_resume_id": "",
+      "phone": "13917035118",
+      "email": "xhz20101009@sohu.com",
+      "city": "上海市",
+      "nationality": "中国",
+      "pr": "我毕业于辽宁科技大学财务专业,从事过出纳工作四年,拥有会计资格证书,熟悉国家财经制度和相关政策法规,能熟练使用财务软件\n*头脑灵活,善于分析,具有现代财务管理理念\n*具备计算机二级证书,英语四级证书,能熟练使用计算机操作系统Word、Excel等office软件,具有档案文书管理经验\n**性格开朗、责任心强,有强烈的敬业精神出纳所需做的全部胜任\n希望公司能给我一次面试的机会,我不会让你们失望的,我很渴求这份工作,谢谢公司的领导"
+    },
+    "expected_info": {
+      "expected_city": "上海",
+      "expected_position": "出纳员、财务助理/会计助理",
+      "expected_salary": "2001-4000元/月",
+      "expected_annual_salary_min": "",
+      "expected_annual_salary_max": "",
+      "expected_industry": "加工制造(原料加工/模具)、会计/审计、保险、计算机软件、专业服务(咨询/财会/法律等)、物业管理/商业中心、房地产/建筑/建材/工程、贸易/进出口、交通/运输/物流、医疗/护理/美容/保健/卫生服务、教育/培训/院校、旅游/度假、娱乐/体育/休闲、能源/矿产/采掘/冶炼、政府/公共事业/非盈利机构、环保",
+      "expected_employment_type": "全职",
+      "expected_start_date": "我目前处于离职状态,可立即上岗(到岗时间一个月内)"
+    },
+    "current_info": {
+      "company_name": "上海外贸进出口",
+      "company_employees": "20-99人",
+      "company_industry": "贸易/进出口",
+      "position": "出纳员",
+      "position_type": "",
+      "position_salary": "2001-4000元/月",
+      "position_dept": "财务",
+      "position_report_to": "",
+      "position_subordinate": "",
+      "employment_type": "全职",
+      "annual_salary_min": "",
+      "annual_salary_max": "",
+      "status": "离职",
+      "position_start": "2009年03月01日",
+      "position_resigned": "2010年02月01日"
+    },
+    "education_info": {
+      "school_name": "辽宁科技大学",
+      "school_major_name": "财政学",
+      "school_degree_type": "大专",
+      "school_degree_rank": "3",
+      "school_education_type": "",
+      "school_start_ym": "2002年07月01日",
+      "school_end_ym": "2004年07月01日"
+    },
+    "resumes": [
+      {
+        "resume_languge": "zh",
+        "base_info": {
+          "full_name": "艾华",
+          "gender": "女",
+          "age": "31",
+          "birth_date": "1982年06月01日",
+          "birth_year": "1982",
+          "marital_status": "已婚",
+          "children_status": "",
+          "political_status": "",
+          "height_cm": "",
+          "weight_kg": "",
+          "household_registration": "上海",
+          "address": "上海",
+          "postal_code": "",
+          "platform_from": "智联招聘",
+          "platform_resume_id": "",
+          "phone": "13917035118",
+          "email": "xhz20101009@sohu.com",
+          "city": "上海市",
+          "nationality": "中国",
+          "pr": "我毕业于辽宁科技大学财务专业,从事过出纳工作四年,拥有会计资格证书,熟悉国家财经制度和相关政策法规,能熟练使用财务软件\n*头脑灵活,善于分析,具有现代财务管理理念\n*具备计算机二级证书,英语四级证书,能熟练使用计算机操作系统Word、Excel等office软件,具有档案文书管理经验\n**性格开朗、责任心强,有强烈的敬业精神出纳所需做的全部胜任\n希望公司能给我一次面试的机会,我不会让你们失望的,我很渴求这份工作,谢谢公司的领导"
+        },
+        "expected_list": [
+          {
+            "expected_city": "上海",
+            "expected_position": "出纳员、财务助理/会计助理",
+            "expected_salary": "2001-4000元/月",
+            "expected_annual_salary_min": "",
+            "expected_annual_salary_max": "",
+            "expected_industry": "加工制造(原料加工/模具)、会计/审计、保险、计算机软件、专业服务(咨询/财会/法律等)、物业管理/商业中心、房地产/建筑/建材/工程、贸易/进出口、交通/运输/物流、医疗/护理/美容/保健/卫生服务、教育/培训/院校、旅游/度假、娱乐/体育/休闲、能源/矿产/采掘/冶炼、政府/公共事业/非盈利机构、环保",
+            "expected_employment_type": "全职",
+            "expected_start_date": "我目前处于离职状态,可立即上岗(到岗时间一个月内)"
+          }
+        ],
+        "work_experiences": [
+          {
+            "company_name": "上海外贸进出口",
+            "company_employees": "20-99人",
+            "company_industry": "贸易/进出口",
+            "position": "出纳员",
+            "position_type": "",
+            "position_salary": "2001-4000元/月",
+            "position_dept": "财务",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2009年03月01日",
+            "position_resigned": "2010年02月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "1、 负责银行存款收付业务,登记填写现金、银行存款日记帐,并交会计,每日进行账款盘存,做好日审,并控制现金存量,保证帐实相符;\n2、负责银行帐务衔接配合,各类票据,银行对账及银行余额调节表的编制及时清理未达帐项;\n3、负责日常现金及票据的收付、保管,准确及时登录现金日记账,做好公司各类现金费用报销事项;\n4、负责发票申领、保管、开票、开票台账维护,以及现金支票的收入保管、签发支付工作;\n5、负责妥善保管现金、有关印章、空白支票和收据,做好有关单据、账册、报表等会计资料的整理、归档工作;\n6、根据付款通知,开具银行票据给客户结算,掌握各类费用报销、支付的审批权限;\n7、负责配合上级领导,做好资金筹措,分配,使用工作,并进行监控;\n8、负责审查各类原始凭证,保证其合法性和准确性;\n9、掌管保险柜,对现金安全负责;\n10、核算人事部提供的薪金发放名册,按时发放公司职工的工资、奖金;\n根据公司领导的需要完成上级领导交办的其它工作任务。",
+            "position_achievements": ""
+          },
+          {
+            "company_name": "辽宁沃源矿业集团",
+            "company_employees": "100-499人",
+            "company_industry": "能源/矿产/采掘/冶炼",
+            "position": "出纳员",
+            "position_type": "",
+            "position_salary": "2001-4000元/月",
+            "position_dept": "财务",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2004年07月01日",
+            "position_resigned": "2009年09月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "2004年_2007年9辽宁沃源矿业集团任职出纳,公司日常往来帐务资金额度几百万最高几千万,下属八家分公司,在其任四家出纳工作。后因家庭原因离开本公司。能胜任财务助理,出纳所有工作,能完成领导安排其他工作",
+            "position_achievements": ""
+          }
+        ],
+        "education_list": [
+          {
+            "school_name": "辽宁科技大学",
+            "school_major_name": "财政学",
+            "school_degree_type": "大专",
+            "school_degree_rank": "3",
+            "school_education_type": "",
+            "school_start_ym": "2002年07月01日",
+            "school_end_ym": "2004年07月01日"
+          }
+        ],
+        "certificate_list": [],
+        "language_list": [
+          {
+            "language_name": "英语",
+            "language_level": "读写能力一般 | 听说能力一般",
+            "language_certificate": "",
+            "language_certificate_time": ""
+          }
+        ],
+        "skills_list": [],
+        "training_list": [],
+        "project_list": [],
+        "communication_list": []
+      }
+    ]
+  },
+  "raw_text": "简历名称：\n出纳员 9年 上海\n智联招聘\n期望从事职业：\n出纳员、财务助理/会计助理\n简历更新时间：\n2013.02.17\nID\n：\nJM131108345R90250002000\n艾华\n手机：\n13917035118\n女    31岁(1982年6月)    9年工作经验    大专    已婚\n现居住地：上海 | 户口：上海\n身份证：210321198206050825\n手机：13917035118\nE-mail：\nxhz20101009@sohu.com\n求职意向\n期望工作地区：\n上海\n期望月薪：\n2001-4000元/月\n目前状况：\n我目前处于离职状态，可立即上岗（到岗时间一个月内）\n期望工作性质：\n全职\n期望从事职业：\n出纳员、财务助理/会计助理\n期望从事行业：\n加工制造（原料加工/模具）、会计/审计、保险、计算机软件、专业服务(咨询/财会/法律等)、物业管理/商业中心、房地产/建筑/建材/工程、贸易/进出口、交通/运输/物流、医疗/护理/美容/保健/卫生服务、教育/培训/院校、旅游/度假、娱乐/体育/休闲、能源/矿产/采掘/冶炼、政府/公共事业/非盈利机构、环保\n自我评价\n我毕业于辽宁科技大学财务专业,从事过出纳工作四年,拥有会计资格证书，熟悉国家财经制度和相关政策法规，能熟练使用财务软件\n﹡头脑灵活，善于分析，具有现代财务管理理念\n﹡具备计算机二级证书，英语四级证书,能熟练使用计算机操作系统Word、Excel等office软件，具有档案文书管理经验\n﹡﹡性格开朗、责任心强，有强烈的敬业精神出纳所需做的全部胜任\n希望公司能给我一次面试的机会,我不会让你们失望的,我很渴求这份工作,谢谢公司的领导\n工作经历\n2009.03 - 2010.02  上海外贸进出口  （11个月）\n财务 | 出纳员 | 2001-4000元/月\n贸易/进出口 | 企业性质：合资 | 规模：20-99人\n工作描述：\n1、 负责银行存款收付业务，登记填写现金、银行存款日记帐，并交会计，每日进行账款盘存，做好日审，并控制现金存量，保证帐实相符；\n2、负责银行帐务衔接配合，各类票据，银行对账及银行余额调节表的编制及时清理未达帐项；\n3、负责日常现金及票据的收付、保管，准确及时登录现金日记账，做好公司各类现金费用报销事项；\n4、负责发票申领、保管、开票、开票台账维护，以及现金支票的收入保管、签发支付工作；\n5、负责妥善保管现金、有关印章、空白支票和收据，做好有关单据、账册、报表等会计资料的整理、归档工作；\n6、根据付款通知，开具银行票据给客户结算，掌握各类费用报销、支付的审批权限；\n7、负责配合上级领导，做好资金筹措，分配，使用工作，并进行监控；\n8、负责审查各类原始凭证，保证其合法性和准确性；\n9、掌管保险柜，对现金安全负责；\n10、核算人事部提供的薪金发放名册，按时发放公司职工的工资、奖金；\n根据公司领导的需要完成上级领导交办的其它工作任务。\n2004.07 - 2009.09  辽宁沃源矿业集团  （5年2个月）\n财务 | 出纳员 | 2001-4000元/月\n能源/矿产/采掘/冶炼 | 企业性质：民营 | 规模：100-499人\n工作描述：\n2004年_2007年9辽宁沃源矿业集团任职出纳，公司日常往来帐务资金额度几百万最高几千万，下属八家分公司，在其任四家出纳工作。后因家庭原因离开本公司。能胜任财务助理，出纳所有工作，能完成领导安排其他工作\n教育经历\n2002.07 - 2004.07  辽宁科技大学  财政学  大专\n语言能力\n英语：读写能力一般 | 听说能力一般",
+  "quality": {
+    "full_name": "艾华",
+    "has_work": true,
+    "work_count": 2,
+    "has_education": true,
+    "education_count": 1,
+    "languages": [
+      "zh"
+    ],
+    "raw_text_length": 1504
+  },
+  "merge_info": {
+    "group_id": "19d07b6ff73b8f67",
+    "rule_version": "merge-v3.0-contact-key",
+    "output_filename": "艾华_13917035118.json",
+    "name_status": "valid",
+    "canonical_name": "艾华",
+    "english_name": "",
+    "primary_phone": "13917035118",
+    "primary_email": "xhz20101009@sohu.com",
+    "other_phones": [],
+    "other_emails": [],
+    "landlines": [],
+    "shared_contacts_ignored": [],
+    "needs_translation": false,
+    "v2_count": 1,
+    "v1_count": 0,
+    "language_sources": {
+      "zh": [
+        0
+      ]
+    },
+    "translated_from": "",
+    "name_note": "",
+    "conflict_count": 0,
+    "field_issue_count": 1,
+    "name_linked_sources": [],
+    "output_category": "formal",
+    "high_issue_count": 0
+  }
+}

@@ -1,0 +1,303 @@
+{
+  "schema_version": "resume-merge-v3.0",
+  "record_id": "merge-v3-48a8f5d1846d874b",
+  "source": {
+    "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\孙晓丹\\sxd\\2018 08简历\\日语\\0128\\zhuzhu.htm",
+    "html_path": "E:\\resume-system\\codex-transfered-htmls\\web\\input\\1125_zhuzhu_e93e96419a.htm",
+    "source_count": 2,
+    "source_files": [
+      {
+        "index": 0,
+        "version": "v2",
+        "json_path": "E:\\resume-system\\complete-v2-temp\\zhuzhu_13671518119.json",
+        "sha256": "54a4a218eec09857f96bf3ffeb67536494c4a1d1c755aef5248dd73741a73e90",
+        "duplicate_paths": [],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\孙晓丹\\sxd\\2018 08简历\\日语\\0128\\zhuzhu.htm",
+        "html_path": "E:\\resume-system\\codex-transfered-htmls\\web\\input\\1125_zhuzhu_e93e96419a.htm",
+        "resume_updated_date": "2019-01-24 00:00:00",
+        "languages": [
+          "zh"
+        ]
+      },
+      {
+        "index": 1,
+        "version": "v1",
+        "json_path": "E:\\resume-system\\complete-v1\\zhuzhu_13671518119.json",
+        "sha256": "1f0161d3de05df33bb8a4d8ce7106aef5f66e76ba216ddcefff99601013014e8",
+        "duplicate_paths": [],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\孙晓丹\\sxd\\2018 08简历\\日语\\0128\\zhuzhu.htm",
+        "html_path": "",
+        "resume_updated_date": "2019-01-28 17:45:30",
+        "languages": [
+          "zh"
+        ]
+      }
+    ]
+  },
+  "dates": {
+    "resume_updated_date": "2019-01-28 17:45:30",
+    "resume_download_date": "2019-01-24 00:00:00",
+    "resume_updated_date_source": "",
+    "resume_download_date_source": "",
+    "sys_created_date": "2026-08-05T01:02:31+09:00",
+    "sys_updated_date": "2026-10-12T00:00:00+09:00"
+  },
+  "extraction": {
+    "merger": "claude_merge.v3.py",
+    "rule_version": "merge-v3.0-contact-key"
+  },
+  "classification": {
+    "document_type": "resume",
+    "reason": "按手机号/邮箱合并的候选人"
+  },
+  "structured_data": {
+    "base_info": {
+      "full_name": "zhuzhu",
+      "gender": "女",
+      "age": "36",
+      "birth_date": "1983年08月01日",
+      "birth_year": "1983",
+      "marital_status": "未婚",
+      "children_status": "",
+      "political_status": "群众",
+      "height_cm": "",
+      "weight_kg": "",
+      "household_registration": "上海",
+      "address": "上海",
+      "postal_code": "",
+      "platform_from": "智联招聘",
+      "platform_resume_id": "2ru2y6MP5VSPj)whksryZg",
+      "phone": "13671518119",
+      "email": "zhuzhutoky911@hotmail.com",
+      "city": "上海市",
+      "nationality": "中国",
+      "pr": "长期供职于外企,英语( CET6)和日语\n( 一级)\n,日语中级口译资格证,语言能力强,粤语流利,韩语中级水平。攻读\nIMCPI\n课程,已考取国际对外汉语教师资格证,并已取得幼儿教师资格证书。擅长硬笔书法。\n2005~2015\n十年间长时间独立操作服装内贸和外贸订单(美国、日本等),长期接触国内外供应商和客户。\n2015~ 在知名女装品牌担任商品企划工作。 为人正派坦诚热心,性情开朗随和,工作责任心非常强,有大局观念和很好的团队合作精神,有相当的协调组织和统筹能力。本人对语言特别热爱,希望能从事自己喜欢的语言相关职业。"
+    },
+    "expected_info": {
+      "expected_city": "上海",
+      "expected_position": "其他",
+      "expected_salary": "10001-15000元/月",
+      "expected_annual_salary_min": "120012",
+      "expected_annual_salary_max": "180000",
+      "expected_industry": "教育/培训/院校",
+      "expected_employment_type": "全职",
+      "expected_start_date": "我目前在职,正考虑换个新环境"
+    },
+    "current_info": {
+      "company_name": "TEENIE WEENIE 女装品牌公司",
+      "company_employees": "100-499 人",
+      "company_industry": "耐用消费品(服饰/纺织/皮革/家具/家电)",
+      "position": "服装商品企划助理经理",
+      "position_type": "",
+      "position_salary": "10001-15000元/月",
+      "position_dept": "",
+      "position_report_to": "",
+      "position_subordinate": "",
+      "employment_type": "全职",
+      "annual_salary_min": "120012",
+      "annual_salary_max": "180000",
+      "status": "在职",
+      "position_start": "2015年07月01日",
+      "position_resigned": ""
+    },
+    "education_info": {
+      "school_name": "东华大学",
+      "school_major_name": "服装设计与工程",
+      "school_degree_type": "本科",
+      "school_degree_rank": "4",
+      "school_education_type": "全日制大学",
+      "school_start_ym": "2001年09月01日",
+      "school_end_ym": "2005年06月01日"
+    },
+    "resumes": [
+      {
+        "resume_languge": "zh",
+        "base_info": {
+          "full_name": "zhuzhu",
+          "gender": "女",
+          "age": "36",
+          "birth_date": "1983年08月01日",
+          "birth_year": "1983",
+          "marital_status": "未婚",
+          "children_status": "",
+          "political_status": "群众",
+          "height_cm": "",
+          "weight_kg": "",
+          "household_registration": "上海",
+          "address": "上海",
+          "postal_code": "",
+          "platform_from": "智联招聘",
+          "platform_resume_id": "2ru2y6MP5VSPj)whksryZg",
+          "phone": "13671518119",
+          "email": "zhuzhutoky911@hotmail.com",
+          "city": "上海市",
+          "nationality": "中国",
+          "pr": "长期供职于外企,英语( CET6)和日语\n( 一级)\n,日语中级口译资格证,语言能力强,粤语流利,韩语中级水平。攻读\nIMCPI\n课程,已考取国际对外汉语教师资格证,并已取得幼儿教师资格证书。擅长硬笔书法。\n2005~2015\n十年间长时间独立操作服装内贸和外贸订单(美国、日本等),长期接触国内外供应商和客户。\n2015~ 在知名女装品牌担任商品企划工作。 为人正派坦诚热心,性情开朗随和,工作责任心非常强,有大局观念和很好的团队合作精神,有相当的协调组织和统筹能力。本人对语言特别热爱,希望能从事自己喜欢的语言相关职业。"
+        },
+        "expected_list": [
+          {
+            "expected_city": "上海",
+            "expected_position": "其他",
+            "expected_salary": "10001-15000元/月",
+            "expected_annual_salary_min": "120012",
+            "expected_annual_salary_max": "180000",
+            "expected_industry": "教育/培训/院校",
+            "expected_employment_type": "全职",
+            "expected_start_date": "我目前在职,正考虑换个新环境"
+          }
+        ],
+        "work_experiences": [
+          {
+            "company_name": "TEENIE WEENIE 女装品牌公司",
+            "company_employees": "100-499 人",
+            "company_industry": "耐用消费品(服饰/纺织/皮革/家具/家电)",
+            "position": "服装商品企划助理经理",
+            "position_type": "",
+            "position_salary": "10001-15000元/月",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "120012",
+            "annual_salary_max": "180000",
+            "status": "在职",
+            "position_start": "2015年07月01日",
+            "position_resigned": "",
+            "resigned_reason": "",
+            "position_responsibilities": "女装商品企划,通过数据分析和市场调查,每季度开商品评价会(展示会)以及代理商订货会。决定商品价格和订单数量,做商品数据分析和新商品的企划,并在适当时候加单适当数量,以使得正贩率、累贩率、收益额最大化。",
+            "position_achievements": ""
+          },
+          {
+            "company_name": "上海某美资运动服装 BUYING OFFICE",
+            "company_employees": "100-499 人",
+            "company_industry": "耐用消费品(服饰/纺织/皮革/家具/家电)",
+            "position": "服装/纺织/皮革跟单",
+            "position_type": "",
+            "position_salary": "8001-10000元/月",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "96012",
+            "annual_salary_max": "120000",
+            "status": "离职",
+            "position_start": "2010年08月01日",
+            "position_resigned": "2015年06月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "QUIKSILVER/ ROXY/DC SHOES\n三品牌 开展 日本单和美国单 业务,开发,报价,打样,\nFOLLOW\n到大货上线为止。",
+            "position_achievements": ""
+          },
+          {
+            "company_name": "某知名日资企业",
+            "company_employees": "100-499 人",
+            "company_industry": "耐用消费品(服饰/纺织/皮革/家具/家电)",
+            "position": "内贸/外贸 业务担当",
+            "position_type": "",
+            "position_salary": "4001-6000元/月",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "48012",
+            "annual_salary_max": "72000",
+            "status": "离职",
+            "position_start": "2005年07月01日",
+            "position_resigned": "2010年05月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "2005.7~ 2010.5\n服装内贸\n(KAPPA/ NEW BALANCE)\n、外贸担当\n(TIBI )\n,独立操作大货和样品。",
+            "position_achievements": ""
+          }
+        ],
+        "education_list": [
+          {
+            "school_name": "东华大学",
+            "school_major_name": "服装设计与工程",
+            "school_degree_type": "本科",
+            "school_degree_rank": "4",
+            "school_education_type": "全日制大学",
+            "school_start_ym": "2001年09月01日",
+            "school_end_ym": "2005年06月01日"
+          }
+        ],
+        "certificate_list": [
+          {
+            "certificate_name": "日语中级口译 笔译",
+            "certificate_type": "证书",
+            "certificate_time": "2018年05月01日"
+          },
+          {
+            "certificate_name": "口译证书",
+            "certificate_type": "",
+            "certificate_time": ""
+          }
+        ],
+        "language_list": [
+          {
+            "language_name": "日语",
+            "language_level": "读写能力熟练| 听说能力熟练",
+            "language_certificate": "有",
+            "language_certificate_time": "2018年05月01日"
+          },
+          {
+            "language_name": "英语",
+            "language_level": "读写能力熟练| 听说能力熟练",
+            "language_certificate": "有",
+            "language_certificate_time": ""
+          },
+          {
+            "language_name": "韩语",
+            "language_level": "读写能力一般| 听说能力良好",
+            "language_certificate": "",
+            "language_certificate_time": ""
+          }
+        ],
+        "skills_list": [],
+        "training_list": [],
+        "project_list": [],
+        "communication_list": []
+      }
+    ]
+  },
+  "raw_text": "期望从事职业：\n其他\n简历更新时间：\n2019.01.24\nID\n：\n2ru2y6MP5VSPj)whksryZg\nZ\n女士\n女\n36\n岁\n(1983\n年\n8\n月\n)\n14\n年工作经验\n本科\n未婚\n现居住地：上海\n闸北区\n|\n户口：上海\n|\n群众\nzhuzhu\n13671518119\nzhuzhutoky911@hotmail.com\n求职意向\n期望工作地区：\n上海\n期望月薪：\n10001-15000\n元\n/\n月\n目前状况：\n我目前在职，正考虑换个新环境\n期望工作性质：\n全职\n期望从事职业：\n其他\n期望从事行业：\n教育\n/\n培训\n/\n院校\n自我评价\n长期供职于外企，英语（\nCET6\n）和日语\n(\n一级\n)\n，日语中级口译资格证，语言能力强，粤语流利，韩语中级水平。攻读\nIMCPI\n课程，已考取国际对外汉语教师资格证，并已取得幼儿教师资格证书。擅长硬笔书法。\n2005~2015\n十年间长时间独立操作服装内贸和外贸订单（美国、日本等），长期接触国内外供应商和客户。\n2015~\n在知名女装品牌担任商品企划工作。 为人正派坦诚热心，性情开朗随和，工作责任心非常强，有大局观念和很好的团队合作精神，有相当的协调组织和统筹能力。本人对语言特别热爱，希望能从事自己喜欢的语言相关职业。\n工作经历\n2015.07 -\n至今\nTEENIE WEENIE\n女装品牌公司\n(3\n年\n7\n个月\n)\n服装商品企划助理经理\n| 10001-15000\n元\n/\n月\n耐用消费品（服饰\n/\n纺织\n/\n皮革\n/\n家具\n/\n家电）\n|\n企业性质：上市公司\n|\n规模：\n100-499\n人\n工作描述：\n女装商品企划，通过数据分析和市场调查，每季度开商品评价会（展示会）以及代理商订货会。决定商品价格和订单数量，做商品数据分析和新商品的企划，并在适当时候加单适当数量，以使得正贩率、累贩率、收益额最大化。\n2010.08 -\n2015.06\n上海某美资运动服装\nBUYING\nOFFICE\n(4\n年\n11\n个月\n)\n服装\n/\n纺织\n/\n皮革跟单\n| 8001-10000\n元\n/\n月\n耐用消费品（服饰\n/\n纺织\n/\n皮革\n/\n家具\n/\n家电）\n|\n企业性质：外商独资\n|\n规模：\n100-499\n人\n工作描述：\nQUIKSILVER/ ROXY/\nDC SHOES\n三品牌 开展 日本单和美国单 业务，开发，报价，打样，\nFOLLOW\n到大货上线为止。\n2005.07 -\n2010.05\n某知名日资企业\n(4\n年\n11\n个月\n)\n内贸\n/\n外贸 业务担当\n| 4001-6000\n元\n/\n月\n耐用消费品（服饰\n/\n纺织\n/\n皮革\n/\n家具\n/\n家电）\n|\n企业性质：外商独资\n|\n规模：\n100-499\n人\n工作描述：\n2005.7~ 2010.5\n服装内贸\n(KAPPA/ NEW BALANCE)\n、外贸担当\n(TIBI )\n，独立操作大货和样品。\n教育经历\n2001.09\n- 2005.06\n东华大学\n服装设计与工程\n本科\n2001.09\n- 2005.06\n本科\n证书\n2018.05\n日语中级口译 笔译\n+\n口译证书\n语言能力\n日语：\n读写能力熟练\n|\n听说能力熟练\n英语：\n读写能力熟练\n|\n听说能力熟练\n韩语：\n读写能力一般\n|\n听说能力良好",
+  "quality": {
+    "full_name": "zhuzhu",
+    "has_work": true,
+    "work_count": 3,
+    "has_education": true,
+    "education_count": 1,
+    "languages": [
+      "zh"
+    ],
+    "raw_text_length": 1367
+  },
+  "merge_info": {
+    "group_id": "48a8f5d1846d874b",
+    "rule_version": "merge-v3.0-contact-key",
+    "output_filename": "zhuzhu_13671518119.json",
+    "name_status": "valid",
+    "canonical_name": "zhuzhu",
+    "english_name": "zhuzhu",
+    "primary_phone": "13671518119",
+    "primary_email": "zhuzhutoky911@hotmail.com",
+    "other_phones": [],
+    "other_emails": [],
+    "landlines": [],
+    "shared_contacts_ignored": [],
+    "needs_translation": false,
+    "v2_count": 1,
+    "v1_count": 1,
+    "language_sources": {
+      "zh": [
+        0,
+        1
+      ]
+    },
+    "translated_from": "",
+    "name_note": "",
+    "conflict_count": 11,
+    "field_issue_count": 2,
+    "name_linked_sources": [],
+    "output_category": "formal",
+    "high_issue_count": 0
+  }
+}

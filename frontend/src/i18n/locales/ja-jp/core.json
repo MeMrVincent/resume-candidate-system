@@ -1,0 +1,51 @@
+{
+  "lan": {
+    "input": "入力してください",
+    "select": "選択してください",
+    "all": "すべて",
+    "operate": "操作",
+    "colon": "：",
+    "createdTime": "作成日時",
+    "updatedTime": "更新日時",
+    "status": "ステータス",
+    "language": "言語",
+    "empty": "データがありません",
+    "none": "--"
+  },
+  "btn": {
+    "search": "検索",
+    "reset": "リセット",
+    "create": "新規作成",
+    "edit": "編集",
+    "delete": "削除",
+    "detail": "詳細",
+    "confirm": "OK",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "back": "戻る",
+    "add": "追加"
+  },
+  "menu": {
+    "company": "企業管理",
+    "position": "求人管理",
+    "candidate": "候補者管理",
+    "home": "ホーム",
+    "systemName": "リクルート管理システム",
+    "candidateImport": "候補者インポート"
+  },
+  "message": {
+    "saveSuccess": "保存しました",
+    "deleteSuccess": "削除しました",
+    "confirmTitle": "確認",
+    "deleteConfirm": "削除してもよろしいですか？"
+  },
+  "errorCode": {
+    "VALIDATION": "入力内容が正しくありません",
+    "NOT_FOUND": "データが見つかりません",
+    "DUPLICATE": "データが重複しています",
+    "IN_USE": "使用中のため削除できません",
+    "INVALID_TRANSITION": "現在の状態ではこの操作はできません",
+    "INTERNAL_ERROR": "内部エラー",
+    "PRELOAD_UNAVAILABLE": "メインプロセスに接続できません。デスクトップアプリで開いてください"
+  }
+}

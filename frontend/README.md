@@ -1,62 +1,64 @@
-# Recruitment System Frontend (recruitment-system-frontend)
+# Candidate Recruitment System V2 - Frontend
 
-**English** | [简体中文](README.ZH.md) | [日本語](README.JA.md)
+> **Language Navigation / 语言导航 / 言語ナビゲーション**  
+> **English** | [简体中文](README.ZH.md) | [日本語](README.JA.md)
 
-Frontend renderer process for the Recruitment Management System, built with Vue 3, Element Plus, Webpack 5, and JavaScript.
+Frontend application for the Candidate Recruitment System V2, built with Vue 3, Element Plus, Vue Router, vue-i18n, and Webpack 5.
 
 ---
 
 ## Features
 
-- **Vue 3 + Composition API**: Modular and performant UI architecture.
-- **Full Internationalization (i18n)**: Built-in trilingual UI localization (English default, Simplified Chinese, Japanese) with runtime switching via Vue I18n and Element Plus locale synchronization.
-- **Element Plus UI Toolkit**: Clean recruitment CRM layout and components.
-- **Decoupled Candidate Detail Drawer**: Multi-tab interface for Candidate Profiles, Expectations, Work Experiences, Education, Projects, Training, Skills, Languages, Certificates, and Communication Notes.
-- **Secure Electron IPC Client**: Domain-specific API calls (`candidateApi.js`) interacting with the Electron main process via isolated Preload bridge (`window.electronApi.candidate`).
-- **Webpack 5 Optimization**: Dynamic code splitting, modern asset loading, and production Gzip compression.
+- **Modern Single Page Application**: Powered by Vue 3 Composition API and Element Plus.
+- **On-Demand Multilingual Localization (i18n)**: Supports English (default), Simplified Chinese, and Japanese, with asynchronous chunked language pack loading and reactive Element Plus locale synchronization.
+- **Modular Enterprise CRM & ATS Views**:
+  - Company directory, multi-contact management, and client detail profiles.
+  - Candidate batch JSON importer with interactive file/directory pickers, progress tracking, and conflict warnings.
+- **High-Performance Webpack 5 Architecture**: Optimized bundling with code splitting, Babel runtime transforms, and asset optimization.
 
 ---
 
-## Directory Layout
+## Directory Structure
 
 ```text
 frontend/
-├── build/                           # Webpack 5 configuration (dev.js, prod.js)
+├── build/                 # Webpack build configurations (common, dev, prod)
+├── config/                # Environment configurations
 ├── src/
-│   ├── api/                         # Domain API wrappers (candidateApi.js)
-│   ├── electron/                    # Electron IPC AJAX bridge
-│   ├── i18n/                        # Multi-language dictionary & vue-i18n setup
-│   ├── pages/
-│   │   ├── candidate/               # Candidate management views
-│   │   │   ├── CandidateList.vue    # Search list with multi-condition filtering
-│   │   │   ├── CandidateDetailDrawer.vue # Candidate detail slide-out drawer
-│   │   │   └── tabs/                # Decoupled detail tabs
-│   │   ├── dashboard/               # Dashboard view
-│   │   └── layout/                  # Main shell and navigation layout
-│   ├── router/                      # Vue Router configuration
-│   ├── index.html                   # HTML template
-│   └── main.js                      # Application initialization
-└── static/                          # Static images, styles, and web fonts
+│   ├── api/               # Domain API invocation wrappers
+│   ├── http/              # IPC / AJAX communication adapters
+│   ├── i18n/              # vue-i18n instance and on-demand locale loader
+│   │   └── locales/       # Chunked translation packs (en-us, zh-cn, ja-jp)
+│   ├── pages/             # Business views (Company CRM, Candidate Importer)
+│   ├── router/            # Vue Router navigation mapping & i18n guards
+│   ├── App.vue            # Root component with el-config-provider
+│   └── main.js            # Frontend entry point
+├── static/                # Static assets (fonts, stylesheets, images)
+└── package.json           # Frontend dependencies & build scripts
 ```
 
 ---
 
-## Scripts
+## Getting Started
 
-```powershell
+```bash
+# Navigate to frontend directory
+cd frontend
+
 # Install dependencies
 npm install
 
-# Start local development server (http://localhost:9000)
+# Start development server
 npm run dev
 
-# Build production bundle into dist/
+# Build for production
 npm run build
-
-# Analyze bundle size
-npm run analyzer
-
-# Format & Lint
-npm run format:prettier
-npm run lint-fix
 ```
+
+---
+
+## AI Engineering Credits
+
+- **Google DeepMind Antigravity**: Architecture design, full i18n implementation, trilingual documentation, and Git release operations.
+- **OpenAI Codex**: Foundation data transformation, cross-language resume merging, and schema scaffolding.
+- **Anthropic Claude**: System testing and verification.

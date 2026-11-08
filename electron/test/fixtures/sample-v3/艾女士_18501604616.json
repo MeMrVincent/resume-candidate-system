@@ -1,0 +1,281 @@
+{
+  "schema_version": "resume-merge-v3.0",
+  "record_id": "merge-v3-1219604322a8568d",
+  "source": {
+    "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\胖子\\2014.10.17\\人事专员\\24027121-人事专员-猎聘网简历.doc",
+    "html_path": "",
+    "source_count": 1,
+    "source_files": [
+      {
+        "index": 0,
+        "version": "v2",
+        "json_path": "E:\\resume-system\\complete-v2-temp\\艾女士_18501604616.json",
+        "sha256": "04e230e8843533741d85e61c20de30d8e3f904617a259a634091e2a285805072",
+        "duplicate_paths": [],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\胖子\\2014.10.17\\人事专员\\24027121-人事专员-猎聘网简历.doc",
+        "html_path": "",
+        "resume_updated_date": "2014-09-12 00:00:00",
+        "languages": [
+          "zh"
+        ]
+      }
+    ]
+  },
+  "dates": {
+    "resume_updated_date": "2014-09-12 00:00:00",
+    "resume_download_date": "2014-09-25 17:00:22",
+    "resume_updated_date_source": "文档正文最新登录时间",
+    "resume_download_date_source": "ZIP源文件修改时间（历史资料替代）",
+    "sys_created_date": "2026-08-13T19:45:00+09:00",
+    "sys_updated_date": "2026-10-12T00:00:00+09:00"
+  },
+  "extraction": {
+    "merger": "claude_merge.v3.py",
+    "rule_version": "merge-v3.0-contact-key"
+  },
+  "classification": {
+    "document_type": "resume",
+    "reason": "按手机号/邮箱合并的候选人"
+  },
+  "structured_data": {
+    "base_info": {
+      "full_name": "艾女士",
+      "gender": "女",
+      "age": "24",
+      "birth_date": "",
+      "birth_year": "",
+      "marital_status": "未婚",
+      "children_status": "",
+      "political_status": "",
+      "height_cm": "",
+      "weight_kg": "",
+      "household_registration": "株洲",
+      "address": "",
+      "postal_code": "",
+      "platform_from": "猎聘网(Liepin)",
+      "platform_resume_id": "24027121",
+      "phone": "18501604616",
+      "email": "301098940@qq.com",
+      "city": "上海",
+      "nationality": "中国",
+      "pr": "内外兼修的我在日常生活中做人踏实、做事认真、待人诚恳。从小严格要求自己，性格独立坚强，凡事尽力做到自己能力范围的最好。\n在工作中充分发挥自己主观能动性及学习能力，熟练掌握计算机办公室操作软件，能比较好地运用秘书及人力资源知识， 同时我会加强各方面的学习。最重要的是我决心做一件事情，就会努力把它做好，我认为，这也是一种责任！\n我相信“真善美即是人间天堂”，因此这是我的完美追求！一个人要心态摆正，有追求，才能真正实现自身的人生价值！"
+    },
+    "expected_info": {
+      "expected_city": "",
+      "expected_position": "",
+      "expected_salary": "",
+      "expected_annual_salary_min": "",
+      "expected_annual_salary_max": "",
+      "expected_industry": "",
+      "expected_employment_type": "",
+      "expected_start_date": ""
+    },
+    "current_info": {
+      "company_name": "民太安保险公估集团股份有限公司湖南分公司",
+      "company_employees": "",
+      "company_industry": "保险",
+      "position": "人事专员",
+      "position_type": "",
+      "position_salary": "",
+      "position_dept": "",
+      "position_report_to": "",
+      "position_subordinate": "0",
+      "employment_type": "全职",
+      "annual_salary_min": "",
+      "annual_salary_max": "",
+      "status": "离职",
+      "position_start": "2013年10月01日",
+      "position_resigned": "2014年07月01日"
+    },
+    "education_info": {
+      "school_name": "湖南大学",
+      "school_major_name": "人力资源管理",
+      "school_degree_type": "本科",
+      "school_degree_rank": "4",
+      "school_education_type": "全日制大学",
+      "school_start_ym": "2012年09月01日",
+      "school_end_ym": "2014年07月01日"
+    },
+    "resumes": [
+      {
+        "resume_languge": "zh",
+        "base_info": {
+          "full_name": "艾女士",
+          "gender": "女",
+          "age": "24",
+          "birth_date": "",
+          "birth_year": "",
+          "marital_status": "未婚",
+          "children_status": "",
+          "political_status": "",
+          "height_cm": "",
+          "weight_kg": "",
+          "household_registration": "株洲",
+          "address": "",
+          "postal_code": "",
+          "platform_from": "猎聘网(Liepin)",
+          "platform_resume_id": "24027121",
+          "phone": "18501604616",
+          "email": "301098940@qq.com",
+          "city": "上海",
+          "nationality": "中国",
+          "pr": "内外兼修的我在日常生活中做人踏实、做事认真、待人诚恳。从小严格要求自己，性格独立坚强，凡事尽力做到自己能力范围的最好。\n在工作中充分发挥自己主观能动性及学习能力，熟练掌握计算机办公室操作软件，能比较好地运用秘书及人力资源知识， 同时我会加强各方面的学习。最重要的是我决心做一件事情，就会努力把它做好，我认为，这也是一种责任！\n我相信“真善美即是人间天堂”，因此这是我的完美追求！一个人要心态摆正，有追求，才能真正实现自身的人生价值！"
+        },
+        "expected_list": [],
+        "work_experiences": [
+          {
+            "company_name": "民太安保险公估集团股份有限公司湖南分公司",
+            "company_employees": "",
+            "company_industry": "保险",
+            "position": "人事专员",
+            "position_type": "",
+            "position_salary": "",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "0",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2013年10月01日",
+            "position_resigned": "2014年07月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "2013年10月调岗为人事专员，负责公司薪酬、人事劳动关系等相关工作。\n人事专员工作主要有：\n1.建立、维护人事档案，定期汇总更新，办理和更新劳动合同相关事宜；\n2.办理员工招聘、入职、离职、调任、升职等手续；\n3.进行人事信息、报表的统计汇总和定期上报；\n4.负责公司考勤、员工工资与绩效提成及其他与薪酬福利相关的编制；\n5.负责月社保费用及住房公积金办理，后续处理，费用的核算对账；\n6.与其他业务部门与外部管理机构的沟通及数据统计提交工作；\n7.协助上级进行分公司一般员工的招聘工作，协同开展新员工入职培训，业务培训，执行培训计划，联系组织外部培训以及培训效果的跟踪、反馈；\n8.协助公司及本部门开展组织不同的员工活动。",
+            "position_achievements": ""
+          },
+          {
+            "company_name": "民太安保险公估集团股份有限公司湖南分公司",
+            "company_employees": "",
+            "company_industry": "保险",
+            "position": "经理助理兼前台行政",
+            "position_type": "",
+            "position_salary": "",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "0",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2012年07月01日",
+            "position_resigned": "2013年09月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "2012年6月毕业后转岗至前台行政兼经理助理，协助运营部负责人处理相关工作；\n行政及经理助理工作主要有：\n1.协助总经理的日常工作，包括会议、行程安排，日常文件处理及整理；\n2.跨部门事务协调与其他部门的负责人进行沟通；\n3.负责会议安排、材料的整理、存档工作；\n4.电话接听、转接，按要求转接电话或记录信息，确保及时准确；\n5.对来访客人做好接待、登记、引导工作；\n6.负责公司快递、信件、包裹的发送、签收工作；\n7.负责复印、传真和打印等设备的使用与管理工作；\n8.负责公司员工通讯录的更新；\n9.完成上级交给的其他事务性工作。",
+            "position_achievements": ""
+          },
+          {
+            "company_name": "民太安保险公估集团股份有限公司湖南分公司",
+            "company_employees": "",
+            "company_industry": "保险",
+            "position": "内勤",
+            "position_type": "",
+            "position_salary": "",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "0",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2011年12月01日",
+            "position_resigned": "2012年06月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "2011年12月进入公司实习担任部门内勤，处理部门内勤、行政等事务；\n内勤工作主要有：\n1.协助车险业务部经理处理车险业务部行政、人事、财务、资产的具体事务工作；\n2.负责对车险案件资料的收集、归档和保管；报表数据的编制和统计；\n3.健全车险业务部业务信息、数据及客户资料登记及统计；\n4.负责与外部机构的接洽和沟通工作；\n5.负责领导交办的其他工作。",
+            "position_achievements": ""
+          }
+        ],
+        "education_list": [
+          {
+            "school_name": "湖南大学",
+            "school_major_name": "人力资源管理",
+            "school_degree_type": "本科",
+            "school_degree_rank": "4",
+            "school_education_type": "全日制大学",
+            "school_start_ym": "2012年09月01日",
+            "school_end_ym": "2014年07月01日"
+          },
+          {
+            "school_name": "湖南交通职业技术学院",
+            "school_major_name": "文秘",
+            "school_degree_type": "大专",
+            "school_degree_rank": "3",
+            "school_education_type": "全日制大专",
+            "school_start_ym": "2009年09月01日",
+            "school_end_ym": "2012年07月01日"
+          }
+        ],
+        "certificate_list": [
+          {
+            "certificate_name": "2011/09：\t秘书证",
+            "certificate_type": "证书",
+            "certificate_time": "2011年09月01日"
+          },
+          {
+            "certificate_name": "2013/04：\t全国计算机应用技术证书（NIT）",
+            "certificate_type": "证书",
+            "certificate_time": "2013年04月01日"
+          }
+        ],
+        "language_list": [
+          {
+            "language_name": "英语",
+            "language_level": "",
+            "language_certificate": "",
+            "language_certificate_time": ""
+          },
+          {
+            "language_name": "普通话",
+            "language_level": "",
+            "language_certificate": "",
+            "language_certificate_time": ""
+          }
+        ],
+        "skills_list": [],
+        "training_list": [],
+        "project_list": [],
+        "communication_list": []
+      }
+    ]
+  },
+  "raw_text": "关联职位：\t\t人事专员\n简历编号：\t\t24027121\t\t最新登录：\t\t2014-09-12\n个人信息\n姓名：\t\t艾女士\t\t性别：\t\t女\n手机号码：\t\t18501604616\t\t年龄：\t\t24\n电子邮件：\t\t301098940@qq.com\t\t教育程度：\t\t本科\n工作年限：\t\t3 年\t\t婚姻状况：\t\t未婚\n职业状态：\t\t离职，正在找工作\t\t所在地：\t\t上海\n国籍：\t\t中国\t\t户籍：\t\t株洲\n目前职业概况：\n所在行业：\t\t保险\t\t公司名称：\t\t民太安保险公估集团股份有限公司\n所任职位：\t\t人事专员\t\t目前年薪：\t\t保密\n职业发展意向：\n期望行业：\t\t服装服饰/纺织/皮革;广告/公关/市场推广/会展;影视/媒体/艺术/文化/出版\n期望职位：\t\t广告/会展;人力资源;行政/后勤/文秘\n期望地点：\t\t上海\n期望年薪：\t\t面议\n工作经历\n2011/12-2014/07\t\t民太安保险公估集团股份有限公司湖南分公司\n公司行业：保险 \t公司描述：民太安保险公估有限公司是经中国人民银行批准于1994年2月成立的国内第一批专门从事保险公估及相关业务的全国性保险服务机构（2002年1月由中国保监会核发公估机构法人许可证）。是目前国内业务规模最大、机构网点最全、综合实力最强的保险公估公司之一，连续8年位居保险公估行业第一。    民太安公司目前经营有车险公估业务、财险公估业务、医疗健康险公估业务，具体涉及汽车、建筑、机械、电力、化工、铁路、桥梁、船舶、纺织、隧道等诸多领域。民太安公司总部位于广东省深圳市，在广东、北京、大连、山东、上海、浙江、江苏、安徽、福建、湖北、湖南、河南、江西、四川、广西、山西、云南等地区的省会城市、直辖市、计划单列市以及经济发达城市设有分支机构。    民太安公司人才战略的宗旨是加强人才队伍建设，以专业定位人才，以环境塑造人才，以机制激励人才，以事业成就人才。    2007年，民太安公司将抓住机遇，继续保持迅猛发展的势头，在更多经济发达城市成立分支机构，实现公司跨越式快速发展的战略目标。特诚邀热爱保险公估事业、富有激情、勇于挑战的人才加盟，共创美好的明天！\n人事专员\t\t2013/10-2014/07\n所在地区：长沙\n下属人数：0\t\t薪酬状况：保密\n工作职责：\t\t2013年10月调岗为人事专员，负责公司薪酬、人事劳动关系等相关工作。 \t人事专员工作主要有： \t1.建立、维护人事档案，定期汇总更新，办理和更新劳动合同相关事宜； \t2.办理员工招聘、入职、离职、调任、升职等手续； \t3.进行人事信息、报表的统计汇总和定期上报； \t4.负责公司考勤、员工工资与绩效提成及其他与薪酬福利相关的编制； \t5.负责月社保费用及住房公积金办理，后续处理，费用的核算对账； \t6.与其他业务部门与外部管理机构的沟通及数据统计提交工作； \t7.协助上级进行分公司一般员工的招聘工作，协同开展新员工入职培训，业务培训，执行培训计划，联系组织外部培训以及培训效果的跟踪、反馈； \t8.协助公司及本部门开展组织不同的员工活动。\n经理助理兼前台行政\t\t2012/07-2013/09\n所在地区：长沙\n下属人数：0\t\t薪酬状况：保密\n工作职责：\t\t2012年6月毕业后转岗至前台行政兼经理助理，协助运营部负责人处理相关工作； \t行政及经理助理工作主要有： \t1.协助总经理的日常工作，包括会议、行程安排，日常文件处理及整理； \t2.跨部门事务协调与其他部门的负责人进行沟通； \t3.负责会议安排、材料的整理、存档工作； \t4.电话接听、转接，按要求转接电话或记录信息，确保及时准确； \t5.对来访客人做好接待、登记、引导工作； \t6.负责公司快递、信件、包裹的发送、签收工作； \t7.负责复印、传真和打印等设备的使用与管理工作； \t8.负责公司员工通讯录的更新； \t9.完成上级交给的其他事务性工作。\n内勤\t\t2011/12-2012/06\n所在地区：长沙\n下属人数：0\t\t薪酬状况：保密\n工作职责：\t\t2011年12月进入公司实习担任部门内勤，处理部门内勤、行政等事务； \t内勤工作主要有： \t1.协助车险业务部经理处理车险业务部行政、人事、财务、资产的具体事务工作；  \t2.负责对车险案件资料的收集、归档和保管；报表数据的编制和统计； \t3.健全车险业务部业务信息、数据及客户资料登记及统计；  \t4.负责与外部机构的接洽和沟通工作； \t5.负责领导交办的其他工作。\n教育经历\n湖南大学  2012/09-2014/07\t\t人力资源管理\t\t本科\n湖南交通职业技术学院  2009/09-2012/07\t\t文秘\t\t大专\n语言能力\n英语、普通话\n自我评价\n内外兼修的我在日常生活中做人踏实、做事认真、待人诚恳。从小严格要求自己，性格独立坚强，凡事尽力做到自己能力范围的最好。 \t         在工作中充分发挥自己主观能动性及学习能力，熟练掌握计算机办公室操作软件，能比较好地运用秘书及人力资源知识， 同时我会加强各方面的学习。最重要的是我决心做一件事情，就会努力把它做好，我认为，这也是一种责任！ \t         我相信“真善美即是人间天堂”，因此这是我的完美追求！一个人要心态摆正，有追求，才能真正实现自身的人生价值！\n附加信息\n2011/09：\t秘书证 \t2013/04：\t全国计算机应用技术证书（NIT） \t2014/04：\t保险公估人证",
+  "quality": {
+    "full_name": "艾女士",
+    "has_work": true,
+    "work_count": 3,
+    "has_education": true,
+    "education_count": 2,
+    "languages": [
+      "zh"
+    ],
+    "raw_text_length": 2232
+  },
+  "merge_info": {
+    "group_id": "1219604322a8568d",
+    "rule_version": "merge-v3.0-contact-key",
+    "output_filename": "艾女士_18501604616.json",
+    "name_status": "valid",
+    "canonical_name": "艾女士",
+    "english_name": "",
+    "primary_phone": "18501604616",
+    "primary_email": "301098940@qq.com",
+    "other_phones": [],
+    "other_emails": [],
+    "landlines": [],
+    "shared_contacts_ignored": [],
+    "needs_translation": false,
+    "v2_count": 1,
+    "v1_count": 0,
+    "language_sources": {
+      "zh": [
+        0
+      ]
+    },
+    "translated_from": "",
+    "name_note": "招聘平台隐去了全名，原文只有“艾女士”，按原文沿用",
+    "conflict_count": 0,
+    "field_issue_count": 1,
+    "name_linked_sources": [],
+    "output_category": "formal",
+    "high_issue_count": 0
+  }
+}

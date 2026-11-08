@@ -1,45 +1,45 @@
-/**
- * Electron Preload 安全桥接脚本。向渲染进程暴露受控的 window.electronApi 对象。
- *
- * EN: Electron Preload secure bridge. Exposes the controlled window.electronApi object to the renderer.
- *
- * JA: Electron Preload セキュアブリッジ。レンダラープロセスへ安全に制御された window.electronApi を公開。
- */
-const { contextBridge, ipcRenderer } = require('electron');
+'use strict';
+const { contextBridge, ipcRenderer } = require("electron");
 
-contextBridge.exposeInMainWorld('electronApi', {
-  candidate: {
-    candidatesSearch: (params) => ipcRenderer.invoke('candidate:candidatesSearch', params),
-    candidatesCount: () => ipcRenderer.invoke('candidate:candidatesCount'),
-    candidateGet: (id) => ipcRenderer.invoke('candidate:candidateGet', id),
-    candidateResumeGet: (id, resumeId) => ipcRenderer.invoke('candidate:candidateResumeGet', id, resumeId),
-    candidateResumeBaseInfoUpdate: (id, resumeId, data) =>
-      ipcRenderer.invoke('candidate:candidateResumeBaseInfoUpdate', id, resumeId, data),
-    candidateCommunicationAdd: (id, data) =>
-      ipcRenderer.invoke('candidate:candidateCommunicationAdd', id, data),
-    candidateCommunicationUpdate: (id, communicationId, data) =>
-      ipcRenderer.invoke('candidate:candidateCommunicationUpdate', id, communicationId, data),
-    candidateCommunicationDelete: (id, communicationId) =>
-      ipcRenderer.invoke('candidate:candidateCommunicationDelete', id, communicationId),
-    candidateResumeWorkExperiencesUpdate: (id, resumeId, items) =>
-      ipcRenderer.invoke('candidate:candidateResumeWorkExperiencesUpdate', id, resumeId, items),
-    candidateResumeEducationsUpdate: (id, resumeId, items) =>
-      ipcRenderer.invoke('candidate:candidateResumeEducationsUpdate', id, resumeId, items),
-    candidateResumeProjectsUpdate: (id, resumeId, items) =>
-      ipcRenderer.invoke('candidate:candidateResumeProjectsUpdate', id, resumeId, items),
-    candidateResumeTrainingsUpdate: (id, resumeId, items) =>
-      ipcRenderer.invoke('candidate:candidateResumeTrainingsUpdate', id, resumeId, items),
-    candidateResumeCertificatesUpdate: (id, resumeId, items) =>
-      ipcRenderer.invoke('candidate:candidateResumeCertificatesUpdate', id, resumeId, items),
-    candidateResumeSkillsUpdate: (id, resumeId, items) =>
-      ipcRenderer.invoke('candidate:candidateResumeSkillsUpdate', id, resumeId, items),
-    candidateResumeLanguagesUpdate: (id, resumeId, items) =>
-      ipcRenderer.invoke('candidate:candidateResumeLanguagesUpdate', id, resumeId, items),
-    candidateResumeExpectationsUpdate: (id, resumeId, items) =>
-      ipcRenderer.invoke('candidate:candidateResumeExpectationsUpdate', id, resumeId, items),
-  },
-  system: {
-    getVersion: () => ipcRenderer.invoke('system:getVersion'),
-    getDatabasePath: () => ipcRenderer.invoke('system:getDatabasePath'),
-  },
+/**
+ * 为一个模块生成 preload 方法：method(...args) -> ipcRenderer.invoke('模块:method', ...args)
+ * 沙箱下 preload 不能 require 本地文件，所以方法名清单在此处内联。
+ * 清单必须与 src/ipc/*.ipc.js、frontend/src/api/*Api.js 完全一致（test/api-consistency.test.js 会校验）。
+ * Builds the preload methods of one module: method(...args) -> ipcRenderer.invoke('module:method', ...args)
+ * A sandboxed preload cannot require local files, so the method name list is inlined here.
+ * The list must match src/ipc/*.ipc.js and frontend/src/http/Api.js exactly (checked by test/api-consistency.test.js).
+ * 1 つのモジュールの preload メソッドを生成する：method(...args) -> ipcRenderer.invoke('モジュール:method', ...args)
+ * サンドボックス下の preload はローカルファイルを require できないため、メソッド名の一覧をここにインラインで置く。
+ * 一覧は src/ipc/*.ipc.js および frontend/src/http/Api.js と完全に一致させること（test/api-consistency.test.js が検証する）。
+ */
+function createModuleApi(moduleName, methodNames) {
+  const moduleApi = {};
+  for (const methodName of methodNames) {
+    moduleApi[methodName] = (...methodArguments) => ipcRenderer.invoke(`${moduleName}:${methodName}`, ...methodArguments);
+  }
+  return moduleApi;
+}
+
+contextBridge.exposeInMainWorld("electronApi", {
+  company: createModuleApi("company", [
+    "companiesSearch",
+    "companyGet",
+    "companyCreate",
+    "companyUpdate",
+    "companyDelete",
+    "companyContactsList",
+    "companyContactAdd",
+    "companyContactUpdate",
+    "companyContactDelete",
+    "companyNoteAdd",
+    "companyNoteDelete"
+  ]),
+  candidate: createModuleApi("candidate", [
+    "candidateImportPickFiles",
+    "candidateImportPickDirectory",
+    "candidateImportRun",
+    "candidateImportBatchesList",
+    "candidateImportIssuesList"
+  ]),
+  system: createModuleApi("system", ["getVersion", "getDatabasePath"])
 });

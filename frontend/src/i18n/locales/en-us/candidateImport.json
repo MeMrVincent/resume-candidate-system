@@ -1,0 +1,28 @@
+{
+  "candidateImport": {
+    "title": "Candidate Import",
+    "hint": "Choose JSON files or a folder of JSON files (same v3 resume JSON structure as the bulk import). Content that was already imported is skipped automatically.",
+    "pickFiles": "Choose files",
+    "pickDirectory": "Choose folder",
+    "startImport": "Start import",
+    "noSelection": "No file or folder selected yet",
+    "resultSummary": "Created {created}, updated {updated}, skipped {skipped}, failed {failed}, warnings {warnings}",
+    "importDone": "Import finished",
+    "history": "Import history",
+    "batchNo": "Batch",
+    "source": "Source",
+    "totalFiles": "Files",
+    "created": "Created",
+    "updated": "Updated",
+    "skipped": "Skipped",
+    "failed": "Failed",
+    "warnings": "Warnings",
+    "startedAt": "Started at",
+    "viewIssues": "View warnings",
+    "issueTitle": "Batch #{batchId} warnings/errors",
+    "fileName": "File name",
+    "severity": "Severity",
+    "issueCode": "Type",
+    "message": "Message"
+  }
+}

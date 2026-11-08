@@ -1,0 +1,266 @@
+{
+  "schema_version": "resume-merge-v3.0",
+  "record_id": "merge-v3-f2676f59ce214ec5",
+  "source": {
+    "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\老婆资料\\e盘简历\\2015年2月份简历\\智联招聘_艾琼超_中文_20150817_23069418.doc",
+    "html_path": "E:\\resume-system\\_resume_qa\\global_chinese_regen\\passed\\智联招聘_艾琼超_中文_20150817_23069418_a3d3430debc9.html",
+    "source_count": 2,
+    "source_files": [
+      {
+        "index": 0,
+        "version": "v2",
+        "json_path": "E:\\resume-system\\complete-v2-temp\\艾琼超_18721139029.json",
+        "sha256": "322300779e5d7defe93527678d3c7b36e6770571765e20c6b297af46b0f7ddd0",
+        "duplicate_paths": [],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\老婆资料\\e盘简历\\2015年2月份简历\\智联招聘_艾琼超_中文_20150817_23069418.doc",
+        "html_path": "E:\\resume-system\\_resume_qa\\global_chinese_regen\\passed\\智联招聘_艾琼超_中文_20150817_23069418_a3d3430debc9.html",
+        "resume_updated_date": "2015-08-14 00:00:00",
+        "languages": [
+          "zh"
+        ]
+      },
+      {
+        "index": 1,
+        "version": "v1",
+        "json_path": "E:\\resume-system\\complete-v1\\艾琼超_18721139029.json",
+        "sha256": "9992bf022dc6a080cce446b94688c0b8e1a7f0fd90388cf9f9cbaafdaa212ce3",
+        "duplicate_paths": [],
+        "original_path": "E:\\resume-system\\需要采集的简历文件夹\\老婆电脑资料\\老婆资料\\e盘简历\\2015年2月份简历\\智联招聘_艾琼超_中文_20150817_23069418.doc",
+        "html_path": "",
+        "resume_updated_date": "2015-08-17 15:38:15",
+        "languages": [
+          "zh"
+        ]
+      }
+    ]
+  },
+  "dates": {
+    "resume_updated_date": "2015-08-17 15:38:15",
+    "resume_download_date": "2015-08-14 00:00:00",
+    "resume_updated_date_source": "",
+    "resume_download_date_source": "",
+    "sys_created_date": "2026-08-01T10:19:11+09:00",
+    "sys_updated_date": "2026-10-12T00:00:00+09:00"
+  },
+  "extraction": {
+    "merger": "claude_merge.v3.py",
+    "rule_version": "merge-v3.0-contact-key"
+  },
+  "classification": {
+    "document_type": "resume",
+    "reason": "按手机号/邮箱合并的候选人"
+  },
+  "structured_data": {
+    "base_info": {
+      "full_name": "艾琼超",
+      "gender": "女",
+      "age": "26",
+      "birth_date": "1989年06月01日",
+      "birth_year": "1989",
+      "marital_status": "未婚",
+      "children_status": "",
+      "political_status": "团员",
+      "height_cm": "",
+      "weight_kg": "",
+      "household_registration": "株洲",
+      "address": "上海 松江区",
+      "postal_code": "",
+      "platform_from": "智联招聘",
+      "platform_resume_id": "",
+      "phone": "18721139029",
+      "email": "ai594020383@qq.com",
+      "city": "上海市",
+      "nationality": "中国",
+      "pr": "学生简历\n在院学生会文艺部从干事做起,升为副部长;期间协助迎新、双旦等晚会;组织并参加“校第十届运动健美操比赛”第三名;\n2011年圆融中国乒乓球公开赛(苏州)志愿者服务;\n社会简历\n2012年暑假在杭州沃德标准技术服务有限公司(汽车认证)实习一个月,翻译日本车辆型式认证制度内容;\n2013年3月至10月在上海纳米奇精密机电有限公司事业企画部工作。工作内容:1,处理社内文件,总经理工作助理;2,做会议翻译及记录;3、协助过通关跟踪进口实况及手册核销;4、兼任营业,开拓国内贩卖。"
+    },
+    "expected_info": {
+      "expected_city": "上海、苏州",
+      "expected_position": "日语翻译、市场策划/企划专员/助理、外贸/贸易专员/助理、广告文案策划、旅游顾问",
+      "expected_salary": "4001-6000元/月",
+      "expected_annual_salary_min": "",
+      "expected_annual_salary_max": "",
+      "expected_industry": "旅游/度假、检验/检测/认证、广告/会展/公关、贸易/进出口、汽车/摩托车",
+      "expected_employment_type": "全职",
+      "expected_start_date": "我目前在职,正考虑换个新环境(如有合适的工作机会,到岗时间一个月左右)"
+    },
+    "current_info": {
+      "company_name": "意力速(上海)贸易有限公司",
+      "company_employees": "20-99人",
+      "company_industry": "电子技术/半导体/集成电路",
+      "position": "销售业务跟单",
+      "position_type": "",
+      "position_salary": "4001-6000元/月",
+      "position_dept": "",
+      "position_report_to": "",
+      "position_subordinate": "",
+      "employment_type": "全职",
+      "annual_salary_min": "",
+      "annual_salary_max": "",
+      "status": "在职",
+      "position_start": "2014年03月01日",
+      "position_resigned": ""
+    },
+    "education_info": {
+      "school_name": "苏州科技学院",
+      "school_major_name": "日语",
+      "school_degree_type": "本科",
+      "school_degree_rank": "4",
+      "school_education_type": "",
+      "school_start_ym": "2009年09月01日",
+      "school_end_ym": "2013年07月01日"
+    },
+    "resumes": [
+      {
+        "resume_languge": "zh",
+        "base_info": {
+          "full_name": "艾琼超",
+          "gender": "女",
+          "age": "26",
+          "birth_date": "1989年06月01日",
+          "birth_year": "1989",
+          "marital_status": "未婚",
+          "children_status": "",
+          "political_status": "团员",
+          "height_cm": "",
+          "weight_kg": "",
+          "household_registration": "株洲",
+          "address": "上海 松江区",
+          "postal_code": "",
+          "platform_from": "智联招聘",
+          "platform_resume_id": "",
+          "phone": "18721139029",
+          "email": "ai594020383@qq.com",
+          "city": "上海市",
+          "nationality": "中国",
+          "pr": "学生简历\n在院学生会文艺部从干事做起,升为副部长;期间协助迎新、双旦等晚会;组织并参加“校第十届运动健美操比赛”第三名;\n2011年圆融中国乒乓球公开赛(苏州)志愿者服务;\n社会简历\n2012年暑假在杭州沃德标准技术服务有限公司(汽车认证)实习一个月,翻译日本车辆型式认证制度内容;\n2013年3月至10月在上海纳米奇精密机电有限公司事业企画部工作。工作内容:1,处理社内文件,总经理工作助理;2,做会议翻译及记录;3、协助过通关跟踪进口实况及手册核销;4、兼任营业,开拓国内贩卖。"
+        },
+        "expected_list": [
+          {
+            "expected_city": "上海、苏州",
+            "expected_position": "日语翻译、市场策划/企划专员/助理、外贸/贸易专员/助理、广告文案策划、旅游顾问",
+            "expected_salary": "4001-6000元/月",
+            "expected_annual_salary_min": "",
+            "expected_annual_salary_max": "",
+            "expected_industry": "旅游/度假、检验/检测/认证、广告/会展/公关、贸易/进出口、汽车/摩托车",
+            "expected_employment_type": "全职",
+            "expected_start_date": "我目前在职,正考虑换个新环境(如有合适的工作机会,到岗时间一个月左右)"
+          }
+        ],
+        "work_experiences": [
+          {
+            "company_name": "意力速(上海)贸易有限公司",
+            "company_employees": "20-99人",
+            "company_industry": "电子技术/半导体/集成电路",
+            "position": "销售业务跟单",
+            "position_type": "",
+            "position_salary": "4001-6000元/月",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "在职",
+            "position_start": "2014年03月01日",
+            "position_resigned": "",
+            "resigned_reason": "",
+            "position_responsibilities": "2014年3月至今在上海某电子连接器日企担当物流,主要负责订单管理;sap系统操作;与营业共同处理客户反馈;与客户、工厂协调纳期、生产;物流追踪;与财务的发票资料处理;部门内部会议记录等工作。",
+            "position_achievements": ""
+          },
+          {
+            "company_name": "上海纳米奇精密机电有限公司",
+            "company_employees": "500-999人",
+            "company_industry": "电子技术/半导体/集成电路",
+            "position": "日语类",
+            "position_type": "",
+            "position_salary": "2001-4000元/月",
+            "position_dept": "",
+            "position_report_to": "",
+            "position_subordinate": "",
+            "employment_type": "全职",
+            "annual_salary_min": "",
+            "annual_salary_max": "",
+            "status": "离职",
+            "position_start": "2013年03月01日",
+            "position_resigned": "2014年03月01日",
+            "resigned_reason": "",
+            "position_responsibilities": "工作内容:1,处理社内文件,总经理工作助理;2,做会议翻译及记录;3、协助过通关部门跟踪进口实况及手册核销;4、兼任营业,开拓国内贩卖。",
+            "position_achievements": ""
+          }
+        ],
+        "education_list": [
+          {
+            "school_name": "苏州科技学院",
+            "school_major_name": "日语",
+            "school_degree_type": "本科",
+            "school_degree_rank": "4",
+            "school_education_type": "",
+            "school_start_ym": "2009年09月01日",
+            "school_end_ym": "2013年07月01日"
+          }
+        ],
+        "certificate_list": [],
+        "language_list": [
+          {
+            "language_name": "日语",
+            "language_level": "读写能力熟练 | 听说能力良好",
+            "language_certificate": "",
+            "language_certificate_time": ""
+          },
+          {
+            "language_name": "英语",
+            "language_level": "读写能力一般 | 听说能力一般",
+            "language_certificate": "",
+            "language_certificate_time": ""
+          }
+        ],
+        "skills_list": [],
+        "training_list": [],
+        "project_list": [],
+        "communication_list": []
+      }
+    ]
+  },
+  "raw_text": "简历名称：\n日语类 上海\n智联招聘\n期望从事职业：\n日语翻译、市场策划/企划专员/助理、外贸/贸易专员/助理、广...\n简历更新时间：\n2015.08.14\nID\n：\nJM065648833R90250003000\n艾琼超\n手机：\n18721139029\n女    26岁(1989年6月)    2年工作经验    本科    未婚\n现居住地：上海 松江区 | 户口：株洲 | 团员\n身份证：430225198906100046\n手机：18721139029\nE-mail：\nai594020383@qq.com\n求职意向\n期望工作地区：\n上海、苏州\n期望月薪：\n4001-6000元/月\n目前状况：\n我目前在职，正考虑换个新环境（如有合适的工作机会，到岗时间一个月左右）\n期望工作性质：\n全职\n期望从事职业：\n日语翻译、市场策划/企划专员/助理、外贸/贸易专员/助理、广告文案策划、旅游顾问\n期望从事行业：\n旅游/度假、检验/检测/认证、广告/会展/公关、贸易/进出口、汽车/摩托车\n自我评价\n学生简历\n在院学生会文艺部从干事做起，升为副部长；期间协助迎新、双旦等晚会；组织并参加“校第十届运动健美操比赛”第三名；\n2011年圆融中国乒乓球公开赛（苏州）志愿者服务；\n社会简历\n2012年暑假在杭州沃德标准技术服务有限公司（汽车认证）实习一个月，翻译日本车辆型式认证制度内容；\n2013年3月至10月在上海纳米奇精密机电有限公司事业企画部工作。工作内容：1，处理社内文件，总经理工作助理；2，做会议翻译及记录；3、协助过通关跟踪进口实况及手册核销；4、兼任营业，开拓国内贩卖。\n工作经历\n2014.03 - 至今  意力速(上海)贸易有限公司  （1年5个月）\n销售业务跟单 | 4001-6000元/月\n电子技术/半导体/集成电路 | 企业性质：外商独资 | 规模：20-99人\n工作描述：\n2014年3月至今在上海某电子连接器日企担当物流，主要负责订单管理；sap系统操作；与营业共同处理客户反馈；与客户、工厂协调纳期、生产；物流追踪；与财务的发票资料处理；部门内部会议记录等工作。\n2013.03 - 2014.03  上海纳米奇精密机电有限公司  （1年）\n日语类 | 2001-4000元/月\n电子技术/半导体/集成电路 | 企业性质：外商独资 | 规模：500-999人\n工作描述：\n工作内容：\n1，处理社内文件，总经理工作助理；2，做会议翻译及记录；3、协助过通关部门跟踪进口实况及手册核销；4、兼任营业，开拓国内贩卖。\n教育经历\n2009.09 - 2013.07  苏州科技学院  日语  本科\n语言能力\n日语：读写能力熟练 | 听说能力良好\n英语：读写能力一般 | 听说能力一般",
+  "quality": {
+    "full_name": "艾琼超",
+    "has_work": true,
+    "work_count": 2,
+    "has_education": true,
+    "education_count": 1,
+    "languages": [
+      "zh"
+    ],
+    "raw_text_length": 1151
+  },
+  "merge_info": {
+    "group_id": "f2676f59ce214ec5",
+    "rule_version": "merge-v3.0-contact-key",
+    "output_filename": "艾琼超_18721139029.json",
+    "name_status": "valid",
+    "canonical_name": "艾琼超",
+    "english_name": "",
+    "primary_phone": "18721139029",
+    "primary_email": "ai594020383@qq.com",
+    "other_phones": [],
+    "other_emails": [],
+    "landlines": [],
+    "shared_contacts_ignored": [],
+    "needs_translation": false,
+    "v2_count": 1,
+    "v1_count": 1,
+    "language_sources": {
+      "zh": [
+        0,
+        1
+      ]
+    },
+    "translated_from": "",
+    "name_note": "",
+    "conflict_count": 0,
+    "field_issue_count": 0,
+    "name_linked_sources": [],
+    "output_category": "formal",
+    "high_issue_count": 0
+  }
+}
