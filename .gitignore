@@ -10,7 +10,10 @@ release/
 build/
 
 # Databases & local data
+data/backups/
 data/*.db
+data/**/*.db
+*.db
 !data/recruitment.db.example
 !data/.gitkeep
 *.sqlite

@@ -1,10 +1,10 @@
 <template>
   <el-container class="app-layout">
-    <!-- 左侧侧边栏导航 -->
+    <!-- 左侧侧边栏导航 / EN: Left sidebar navigation / JA: 左側サイドバーナビゲーション -->
     <el-aside :width="isCollapse ? '64px' : '230px'" class="layout-aside">
       <div class="brand-logo">
         <el-icon class="logo-icon"><Avatar /></el-icon>
-        <span v-if="!isCollapse" class="brand-title">猎头 CRM / ATS</span>
+        <span v-if="!isCollapse" class="brand-title">{{ $t('layout.brandTitle') }}</span>
       </div>
 
       <el-menu
@@ -18,34 +18,19 @@
       >
         <el-menu-item index="/dashboard">
           <el-icon><DataAnalysis /></el-icon>
-          <template #title>仪表盘</template>
+          <template #title>{{ $t('layout.dashboard') }}</template>
         </el-menu-item>
 
         <el-menu-item index="/candidate">
           <el-icon><User /></el-icon>
-          <template #title>人才库管理</template>
-        </el-menu-item>
-
-        <el-menu-item index="/position">
-          <el-icon><Briefcase /></el-icon>
-          <template #title>职位管理</template>
-        </el-menu-item>
-
-        <el-menu-item index="/customer">
-          <el-icon><OfficeBuilding /></el-icon>
-          <template #title>客户公司</template>
-        </el-menu-item>
-
-        <el-menu-item index="/settings">
-          <el-icon><Setting /></el-icon>
-          <template #title>系统设置</template>
+          <template #title>{{ $t('layout.candidates') }}</template>
         </el-menu-item>
       </el-menu>
     </el-aside>
 
-    <!-- 主体区域 -->
+    <!-- 主体区域 / EN: Main content container / JA: メインエリア -->
     <el-container class="layout-main-container">
-      <!-- 顶部 Header -->
+      <!-- 顶部 Header / EN: Top header / JA: 上部ヘッダー -->
       <el-header height="60px" class="layout-header">
         <div class="header-left">
           <el-button
@@ -60,23 +45,40 @@
           </el-button>
 
           <el-breadcrumb separator="/">
-            <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/dashboard' }">{{ $t('layout.home') }}</el-breadcrumb-item>
             <el-breadcrumb-item>{{ currentRouteTitle }}</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
 
         <div class="header-right">
           <el-tag type="success" size="small" class="db-status-tag" effect="dark">
-            <span class="status-dot"></span> SQLite 本地库在线
+            <span class="status-dot"></span> {{ $t('layout.dbOnline') }}
           </el-tag>
+
+          <!-- 语言切换 / EN: Language switcher / JA: 言語切り替え -->
+          <el-dropdown trigger="click" @command="handleLanguageChange">
+            <el-button size="small" class="lang-switch-btn">
+              <el-icon style="margin-right: 4px"><Operation /></el-icon>
+              {{ currentLangLabel }}
+              <el-icon class="el-icon--right"><ArrowDown /></el-icon>
+            </el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="en" :disabled="locale === 'en'">{{ $t('layout.langEn') }}</el-dropdown-item>
+                <el-dropdown-item command="zh-cn" :disabled="locale === 'zh-cn'">{{ $t('layout.langZh') }}</el-dropdown-item>
+                <el-dropdown-item command="ja" :disabled="locale === 'ja'">{{ $t('layout.langJa') }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+
           <div class="user-profile">
             <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
-            <span class="username">资深顾问</span>
+            <span class="username">{{ $t('layout.userRole') }}</span>
           </div>
         </div>
       </el-header>
 
-      <!-- 页面内容视图 -->
+      <!-- 页面内容视图 / EN: Router view content / JA: ページコンテンツ表示エリア -->
       <el-main class="layout-content">
         <router-view v-slot="{ Component }">
           <transition name="fade-transform" mode="out-in">
@@ -91,17 +93,18 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import {
   Avatar,
   DataAnalysis,
   User,
-  Briefcase,
-  OfficeBuilding,
-  Setting,
   Expand,
   Fold,
+  Operation,
+  ArrowDown
 } from '@element-plus/icons-vue';
 
+const { locale, t } = useI18n();
 const isCollapse = ref(false);
 const route = useRoute();
 
@@ -110,19 +113,30 @@ const activeMenu = computed(() => route.path);
 const currentRouteTitle = computed(() => {
   switch (route.path) {
     case '/dashboard':
-      return '概览仪表盘';
+      return t('layout.dashboard');
     case '/candidate':
-      return '人才库管理';
-    case '/position':
-      return '职位管理';
-    case '/customer':
-      return '客户公司管理';
-    case '/settings':
-      return '系统设置';
+      return t('layout.candidates');
     default:
-      return '人才库';
+      return t('layout.candidates');
   }
 });
+
+const currentLangLabel = computed(() => {
+  switch (locale.value) {
+    case 'zh-cn':
+      return t('layout.langZh');
+    case 'ja':
+      return t('layout.langJa');
+    case 'en':
+    default:
+      return t('layout.langEn');
+  }
+});
+
+const handleLanguageChange = (lang) => {
+  locale.value = lang;
+  localStorage.setItem('language', lang);
+};
 </script>
 
 <style scoped lang="less">
@@ -220,6 +234,13 @@ const currentRouteTitle = computed(() => {
           }
         }
 
+        .lang-switch-btn {
+          display: flex;
+          align-items: center;
+          border-radius: 6px;
+          padding: 6px 10px;
+        }
+
         .user-profile {
           display: flex;
           align-items: center;
@@ -244,7 +265,7 @@ const currentRouteTitle = computed(() => {
   }
 }
 
-/* 页面切换平滑淡入动画 */
+/* 页面切换平滑淡入动画 / EN: Smooth fade-in animation for view transitions / JA: ページ遷移のフェードインアニメーション */
 .fade-transform-enter-active,
 .fade-transform-leave-active {
   transition: opacity 0.25s ease, transform 0.25s ease;

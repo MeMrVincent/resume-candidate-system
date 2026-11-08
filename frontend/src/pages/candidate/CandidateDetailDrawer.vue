@@ -1,350 +1,127 @@
 <template>
   <el-drawer
-    v-model="candidateStore.detailDrawerVisible"
-    title="候选人全景画像"
-    size="55%"
+    :model-value="modelValue"
+    :title="$t('drawer.title')"
+    size="62%"
     destroy-on-close
-    :before-close="handleClose"
+    :before-close="close"
+    @update:model-value="$emit('update:modelValue', $event)"
   >
-    <div v-loading="candidateStore.detailLoading" class="detail-container">
-      <template v-if="detail && detail.profile">
-        <!-- 头部全景卡片 -->
-        <div class="profile-header-card">
-          <div class="header-main">
-            <el-avatar :size="64" class="profile-avatar">
-              {{ detail.profile.full_name ? detail.profile.full_name.charAt(0) : '未' }}
-            </el-avatar>
-            <div class="profile-info">
-              <div class="name-bar">
-                <h2>{{ detail.profile.full_name }}</h2>
-                <el-tag type="primary" effect="dark" size="small">{{ detail.profile.gender || '未知' }}</el-tag>
-                <el-tag v-if="detail.profile.age" type="info" size="small">{{ detail.profile.age }}岁</el-tag>
-                <el-tag type="success" size="small">{{ detail.profile.city || '城市未填' }}</el-tag>
-              </div>
-              <p class="current-job">
-                <el-icon><Briefcase /></el-icon>
-                {{ detail.profile.current_company || '暂无公司' }} · {{ detail.profile.current_position || '暂无职位' }}
-              </p>
-            </div>
-          </div>
+    <div v-loading="loading" class="detail-container">
+      <template v-if="detail?.profile">
+        <header class="profile-header">
+          <h2>{{ detail.profile.full_name || $t('drawer.unnamed') }}</h2>
+          <el-radio-group v-if="resumeOptions.length > 1" v-model="selectedResumeId" size="small" @change="changeResume">
+            <el-radio-button v-for="option in resumeOptions" :key="option.id" :value="option.id">{{ option.label }}</el-radio-button>
+          </el-radio-group>
+        </header>
 
-          <!-- 快捷联系工具栏 -->
-          <div class="contact-actions">
-            <el-button
-              v-if="detail.profile.primary_phone"
-              type="success"
-              plain
-              size="small"
-              :icon="Phone"
-              @click="copyText(detail.profile.primary_phone, '电话号码')"
-            >
-              {{ detail.profile.primary_phone }} (复制)
-            </el-button>
-
-            <el-button
-              v-if="detail.profile.primary_email"
-              type="primary"
-              plain
-              size="small"
-              :icon="Message"
-              @click="copyText(detail.profile.primary_email, '邮箱')"
-            >
-              {{ detail.profile.primary_email }} (复制)
-            </el-button>
-          </div>
-        </div>
-
-        <!-- 详细选项卡分类 -->
         <el-tabs v-model="activeTab" class="detail-tabs">
-          <!-- 1. 全景档案 -->
-          <el-tab-pane label="全景档案" name="profile">
-            <div class="tab-section">
-              <h4 class="section-title"><el-icon><User /></el-icon> 基础资料快照</h4>
-              <el-descriptions :column="2" border size="small">
-                <el-descriptions-item label="婚姻状况">{{ detail.profile.marital_status || '-' }}</el-descriptions-item>
-                <el-descriptions-item label="户籍">{{ detail.profile.household_registration || '-' }}</el-descriptions-item>
-                <el-descriptions-item label="最高学历">{{ detail.profile.highest_school }} ({{ detail.profile.highest_degree_type }})</el-descriptions-item>
-                <el-descriptions-item label="专业">{{ detail.profile.highest_major || '-' }}</el-descriptions-item>
-                <el-descriptions-item label="居住地址" :span="2">{{ detail.profile.address || '-' }}</el-descriptions-item>
-              </el-descriptions>
-
-              <h4 class="section-title mt-4"><el-icon><Aim /></el-icon> 求职意向</h4>
-              <template v-if="detail.expectations && detail.expectations.length > 0">
-                <div v-for="(exp, idx) in detail.expectations" :key="idx" class="expectation-box">
-                  <el-tag type="warning">期望职位: {{ exp.expected_position || '未指定' }}</el-tag>
-                  <el-tag type="info">期望城市: {{ exp.expected_city || '未指定' }}</el-tag>
-                  <el-tag type="success">期望薪资: {{ exp.expected_salary_text || '面议' }}</el-tag>
-                </div>
-              </template>
-              <p v-else class="text-muted">暂无求职意向记录</p>
-
-              <h4 class="section-title mt-4"><el-icon><Document /></el-icon> 个人评价与总结</h4>
-              <div class="summary-box">
-                {{ detail.profile.personal_summary || '暂无个人总结' }}
-              </div>
-            </div>
+          <el-tab-pane :label="$t('drawer.tabProfile')" name="profile">
+            <CandidateProfileTab :candidate-id="candidateId" :resume-id="selectedResumeId" :detail="detail" @saved="reloadAfterSave" />
           </el-tab-pane>
-
-          <!-- 2. 工作履历 -->
-          <el-tab-pane label="工作履历" name="work">
-            <div class="tab-section">
-              <el-timeline v-if="detail.workExperiences && detail.workExperiences.length > 0">
-                <el-timeline-item
-                  v-for="(w, idx) in detail.workExperiences"
-                  :key="idx"
-                  :timestamp="`${w.start_date || '开始'} ~ ${w.end_date || '至今'}`"
-                  placement="top"
-                  type="primary"
-                >
-                  <el-card class="timeline-card" shadow="hover">
-                    <div class="timeline-card-header">
-                      <h3>{{ w.company_name }}</h3>
-                      <el-tag type="primary" size="small">{{ w.position_title }}</el-tag>
-                    </div>
-                    <p v-if="w.department" class="text-sub">部门: {{ w.department }}</p>
-                    <div v-if="w.responsibilities" class="content-block">
-                      <strong>工作职责:</strong>
-                      <p>{{ w.responsibilities }}</p>
-                    </div>
-                    <div v-if="w.achievements" class="content-block mt-2">
-                      <strong>工作业绩:</strong>
-                      <p>{{ w.achievements }}</p>
-                    </div>
-                  </el-card>
-                </el-timeline-item>
-              </el-timeline>
-              <el-empty v-else description="暂无工作经历记录" />
-            </div>
+          <el-tab-pane :label="$t('drawer.tabExpectations')" name="expectations">
+            <CandidateExpectationTab :candidate-id="candidateId" :resume-id="selectedResumeId" :items="detail.expectations || []" @saved="reloadAfterSave" />
           </el-tab-pane>
-
-          <!-- 3. 教育背景与技能证书 -->
-          <el-tab-pane label="教育/技能/语言" name="education">
-            <div class="tab-section">
-              <h4 class="section-title"><el-icon><Reading /></el-icon> 教育背景</h4>
-              <el-table :data="detail.educations || []" size="small" border style="width: 100%">
-                <el-table-column prop="school_name" label="学校名称" />
-                <el-table-column prop="major_name" label="专业" />
-                <el-table-column prop="degree_type" label="学历" width="100" />
-                <el-table-column label="时间段">
-                  <template #default="{ row }">
-                    {{ row.start_date }} ~ {{ row.end_date }}
-                  </template>
-                </el-table-column>
-              </el-table>
-
-              <h4 class="section-title mt-4"><el-icon><Star /></el-icon> 技能与语言能力</h4>
-              <div class="tags-group">
-                <el-tag v-for="(sk, idx) in detail.skills || []" :key="idx" type="info" class="mr-2 mb-2">
-                  {{ sk.skill_name }} {{ sk.proficiency_level ? `(${sk.proficiency_level})` : '' }}
-                </el-tag>
-                <el-tag v-for="(l, idx) in detail.languages || []" :key="'lang-'+idx" type="success" class="mr-2 mb-2">
-                  {{ l.language_name }}: {{ l.proficiency_level || l.certificate_name }}
-                </el-tag>
-              </div>
-            </div>
+          <el-tab-pane :label="$t('drawer.tabWork')" name="work">
+            <CandidateWorkTab :candidate-id="candidateId" :resume-id="selectedResumeId" :items="detail.workExperiences || []" @saved="reloadAfterSave" />
           </el-tab-pane>
-
-          <!-- 4. 沟通记录与追踪 -->
-          <el-tab-pane label="沟通跟进" name="communication">
-            <div class="tab-section">
-              <div class="comm-action-bar mb-4">
-                <el-button type="primary" size="small" :icon="Plus" @click="showAddCommDialog = true">
-                  新增沟通记录
-                </el-button>
-              </div>
-
-              <el-timeline v-if="detail.communications && detail.communications.length > 0">
-                <el-timeline-item
-                  v-for="(c, idx) in detail.communications"
-                  :key="idx"
-                  :timestamp="c.communication_date"
-                  type="success"
-                >
-                  <div class="comm-item">
-                    <el-tag size="small" type="warning">{{ c.communication_type }}</el-tag>
-                    <p class="comm-summary">{{ c.summary }}</p>
-                  </div>
-                </el-timeline-item>
-              </el-timeline>
-              <el-empty v-else description="暂无历史沟通跟进记录" />
-            </div>
+          <el-tab-pane :label="$t('drawer.tabProjects')" name="projects">
+            <CandidateProjectTab :candidate-id="candidateId" :resume-id="selectedResumeId" :items="detail.projects || []" @saved="reloadAfterSave" />
+          </el-tab-pane>
+          <el-tab-pane :label="$t('drawer.tabEducation')" name="education">
+            <CandidateEducationTab :candidate-id="candidateId" :resume-id="selectedResumeId" :items="detail.educations || []" @saved="reloadAfterSave" />
+          </el-tab-pane>
+          <el-tab-pane :label="$t('drawer.tabTrainings')" name="trainings">
+            <CandidateTrainingTab :candidate-id="candidateId" :resume-id="selectedResumeId" :items="detail.trainings || []" @saved="reloadAfterSave" />
+          </el-tab-pane>
+          <el-tab-pane :label="$t('drawer.tabSkills')" name="skills">
+            <CandidateSkillTab :candidate-id="candidateId" :resume-id="selectedResumeId" :items="detail.skills || []" @saved="reloadAfterSave" />
+          </el-tab-pane>
+          <el-tab-pane :label="$t('drawer.tabLanguages')" name="languages">
+            <CandidateLanguageTab :candidate-id="candidateId" :resume-id="selectedResumeId" :items="detail.languages || []" @saved="reloadAfterSave" />
+          </el-tab-pane>
+          <el-tab-pane :label="$t('drawer.tabCertificates')" name="certificates">
+            <CandidateCertificateTab :candidate-id="candidateId" :resume-id="selectedResumeId" :items="detail.certificates || []" @saved="reloadAfterSave" />
+          </el-tab-pane>
+          <el-tab-pane :label="$t('drawer.tabCommunication')" name="communication">
+            <CandidateCommunicationTab :candidate-id="candidateId" :items="detail.communications || []" @saved="reloadAfterSave" />
           </el-tab-pane>
         </el-tabs>
       </template>
+      <el-empty v-else-if="!loading" :description="$t('drawer.notFound')" />
     </div>
   </el-drawer>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useCandidateStore } from '@/stores/candidateStore';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { ElMessage } from 'element-plus';
-import {
-  Briefcase,
-  Phone,
-  Message,
-  User,
-  Aim,
-  Document,
-  Reading,
-  Star,
-  Plus,
-} from '@element-plus/icons-vue';
+import { candidateApi } from '@/api/candidateApi';
+import CandidateProfileTab from './tabs/CandidateProfileTab.vue';
+import CandidateExpectationTab from './tabs/CandidateExpectationTab.vue';
+import CandidateWorkTab from './tabs/CandidateWorkTab.vue';
+import CandidateProjectTab from './tabs/CandidateProjectTab.vue';
+import CandidateEducationTab from './tabs/CandidateEducationTab.vue';
+import CandidateTrainingTab from './tabs/CandidateTrainingTab.vue';
+import CandidateSkillTab from './tabs/CandidateSkillTab.vue';
+import CandidateLanguageTab from './tabs/CandidateLanguageTab.vue';
+import CandidateCertificateTab from './tabs/CandidateCertificateTab.vue';
+import CandidateCommunicationTab from './tabs/CandidateCommunicationTab.vue';
 
-const candidateStore = useCandidateStore();
+const props = defineProps({
+  modelValue: { type: Boolean, default: false },
+  candidateId: { type: Number, default: null },
+});
+const emit = defineEmits(['update:modelValue', 'changed']);
+const { t } = useI18n();
+const detail = ref(null);
+const loading = ref(false);
 const activeTab = ref('profile');
-const showAddCommDialog = ref(false);
+const selectedResumeId = ref(null);
+const resumeOptions = ref([]);
+const languageLabels = computed(() => ({
+  zh: t('layout.langZh'),
+  en: t('layout.langEn'),
+  jp: t('layout.langJa'),
+  ja: t('layout.langJa'),
+  de: 'Deutsch',
+  fr: 'Français',
+  es: 'Español',
+  kr: '한국어',
+  ko: '한국어',
+}));
 
-const detail = computed(() => candidateStore.currentCandidateDetail);
-
-const handleClose = (done) => {
-  candidateStore.closeCandidateDetail();
-  done();
+const load = async () => {
+  if (!props.candidateId) return;
+  loading.value = true;
+  try {
+    detail.value = await candidateApi.candidateResumeGet(props.candidateId, selectedResumeId.value);
+    selectedResumeId.value = detail.value.resumeId;
+    resumeOptions.value = (detail.value.resumeOptions || []).map((option, index, all) => {
+      const sameLanguage = all.filter((item) => item.resume_language === option.resume_language);
+      const suffix = sameLanguage.length > 1 ? ` ${sameLanguage.findIndex((item) => item.id === option.id) + 1}` : '';
+      const langText = languageLabels.value[option.resume_language] || option.resume_language.toUpperCase();
+      return { ...option, label: `${langText}${suffix}` };
+    });
+  } catch (error) {
+    ElMessage.error(`${t('drawer.loadFailed')}: ${error.message}`);
+  } finally {
+    loading.value = false;
+  }
 };
+const reloadAfterSave = async () => { await load(); emit('changed'); };
+const changeResume = async () => { activeTab.value = 'profile'; await load(); };
+const close = (done) => { detail.value = null; activeTab.value = 'profile'; selectedResumeId.value = null; resumeOptions.value = []; done(); };
 
-const copyText = (text, name) => {
-  navigator.clipboard.writeText(text);
-  ElMessage.success(`已成功复制${name}: ${text}`);
-};
+watch(() => [props.modelValue, props.candidateId], ([visible, id]) => {
+  if (visible && id) { activeTab.value = 'profile'; selectedResumeId.value = null; load(); }
+}, { immediate: true });
 </script>
 
 <style scoped lang="less">
-.detail-container {
-  padding: 0 10px;
-
-  .profile-header-card {
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    color: #ffffff;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .header-main {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-
-      .profile-avatar {
-        background-color: #0284c7;
-        font-size: 24px;
-        font-weight: bold;
-      }
-
-      .profile-info {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-
-        .name-bar {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-
-          h2 {
-            margin: 0;
-            font-size: 22px;
-          }
-        }
-
-        .current-job {
-          margin: 0;
-          font-size: 13px;
-          color: #94a3b8;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        }
-      }
-    }
-
-    .contact-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-  }
-
-  .detail-tabs {
-    .section-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: #1e293b;
-      margin: 16px 0 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .expectation-box {
-      display: flex;
-      gap: 10px;
-      background: #f8fafc;
-      padding: 12px;
-      border-radius: 8px;
-    }
-
-    .summary-box {
-      background: #f1f5f9;
-      padding: 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      color: #334155;
-      line-height: 1.6;
-    }
-
-    .timeline-card {
-      .timeline-card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        h3 {
-          margin: 0;
-          font-size: 16px;
-          color: #0f172a;
-        }
-      }
-
-      .text-sub {
-        font-size: 12px;
-        color: #64748b;
-        margin: 6px 0;
-      }
-
-      .content-block {
-        font-size: 13px;
-        color: #334155;
-
-        strong {
-          color: #0284c7;
-        }
-
-        p {
-          margin: 4px 0 0;
-        }
-      }
-    }
-
-    .comm-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-
-      .comm-summary {
-        margin: 0;
-        font-size: 13px;
-        color: #334155;
-      }
-    }
-  }
-
-  .mt-4 { margin-top: 16px; }
-  .mt-2 { margin-top: 8px; }
-  .mb-4 { margin-bottom: 16px; }
-  .mr-2 { margin-right: 8px; }
-  .mb-2 { margin-bottom: 8px; }
-}
+.detail-container { min-height: 360px; padding: 0 8px; }
+.profile-header { display:flex;align-items:center;gap:16px;padding:16px 20px;margin-bottom:18px;border-radius:10px;background:#163657;color:#fff;h2{margin:0;font-size:22px;font-weight:700}:deep(.el-radio-button__inner){border-color:#7aa2ca;background:transparent;color:#dbeafe}:deep(.el-radio-button__original-radio:checked + .el-radio-button__inner){background:#3b82f6;color:#fff;border-color:#3b82f6;box-shadow:-1px 0 0 0 #3b82f6}}
+.detail-tabs { :deep(.el-tabs__header) { margin-bottom: 20px; } :deep(.el-tabs__item) { font-weight: 600; } }
 </style>

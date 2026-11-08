@@ -55,19 +55,19 @@ span,i,em,big,small,b,strong { font-size:inherit; font-weight:normal; font-style
 /** single row, multiple columns, aligned to the top left **/
 .Flex[tag='LT'] { align-items:flex-start; justify-content: flex-start; }
 .Flex[tag='RT'] { align-items:flex-end; justify-content: flex-end; }
-/**单行，两端对齐，文字居中对齐**/
+/** 单行，两端对齐，垂直居中 / EN: Single-row, space-between, vertically centered / JA: 1行、両端揃え、垂直中央揃え **/
 .Flex[tag='SE'] { justify-content:space-between; -webkit-justify-content:space-between; }
-/**单行，靠左对齐，文字居中对齐**/
+/** 单行，靠左对齐，垂直居中 / EN: Single-row, left-aligned, vertically centered / JA: 1行、左揃え、垂直中央揃え **/
 .LFlex { display:flex; -webkit-box-pack:center; justify-content:flex-start; align-items:center; }
-/**单行，靠右对齐，文字居中对齐**/
+/** 单行，靠右对齐，垂直居中 / EN: Single-row, right-aligned, vertically centered / JA: 1行、右揃え、垂直中央揃え **/
 .RFlex { display:flex; -webkit-box-pack:center; justify-content:flex-end; align-items:center; }
-/**多行，上下居中，文字居中对齐**/
+/** 多行，上下居中，水平居中 / EN: Multi-row, column-centered / JA: 複数行、垂直・水平中央揃え **/
 .MFlex { display:flex; -webkit-box-pack:center; justify-content:center; align-items:center; flex-direction:column; -webkit-flex-direction:column; text-align:center; }
-/**多行，顶端对齐，文字居中对齐**/
+/** 多行，顶端对齐 / EN: Multi-row, top-aligned / JA: 複数行、上端揃え **/
 .MFlex[tag='TM']  { justify-content:flex-start; }
-/**多行，靠左对齐，文字居中对齐**/
+/** 多行，靠左对齐 / EN: Multi-row, left-aligned / JA: 複数行、左揃え **/
 .MFlex[tag='LM']  { align-items:flex-start; }
-/**多行，靠右对齐，文字居中对齐**/
+/** 多行，靠右对齐 / EN: Multi-row, right-aligned / JA: 複数行、右揃え **/
 .MFlex[tag='RM']  { align-items:flex-end; -webkit-align-items:flex-end; }
 .TMFlex { display:flex; -webkit-box-pack:center; justify-content:center; align-items:flex-start; }
 article,aside,figcaption,figure,footer,header,hgroup,main,nav,section{display:block}

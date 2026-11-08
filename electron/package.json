@@ -1,19 +1,65 @@
 {
   "name": "recruitment-system-electron",
   "version": "1.0.0",
-  "description": "猎头招聘管理系统 - Electron Main Process",
+  "description": "Recruitment Management CRM / ATS - Electron Main Process",
   "main": "main.js",
   "author": "Vincent",
   "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "dev": "electron ."
+    "dev": "electron .",
+    "build:renderer": "npm --prefix ../frontend run build",
+    "dist": "npm run build:renderer && electron-builder",
+    "dist:dir": "npm run build:renderer && electron-builder --dir",
+    "test:electron": "electron test/electron-native-smoke.js",
+    "import:candidates": "node src/import_runner.js",
+    "audit:candidate-lists": "node src/audit_candidate_lists.js",
+    "normalize:candidate-json-lists": "node src/normalize_candidate_json_lists.js",
+    "test": "node --test test/*.test.js"
   },
   "dependencies": {
-    "electron-is-dev": "^3.0.1",
-    "sql.js": "^1.12.0"
+    "better-sqlite3": "^13.0.3",
+    "electron-is-dev": "^3.0.1"
   },
   "devDependencies": {
-    "electron": "^34.2.0"
+    "electron": "^43.3.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.recruitment.system",
+    "productName": "RecruitmentSystem",
+    "electronDist": "node_modules/electron/dist",
+    "asar": true,
+    "npmRebuild": false,
+    "directories": {
+      "output": "../release"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../frontend/dist",
+        "to": "frontend"
+      },
+      {
+        "from": "../data/recruitment.db",
+        "to": "seed/recruitment.db"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false
+    }
   }
 }

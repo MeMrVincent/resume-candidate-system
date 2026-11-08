@@ -1,82 +1,77 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const { pathToFileURL } = require('url');
 const isDev = require('electron-is-dev');
 const DatabaseManager = require('./src/database/Database');
 const MigrationRunner = require('./src/database/MigrationRunner');
+const { getDatabasePath, ensurePackagedDatabase } = require('./src/database/DatabasePath');
 const CandidateSearchRepository = require('./src/database/repositories/CandidateSearchRepository');
 const CandidateRepository = require('./src/database/repositories/CandidateRepository');
+const CandidateSearchService = require('./src/services/CandidateSearchService');
+const CandidateService = require('./src/services/CandidateService');
+const registerCandidateIpc = require('./src/ipc/candidate.ipc');
+const createApplicationMenu = require('./src/menu/ApplicationMenu');
 
 let mainWindow;
 let dbManager;
-let searchRepository;
-let candidateRepository;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
-    title: '猎头招聘管理系统',
+    title: 'Recruitment CRM / ATS',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
+      sandbox: true,
     },
   });
 
-  const startUrl = isDev
-    ? 'http://localhost:9000'
-    : `file://${path.join(__dirname, '../frontend/dist/index.html')}`;
-
+  const frontendEntry = app.isPackaged
+    ? path.join(process.resourcesPath, 'frontend', 'index.html')
+    : path.join(__dirname, '../frontend/dist/index.html');
+  const startUrl = isDev ? 'http://localhost:9000' : pathToFileURL(frontendEntry).href;
   mainWindow.loadURL(startUrl);
 
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
-
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
+  if (isDev) mainWindow.webContents.openDevTools();
+  mainWindow.on('closed', () => { mainWindow = null; });
 }
 
 app.whenReady().then(async () => {
-  // 1. 初始化 SQLite 数据库连接与 Migration
-  const dbPath = path.resolve(__dirname, '../data/recruitment.db');
+  createApplicationMenu();
+
+  const dbPath = getDatabasePath(app, __dirname);
+  ensurePackagedDatabase(app, dbPath);
+  console.log(`Recruitment database: ${dbPath}`);
+
   dbManager = new DatabaseManager(dbPath);
   await dbManager.init();
+  await new MigrationRunner(dbManager).runMigrations();
 
-  const migrationRunner = new MigrationRunner(dbManager);
-  await migrationRunner.runMigrations();
+  const candidateRepository = new CandidateRepository(dbManager);
+  const searchRepository = new CandidateSearchRepository(dbManager);
+  const candidateService = new CandidateService(dbManager, candidateRepository);
+  const candidateSearchService = new CandidateSearchService(searchRepository);
 
-  searchRepository = new CandidateSearchRepository(dbManager);
-  candidateRepository = new CandidateRepository(dbManager);
-
-  // 2. 注册 IPC Handler (直接连入真实的 SQLite 数据库 9,860 候选人记录)
   ipcMain.handle('system:getVersion', () => app.getVersion());
+  ipcMain.handle('system:getDatabasePath', () => dbPath);
+  registerCandidateIpc(ipcMain, candidateService, candidateSearchService);
 
-  ipcMain.handle('candidate:search', (event, params) => {
-    return searchRepository.searchCandidates(params || {});
-  });
-
-  ipcMain.handle('candidate:get', (event, id) => {
-    return candidateRepository.getById(id);
-  });
-
-  ipcMain.handle('candidate:count', () => {
-    return candidateRepository.count();
-  });
+  if (process.argv.includes('--smoke-test')) {
+    dbManager.close();
+    dbManager = null;
+    app.quit();
+    return;
+  }
 
   createWindow();
-
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    if (dbManager) dbManager.close();
-    app.quit();
-  }
+  if (dbManager) dbManager.close();
+  if (process.platform !== 'darwin') app.quit();
 });

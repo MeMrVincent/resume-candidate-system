@@ -22,17 +22,17 @@ module.exports = {
     'vue/comment-directive': 'off',
   'vue/multi-word-component-names': 'off',
     'vue/max-attributes-per-line': ['error', {
-      singleline: 5, //标签超出5个属性就会换行
+      singleline: 5, // 标签超出5个属性换行 / EN: Line break if tag exceeds 5 attributes / JA: 5つ以上の属性で改行
     }],
-    'vue/script-setup-uses-vars': 'error', // setup 语法糖校验
-    'object-curly-spacing': ['error', 'always'], // 对象前后要加空格 { a: 1 }
-    'array-bracket-newline': ['error', { 'minItems': 5 }], // 数组超过五个值可以换行
-    'arrow-spacing': 'error', //箭头函数前后加空格 () => {}
-    // 'vue/no-unsupported-features': ['error', { // 校验不支持的特性
+    'vue/script-setup-uses-vars': 'error', // setup 语法糖校验 / EN: Validate <script setup> variables / JA: <script setup> 構文糖の変数検証
+    'object-curly-spacing': ['error', 'always'], // 对象前后加空格 { a: 1 } / EN: Space inside curly braces / JA: オブジェクト波括弧の内側に空白
+    'array-bracket-newline': ['error', { 'minItems': 5 }], // 数组超过五个值换行 / EN: Line break if array items >= 5 / JA: 配列要素が5個以上で改行
+    'arrow-spacing': 'error', // 箭头函数前后加空格 () => {} / EN: Spacing before/after arrow function / JA: アロー前後に空白
+    // 'vue/no-unsupported-features': ['error', { // 校验不支持特性 / EN: Check unsupported features / JA: 未サポート機能の検証
     //   'version': "^3.0.0",
     //   'ignores': [],
     // }]
-    'vue/block-tag-newline': ['error', { //  标签直接的换行规范
+    'vue/block-tag-newline': ['error', { // 标签直接的换行规范 / EN: Block tag newline rule / JA: ブロックタグの改行ルール
       'singleline': 'always',
       'multiline': 'always',
       'maxEmptyLines': 0,
